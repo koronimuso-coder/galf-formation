@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { HardHat, ArrowLeft, AlertTriangle } from 'lucide-react'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 

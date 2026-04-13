@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link'
-import { ArrowRight, HardHat, ShieldCheck, Trophy, Wrench, Users, Award, Clock, MapPin, Star, ChevronRight, Play } from 'lucide-react'
-import { FadeIn, AnimatedCounter, MagneticHover, TextReveal } from '@/components/animations/FadeIn'
+import { ArrowRight, HardHat, Trophy, Users, Award, MapPin, Star, ChevronRight, Play } from 'lucide-react'
+import { FadeIn, AnimatedCounter, MagneticHover } from '@/components/animations/FadeIn'
 import { HeroScene } from '@/components/3d/HeroScene'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { MachineSpecsModal } from '@/components/3d/MachineSpecsModal'
