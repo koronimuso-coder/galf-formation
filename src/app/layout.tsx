@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://galfformation.com'),
   title: {
     default: "GALF FORMATION | Excellence Industrielle BTP & Mines",
     template: "%s | GALF FORMATION"
