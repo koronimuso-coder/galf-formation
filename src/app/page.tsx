@@ -1,6 +1,8 @@
-"use client"
+""use client"
 import Link from 'next/link'
-import { ArrowRight, HardHat, Trophy, Users, Award, MapPin, Star, ChevronRight, Play } from 'lucide-react'
+import { ArrowRight, HardHat, Trophy, Award, MapPin, Star, ChevronRight, Play, Clock, Shield, Users, BookOpen, Search, ArrowUpRight, BarChart3 } from 'lucide-react'
+import Navbar from "@/components/layout/Navbar"
+import Footer from "@/components/layout/Footer"
 import { FadeIn, AnimatedCounter, MagneticHover } from '@/components/animations/FadeIn'
 import { HeroScene } from '@/components/3d/HeroScene'
 import { GALF_FORMATIONS } from '@/lib/data'
