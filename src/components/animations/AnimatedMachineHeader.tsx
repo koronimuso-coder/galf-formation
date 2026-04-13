@@ -28,7 +28,7 @@ export function AnimatedMachineHeader({
   const bBladeRef = useRef<SVGGElement>(null)
 
   useEffect(() => {
-    let ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       
       // Floating effect for main svg groups to make it organic
       gsap.to('.machine-cab', {
