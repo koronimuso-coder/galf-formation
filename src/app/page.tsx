@@ -1,4 +1,4 @@
-""use client"
+"use client"
 import Link from 'next/link'
 import { ArrowRight, HardHat, Trophy, Award, MapPin, Star, ChevronRight, Play, Clock, Shield, Users, BookOpen, Search, ArrowUpRight, BarChart3 } from 'lucide-react'
 import Navbar from "@/components/layout/Navbar"
