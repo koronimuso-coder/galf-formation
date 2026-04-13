@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════
+   GALF FORMATION — Dual Theme Design System
+   Light (default) + Dark mode
+   ═══════════════════════════════════════════════ */
+
+@layer base {
+  /* ── LIGHT MODE (default) ── */
+  :root {
+    --background: 0 0% 99%;
+    --foreground: 220 15% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
+    --primary: 43 100% 50%;
+    --primary-foreground: 220 15% 8%;
+    --secondary: 220 10% 95%;
+    --secondary-foreground: 220 15% 15%;
+    --muted: 220 10% 96%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 220 10% 93%;
+    --accent-foreground: 220 15% 15%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 10% 90%;
+    --input: 220 10% 90%;
+    --ring: 43 100% 50%;
+    --radius: 0.5rem;
+
+    /* GALF custom tokens — LIGHT */
+    --galf-bg: #FAFAF9;
+    --galf-bg-alt: #F2F1EF;
+    --galf-surface: #FFFFFF;
+    --galf-surface-alt: #F7F6F4;
+    --galf-text: #111111;
+    --galf-text-secondary: #555555;
+    --galf-text-muted: #888888;
+    --galf-border: #E0E0DE;
+    --galf-border-hover: #CCCCCA;
+    --galf-yellow-glow: rgba(255, 176, 0, 0.12);
+    --galf-hero-overlay: rgba(250,250,249,0.85);
+    --galf-hero-overlay-grad: linear-gradient(to right, rgba(250,250,249,0.95) 35%, rgba(250,250,249,0.3));
+  }
+
+  /* ── DARK MODE ── */
+  .dark {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 6%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 43 100% 50%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 43 100% 50%;
+
+    --galf-bg: #0E0E10;
+    --galf-bg-alt: #161618;
+    --galf-surface: #1A1A1D;
+    --galf-surface-alt: #1E1E21;
+    --galf-text: #F5F5F5;
+    --galf-text-secondary: #A0A0A8;
+    --galf-text-muted: #6B6B73;
+    --galf-border: rgba(255, 255, 255, 0.08);
+    --galf-border-hover: rgba(255, 255, 255, 0.15);
+    --galf-yellow-glow: rgba(255, 176, 0, 0.08);
+    --galf-hero-overlay: rgba(14,14,16,0.85);
+    --galf-hero-overlay-grad: linear-gradient(to right, rgba(14,14,16,0.95) 35%, rgba(14,14,16,0.3));
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    background: var(--galf-bg);
+    color: var(--galf-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ── Smooth scrolling ── */
+html { scroll-behavior: smooth; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--galf-bg); }
+::-webkit-scrollbar-thumb { background: var(--galf-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #FFB000; }
+
+/* ── Selection ── */
+::selection { background: #FFB000; color: #0c0c0e; }
+
+/* ── Glass card ── */
+.glass-card {
+  background: var(--galf-surface);
+  border: 1px solid var(--galf-border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.dark .glass-card {
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* ── Glow ── */
+.glow-yellow { box-shadow: 0 0 30px var(--galf-yellow-glow); }
+.glow-yellow-strong { box-shadow: 0 4px 20px rgba(255, 176, 0, 0.2); }
+.text-glow-yellow { text-shadow: none; }
+.dark .text-glow-yellow { text-shadow: 0 0 40px rgba(255, 176, 0, 0.3); }
+
+/* ── 3D Card perspective ── */
+.perspective-container { perspective: 1200px; }
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
+}
+.card-3d:hover {
+  transform: rotateY(-4deg) rotateX(4deg) translateZ(15px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+/* ── Float animation ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+
+/* ── Diagonal pattern ── */
+.bg-diagonal {
+  background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, var(--galf-yellow-glow) 10px, var(--galf-yellow-glow) 11px);
+}
+
+/* ── Noise overlay ── */
+.noise-overlay::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1;
+}
+
+/* ── Container ── */
+@layer utilities {
+  .container-galf { @apply container mx-auto px-4 max-w-7xl; }
+}
