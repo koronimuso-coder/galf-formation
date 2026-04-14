@@ -1,3 +1,5 @@
+"use client";
+
 import { useParams, useRouter } from 'next/navigation'
 import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
