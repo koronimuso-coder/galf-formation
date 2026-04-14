@@ -1,5 +1,5 @@
 "use client"
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { Users, Video, Calendar, Upload, Settings } from 'lucide-react'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
@@ -41,7 +41,11 @@ export default function InstructeurDashboard() {
 
          <div className="relative z-10">
          <FadeIn>
-           <h1 className="text-3xl font-black text-white mb-8">Espace <span className="text-galf-yellow">Pédagogique</span></h1>
+           <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-3">Espace Pédagogique</div>
+           <TextReveal 
+             text="CENTRE DE CONTRÔLE" 
+             className="text-4xl md:text-7xl font-black text-white mb-8" 
+           />
          </FadeIn>
 
          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">

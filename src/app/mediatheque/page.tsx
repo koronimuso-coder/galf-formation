@@ -1,5 +1,5 @@
 "use client"
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { Play, Image as ImageIcon, Video, Filter, Maximize2, X } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -24,8 +24,8 @@ export default function Mediatheque() {
 
   return (
     <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG */}
-      <div className="absolute left-[-10%] top-[15%] w-[700px] h-[700px] opacity-[0.04] pointer-events-none z-0">
+      {/* Background Machine SVG - Pelle for "Digging through Archives" */}
+      <div className="absolute left-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
         <AnimatedMachineHeader type="pelle" />
       </div>
 
@@ -33,9 +33,10 @@ export default function Mediatheque() {
         <FadeIn>
           <div className="text-center mb-16">
             <div className="text-xs text-galf-yellow font-black uppercase tracking-[0.4em] mb-4">Archives Visuelles</div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-8" style={{ color: 'var(--galf-text)' }}>
-              MÉDIATHÈQUE <span className="text-galf-yellow">GALF</span>
-            </h1>
+            <TextReveal 
+              text="MÉDIATHÈQUE GALF" 
+              className="text-5xl md:text-8xl font-black tracking-tighter mb-8 text-white center" 
+            />
             <p className="max-w-2xl mx-auto text-lg leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
               Immersion totale dans l'univers BTP & Mines. Découvrez nos formations, nos équipements et la réussite de nos apprenants en images.
             </p>

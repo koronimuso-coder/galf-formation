@@ -1,24 +1,24 @@
 "use client"
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { ShieldCheck, Target, Users, MapPin, Award, Clock, TrendingUp } from 'lucide-react'
-import Link from 'next/link'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
 export default function About() {
   return (
     <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG */}
-      <div className="absolute right-[-15%] top-[-5%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="bulldozer" />
+      {/* Background Machine SVG - Foreuse for "Deep Roots/History" */}
+      <div className="absolute right-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
+        <AnimatedMachineHeader type="foreuse" />
       </div>
 
       {/* Hero */}
       <div className="container-galf mb-24 relative z-10">
         <FadeIn>
           <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Qui sommes-nous</div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none" style={{ color: 'var(--galf-text)' }}>
-            L'EXCELLENCE<br/><span className="text-galf-yellow">INDUSTRIELLE</span>
-          </h1>
+          <TextReveal 
+            text="L'EXCELLENCE INDUSTRIELLE" 
+            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white" 
+          />
           <p className="text-xl max-w-3xl leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
             GALF FORMATION a été créé avec une vision claire : combler le fossé entre la théorie classique et les exigences réelles des chantiers modernes en Côte d'Ivoire et en Afrique de l'Ouest.
           </p>

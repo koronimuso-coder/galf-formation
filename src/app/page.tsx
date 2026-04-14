@@ -58,9 +58,10 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay={0.5}>
-              <h1 className="text-5xl md:text-7xl lg:text-[6rem] font-black tracking-tighter leading-[0.9] mb-8" style={{ color: 'var(--galf-text)' }}>
-                Forgez votre <span className="text-galf-yellow italic">destin</span> dans le BTP
-              </h1>
+              <TextReveal 
+                text="FORGEZ VOTRE DESTIN DANS LE BTP" 
+                className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.9] mb-8 text-white" 
+              />
             </FadeIn>
 
             <FadeIn delay={0.7}>

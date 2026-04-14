@@ -1,8 +1,8 @@
 "use client"
 import { useEffect } from 'react'
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import { RefreshCw, Home, AlertTriangle } from 'lucide-react'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
-import { Wrench, RefreshCcw, Home } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Error({
@@ -17,47 +17,49 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine for Error */}
-      <div className="absolute right-[5%] bottom-[5%] w-[600px] h-[600px] opacity-[0.05] pointer-events-none z-0">
-        <AnimatedMachineHeader type="pelle" />
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center py-20" style={{ background: 'var(--galf-bg)' }}>
+      {/* Background Machine SVG - Camion stalled/parked */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none z-0">
+        <div className="w-[1000px] h-[1000px] -rotate-12 translate-x-20">
+          <AnimatedMachineHeader type="camion" />
+        </div>
       </div>
 
-      <div className="text-center px-4 max-w-lg relative z-10">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-red-500/10 border border-red-500/20 mb-8">
-          <Wrench className="w-10 h-10 text-red-500" />
-        </div>
-        
-        <h1 className="text-4xl font-black mb-4" style={{ color: 'var(--galf-text)' }}>
-          Une panne est <span className="text-red-500">survenue</span>
-        </h1>
-        
-        <p className="mb-8 text-lg opacity-70" style={{ color: 'var(--galf-text)' }}>
-          Nos techniciens sont sur le coup. Une erreur inattendue a perturbé le chantier.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={() => reset()}
-            className="bg-galf-yellow text-galf-carbon px-8 py-4 rounded-lg font-black hover:brightness-110 transition-all inline-flex items-center gap-2 shadow-md"
-          >
-            <RefreshCcw className="w-5 h-5" /> Réessayer
-          </button>
+      <div className="container mx-auto px-4 max-w-4xl relative z-10 text-center">
+        <FadeIn>
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-red-500/10 border border-red-500/20 mb-12">
+            <AlertTriangle className="w-12 h-12 text-red-500" />
+          </div>
           
-          <Link 
-            href="/" 
-            className="glass-card px-8 py-4 rounded-lg font-black hover:border-galf-yellow/30 transition-all inline-flex items-center gap-2"
-            style={{ color: 'var(--galf-text)' }}
-          >
-            <Home className="w-5 h-5" /> Accueil
-          </Link>
-        </div>
-        
-        {error.digest && (
-          <p className="mt-8 text-[10px] opacity-30 font-mono tracking-tighter" style={{ color: 'var(--galf-text)' }}>
-            ID Erreur: {error.digest}
+          <div className="mb-4 text-red-500 font-black text-xl tracking-[0.3em] uppercase">Panne Système</div>
+          
+          <TextReveal 
+            text="CHAMP D'ACTION BLOQUÉ" 
+            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white" 
+          />
+          
+          <p className="text-xl max-w-2xl mx-auto mb-16 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
+            Une erreur inattendue a stoppé les opérations. Nos techniciens virtuels ont été alertés. Veuillez essayer de redémarrer le module.
           </p>
-        )}
+
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            <button
+              onClick={() => reset()}
+              className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition-transform shadow-2xl shadow-galf-yellow/30"
+            >
+              <RefreshCw className="w-5 h-5" /> Relancer les machines
+            </button>
+            <Link href="/" className="glass-card px-12 py-5 rounded-2xl font-black text-lg text-white flex items-center justify-center gap-3 hover:border-galf-yellow/30 transition-all">
+              <Home className="w-5 h-5" /> Hub Principal
+            </Link>
+          </div>
+          
+          {error.digest && (
+             <div className="mt-12 text-[10px] font-mono opacity-20 text-white uppercase tracking-widest">
+                Log ID: {error.digest}
+             </div>
+          )}
+        </FadeIn>
       </div>
     </div>
   )

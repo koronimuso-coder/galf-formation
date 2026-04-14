@@ -1,5 +1,5 @@
 "use client"
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { Briefcase, Users, FileText, Send, TrendingUp, CheckCircle2, Shield, ArrowRight, Star } from 'lucide-react'
 import { useState } from 'react'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
@@ -28,9 +28,10 @@ export default function EntreprisePortal() {
       <div className="container-galf relative z-10">
         <FadeIn>
           <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Partenaires corporate</div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none" style={{ color: 'var(--galf-text)' }}>
-            PORTAIL <span className="text-galf-yellow">ENTREPRISES</span>
-          </h1>
+          <TextReveal 
+            text="PORTAIL ENTREPRISES" 
+            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white" 
+          />
           <p className="text-xl max-w-3xl leading-relaxed mb-16" style={{ color: 'var(--galf-text-secondary)' }}>
             Formez vos équipes aux standards internationaux. GALF accompagne les professionnels du BTP et des mines dans la montée en compétence de leur personnel.
           </p>
@@ -150,9 +151,9 @@ export default function EntreprisePortal() {
                         </li>
                       ))}
                    </ul>
-                   <button className="bg-white text-galf-carbon px-12 py-5 rounded-2xl font-black text-lg hover:bg-galf-yellow transition-all flex items-center justify-center gap-3 shrink-0">
+                   <Link href="/entreprise/recrutement" className="bg-white text-galf-carbon px-12 py-5 rounded-2xl font-black text-lg hover:bg-galf-yellow transition-all flex items-center justify-center gap-3 shrink-0">
                       Accéder au Hub Recruteur <ArrowRight className="w-5 h-5" />
-                   </button>
+                   </Link>
                 </div>
 
                 <div className="relative group">

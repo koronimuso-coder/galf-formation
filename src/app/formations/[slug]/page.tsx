@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { getFormationImage } from '@/lib/images'
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { ArrowLeft, ArrowRight, Clock, MapPin, BarChart3, BookOpen, Target, Briefcase, CheckCircle2, Shield, Phone } from 'lucide-react'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
@@ -29,9 +29,13 @@ export default function FormationDetail() {
       <section className="relative pt-28 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center opacity-[0.06] dark:opacity-[0.1]" style={{ backgroundImage: `url(${getFormationImage(formation.slug)})` }} />
         
-        {/* Animated Machine Layer */}
-        <div className="absolute right-[-5%] top-[10%] w-[500px] h-[500px] opacity-[0.05] pointer-events-none z-0">
-          <AnimatedMachineHeader type={formation.category.toLowerCase().includes('chantier') ? 'pelle' : 'grue'} />
+        {/* Animated Machine Layer - Thematic mapping */}
+        <div className="absolute right-[-5%] top-[10%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
+          <AnimatedMachineHeader type={
+            formation.category.toLowerCase().includes('mine') ? 'foreuse' : 
+            formation.category.toLowerCase().includes('btp') ? 'pelle' : 
+            formation.category.toLowerCase().includes('levage') ? 'grue' : 'pelle'
+          } />
         </div>
 
         <div className="container-galf relative z-20">
@@ -52,9 +56,10 @@ export default function FormationDetail() {
               </FadeIn>
 
               <FadeIn delay={0.2}>
-                <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 leading-[0.95]" style={{ color: 'var(--galf-text)' }}>
-                  {formation.name}
-                </h1>
+                <TextReveal 
+                  text={formation.name.toUpperCase()} 
+                  className="text-4xl md:text-7xl font-black tracking-tighter mb-6 leading-[0.95] text-white" 
+                />
               </FadeIn>
 
               <FadeIn delay={0.3}>

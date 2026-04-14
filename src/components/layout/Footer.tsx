@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { HardHat, MapPin, Phone, Mail, ArrowRight } from 'lucide-react'
+import { HardHat, MapPin, Phone, Mail, ArrowRight, ChevronUp } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -76,6 +76,13 @@ export function Footer() {
             <Link href="/cgu" className="hover:text-galf-yellow transition-colors">Mentions légales</Link>
             <Link href="/politique-confidentialite" className="hover:text-galf-yellow transition-colors">Confidentialité</Link>
           </div>
+          
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="w-10 h-10 rounded-xl bg-galf-surface border border-galf-border flex items-center justify-center hover:border-galf-yellow/50 hover:text-galf-yellow transition-all group"
+          >
+            <ChevronUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+          </button>
         </div>
       </div>
     </footer>

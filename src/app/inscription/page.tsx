@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react'
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, HardHat, FileCheck, Info, Wallet } from 'lucide-react'
 import Link from 'next/link'
@@ -34,17 +34,19 @@ export default function Inscription() {
 
   return (
     <div className="min-h-screen pt-28 pb-24 relative overflow-hidden" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG */}
-      <div className="absolute right-[-10%] top-[10%] w-[700px] h-[700px] opacity-[0.04] pointer-events-none z-0">
-        <AnimatedMachineHeader type="grue" />
+      {/* Background Machine SVG - Bulldozer for "Building Career" */}
+      <div className="absolute right-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
+        <AnimatedMachineHeader type="bulldozer" />
       </div>
 
       <div className="container-galf relative z-10">
         <FadeIn>
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-4" style={{ color: 'var(--galf-text)' }}>
-              Inscription <span className="text-galf-yellow">GALF</span>
-            </h1>
+            <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Rejoignez l'élite</div>
+            <TextReveal 
+              text="INSCRIPTION GALF" 
+              className="text-4xl md:text-8xl font-black tracking-tighter mb-8 text-white center" 
+            />
             <p style={{ color: 'var(--galf-text-secondary)' }} className="max-w-xl mx-auto text-sm">
               Processus sécurisé en {totalSteps} étapes. Votre avenir commence ici.
             </p>

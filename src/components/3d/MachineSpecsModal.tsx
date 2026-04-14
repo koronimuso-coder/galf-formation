@@ -1,7 +1,9 @@
 "use client"
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Cpu, Weight, Move, Zap, CheckCircle2 } from 'lucide-react'
+import { X, Cpu, Weight, Move, Zap, CheckCircle2, MapPin } from 'lucide-react'
 import { EQUIPMENT_SPECS } from '@/lib/data'
+import { useEffect, useRef, useState } from 'react'
+import gsap from 'gsap'
 
 interface MachineSpecsModalProps {
   isOpen: boolean
@@ -9,6 +11,37 @@ interface MachineSpecsModalProps {
   machineSlug: string
   machineName: string
   machineImg: string
+}
+
+function StatCounter({ value, label }: { value: string, label: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [displayValue, setDisplayValue] = useState("0")
+  
+  // Extract number and unit (e.g., "350 ch" -> 350, "ch")
+  const numMatch = value.match(/(\d+[\.,]?\d*)/)
+  const unit = value.replace(numMatch ? numMatch[0] : "", "").trim()
+  const targetValue = numMatch ? parseFloat(numMatch[0].replace(',', '.')) : 0
+
+  useEffect(() => {
+    if (!ref.current) return
+    const obj = { val: 0 }
+    gsap.to(obj, {
+      val: targetValue,
+      duration: 1.5,
+      delay: 0.5,
+      ease: "power3.out",
+      onUpdate: () => {
+        const current = obj.val % 1 === 0 ? Math.floor(obj.val) : obj.val.toFixed(1)
+        setDisplayValue(`${current} ${unit}`)
+      }
+    })
+  }, [targetValue, unit])
+
+  return (
+    <div ref={ref} className="text-2xl font-black" style={{ color: 'var(--galf-text)' }}>
+      {displayValue}
+    </div>
+  )
 }
 
 export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, machineImg }: MachineSpecsModalProps) {
@@ -91,7 +124,7 @@ export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, m
                         </div>
                         <span className="text-[10px] uppercase font-bold tracking-widest text-galf-yellow/60">{labels[key] || key}</span>
                       </div>
-                      <div className="text-2xl font-black" style={{ color: 'var(--galf-text)' }}>{value as string}</div>
+                      <StatCounter value={value as string} label={key} />
                     </motion.div>
                   )
                 })}
@@ -132,3 +165,4 @@ export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, m
     </AnimatePresence>
   )
 }
+

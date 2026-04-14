@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { getFormationImage } from '@/lib/images'
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { Search, Clock, MapPin, ArrowRight, X } from 'lucide-react'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
@@ -21,18 +21,19 @@ export default function FormationsPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden pt-28 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG */}
-      <div className="absolute right-[-5%] top-10 w-[600px] h-[600px] opacity-5 pointer-events-none z-0">
-        <AnimatedMachineHeader type="chargeuse" />
+      {/* Background Machine SVG - Rouleau for "Solid Foundations" */}
+      <div className="absolute right-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
+        <AnimatedMachineHeader type="rouleau" />
       </div>
       
       <div className="container-galf relative z-10">
         <FadeIn>
           <div className="mb-16 relative">
             <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">19 parcours certifiants</div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-[0.95]" style={{ color: 'var(--galf-text)' }}>
-              Nos <span className="text-galf-yellow">formations</span>
-            </h1>
+            <TextReveal 
+              text="NOS FORMATIONS EXPERTES" 
+              className="text-5xl md:text-8xl font-black tracking-tighter mb-8 text-white" 
+            />
             <p className="text-lg max-w-3xl" style={{ color: 'var(--galf-text-secondary)' }}>
               De 15 000 à 850 000 FCFA, trouvez la formation qui correspond à votre ambition.
             </p>

@@ -1,5 +1,5 @@
 "use client"
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { Plus, Minus, HelpCircle } from 'lucide-react'
 import { useState } from 'react'
 import Link from 'next/link'
@@ -21,20 +21,19 @@ export default function FAQ() {
 
   return (
     <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG */}
-      <div className="absolute left-[-15%] top-[5%] w-[700px] h-[700px] opacity-[0.04] pointer-events-none z-0">
-        <AnimatedMachineHeader type="grue" />
+      {/* Background Machine SVG - Nacelle for "Higher Perspective/Clarity" */}
+      <div className="absolute left-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
+        <AnimatedMachineHeader type="nacelle" />
       </div>
 
       <div className="container mx-auto px-4 max-w-4xl relative z-10">
         <FadeIn>
           <div className="text-center mb-16">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-galf-yellow/10 border border-galf-yellow/20 mb-6">
-              <HelpCircle className="w-8 h-8 text-galf-yellow" />
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none" style={{ color: 'var(--galf-text)' }}>
-              QUESTIONS <span className="text-galf-yellow">FRÉQUENTES</span>
-            </h1>
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-galf-yellow/10 border border-galf-yellow/20 mb-6 font-black text-galf-yellow text-2xl">?</div>
+            <TextReveal 
+              text="QUESTIONS FRÉQUENTES" 
+              className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white text-center" 
+            />
             <p className="text-xl leading-relaxed max-w-2xl mx-auto" style={{ color: 'var(--galf-text-secondary)' }}>
               Trouvez rapidement les réponses à vos interrogations sur nos formations, admissions et tarifs.
             </p>

@@ -1,6 +1,6 @@
 "use client"
 import { Users, BookOpen, Banknote, Briefcase, ChevronRight, Activity, LayoutDashboard, Settings, FileText, PieChart } from 'lucide-react'
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
 export default function AdminDashboard() {
@@ -32,9 +32,9 @@ export default function AdminDashboard() {
       </aside>
 
       <main className="flex-1 p-8 w-full relative overflow-hidden">
-         {/* Background Machine for Admin */}
-         <div className="absolute right-[-10%] top-[-5%] w-[600px] h-[600px] opacity-[0.03] pointer-events-none z-0">
-            <AnimatedMachineHeader type="pelle" />
+         {/* Background Machine for Admin - Rouleau for Management/Finalization */}
+         <div className="absolute right-[-10%] top-[-5%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
+            <AnimatedMachineHeader type="rouleau" />
          </div>
 
          <div className="relative z-10">
@@ -42,7 +42,10 @@ export default function AdminDashboard() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
                <div>
                   <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-2">Bienvenue Admin</div>
-                  <h1 className="text-3xl font-black tracking-tighter" style={{ color: 'var(--galf-text)' }}>Tableau de bord Global</h1>
+                  <TextReveal 
+                    text="ADMINISTRATION" 
+                    className="text-3xl font-black tracking-tighter text-white" 
+                  />
                </div>
                <div className="mt-4 md:mt-0 glass-card px-4 py-2 rounded-xl text-xs font-bold" style={{ color: 'var(--galf-text-secondary)' }}>
                   Dernières sync : Aujourd'hui à 14:32

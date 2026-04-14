@@ -6,6 +6,8 @@ import { Footer } from '@/components/layout/Footer';
 import { Loader } from '@/components/animations/Loader';
 import { WhatsAppButton } from '@/components/layout/WhatsAppButton';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { ScrollProgress } from '@/components/animations/ScrollProgress';
+import { PageTransition } from '@/components/animations/PageTransition';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,11 +42,14 @@ export default function RootLayout({
     <html lang="fr" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen flex flex-col antialiased`} style={{ background: 'var(--galf-bg)', color: 'var(--galf-text)' }}>
         <ThemeProvider>
+          <ScrollProgress />
           <Loader />
           <Navbar />
-          <main className="flex-1 pt-20">
-            {children}
-          </main>
+          <PageTransition>
+            <main className="flex-1 pt-20">
+              {children}
+            </main>
+          </PageTransition>
           <WhatsAppButton />
           <Footer />
         </ThemeProvider>

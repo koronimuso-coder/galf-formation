@@ -72,8 +72,8 @@ export function HeroScene() {
       </div>
 
       {/* Giant Animated Machine Blueprint */}
-      <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[800px] h-[600px] z-10 hidden lg:block opacity-60">
-        <AnimatedMachineHeader type="pelle" className="w-full h-full" color="var(--galf-yellow)" />
+      <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[800px] h-[600px] z-10 hidden lg:block opacity-40">
+        <AnimatedMachineHeader type="bulldozer" className="w-full h-full" color="var(--galf-yellow)" />
       </div>
 
       {/* Overlay vignettes */}

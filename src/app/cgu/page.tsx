@@ -1,5 +1,5 @@
 "use client"
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 import { ShieldCheck, FileText, Scale } from 'lucide-react'
 
@@ -18,9 +18,10 @@ export default function CGU() {
               <div className="w-12 h-12 rounded-xl bg-galf-yellow/10 flex items-center justify-center border border-galf-yellow/20">
                 <Scale className="w-6 h-6 text-galf-yellow" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tighter" style={{ color: 'var(--galf-text)' }}>
-                Conditions Générales <span className="text-galf-yellow">d'Utilisation</span>
-              </h1>
+              <TextReveal 
+                text="CONDITIONS GÉNÉRALES" 
+                className="text-4xl md:text-5xl font-black tracking-tighter text-white" 
+              />
             </div>
             <p className="max-w-2xl text-lg opacity-70" style={{ color: 'var(--galf-text)' }}>
               Dernière mise à jour : 13 Avril 2026. Veuillez lire attentivement les conditions régissant l'utilisation de la plateforme GALF Formation.

@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link'
 import { HardHat, LogIn, ArrowRight } from 'lucide-react'
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
 export default function Login() {
@@ -20,7 +20,10 @@ export default function Login() {
               <HardHat className="w-8 h-8 text-galf-carbon" />
             </div>
 
-            <h1 className="text-4xl font-black tracking-tighter mb-2" style={{ color: 'var(--galf-text)' }}>CONNEXION</h1>
+            <TextReveal 
+              text="CONNEXION" 
+              className="text-5xl md:text-8xl font-black tracking-tighter mb-4 text-white" 
+            />
             <p className="mb-8" style={{ color: 'var(--galf-text-secondary)' }}>Accédez à votre espace Candidat ou Apprenant.</p>
 
             <form className="space-y-6">

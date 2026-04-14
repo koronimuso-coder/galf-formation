@@ -1,5 +1,5 @@
 "use client"
-import { FadeIn } from '@/components/animations/FadeIn'
+import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 import { Lock, Eye, ShieldAlert, Database } from 'lucide-react'
 
@@ -18,9 +18,10 @@ export default function PrivacyPolicy() {
               <div className="w-12 h-12 rounded-xl bg-galf-yellow/10 flex items-center justify-center border border-galf-yellow/20">
                 <Lock className="w-6 h-6 text-galf-yellow" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tighter" style={{ color: 'var(--galf-text)' }}>
-                Politique de <span className="text-galf-yellow">Confidentialité</span>
-              </h1>
+              <TextReveal 
+                text="CONFIDENTIALITÉ" 
+                className="text-4xl md:text-5xl font-black tracking-tighter text-white" 
+              />
             </div>
             <p className="max-w-2xl text-lg opacity-70" style={{ color: 'var(--galf-text)' }}>
               Votre vie privée est notre priorité. Découvrez comment GALF Formation protège et gère vos données personnelles.
