@@ -24,9 +24,10 @@ export default function BlogPortal() {
       <div className="container-galf relative z-10">
         <FadeIn>
           <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Actualités & ressources</div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none" style={{ color: 'var(--galf-text)' }}>
-            ACTUALITÉS <span className="text-galf-yellow">& EXPERTISE</span>
-          </h1>
+          <TextReveal 
+            text="ACTUALITÉS & EXPERTISE" 
+            className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none text-white" 
+          />
           <p className="text-xl max-w-3xl leading-relaxed mb-16" style={{ color: 'var(--galf-text-secondary)' }}>
             Restez informés sur les évolutions du BTP, les normes industrielles et les opportunités d'emploi.
           </p>
