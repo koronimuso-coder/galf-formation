@@ -1,5 +1,4 @@
 "use client";
-
 import { useParams, useRouter } from 'next/navigation'
 import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
@@ -15,10 +14,6 @@ import { useEffect } from 'react'
 export default function BlogDetail() {
   const { slug } = useParams()
   const router = useRouter()
-
-  useEffect(() => {
-    document.title = `${post.title} | Blog GALF`
-  }, [])
 
   // Mock post data based on slug (in real app, fetch from CMS/Firebase)
   const post = {
@@ -44,6 +39,10 @@ export default function BlogDetail() {
     `,
     tags: ["Mines", "HSE", "Afrique", "Certification", "Sécurité"]
   }
+
+  useEffect(() => {
+    document.title = `${post.title} | Blog GALF`
+  }, [post.title])
 
   return (
     <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
@@ -73,9 +72,11 @@ export default function BlogDetail() {
                   {post.readTime}
                 </span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-8 leading-tight" style={{ color: 'var(--galf-text)' }}>
-                {post.title}
-              </h1>
+              
+              <TextReveal 
+                text={post.title}
+                className="text-4xl md:text-6xl font-black tracking-tighter mb-8 leading-tight text-white" 
+              />
               
               <div className="aspect-video rounded-3xl overflow-hidden mb-12 relative border border-galf-border shadow-2xl">
                 <img src={post.img} alt={post.title} className="w-full h-full object-cover" />
