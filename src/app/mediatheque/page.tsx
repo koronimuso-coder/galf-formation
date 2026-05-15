@@ -1,9 +1,9 @@
 "use client"
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import Image from 'next/image'
 import { Play, Image as ImageIcon, Video, Filter, Maximize2, X } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
+import { PageHeader } from '@/components/layout/PageHeader'
 
 export default function Mediatheque() {
   const [filter, setFilter] = useState<'all' | 'image' | 'video'>('all')
@@ -11,37 +11,27 @@ export default function Mediatheque() {
 
   const items = [
     { type: 'video', title: "Formation Pelle sur site minier", img: "/images/engins/pelle-hydraulique.png", duration: "12:45", cat: "Chantier" },
-    { type: 'image', title: "Promotion 2024 - San Pedro", img: "/images/formations/pelle-hydraulique.jpg", cat: "Vie du centre" },
+    { type: 'image', title: "Promotion 2024 - San Pedro", img: "/images/engins/bulldozer-d6.png", cat: "Vie du centre" },
     { type: 'video', title: "Démonstration Grue à Tour", img: "/images/engins/grue-tour.png", duration: "05:20", cat: "Levage" },
-    { type: 'image', title: "Atelier Maintenance", img: "/images/formations/mecanique-engin.jpg", cat: "Technique" },
+    { type: 'image', title: "Techniques de forage minier", img: "/images/engins/foreuse-miniere.png", cat: "Technique" },
     { type: 'video', title: "Sécurité Incendie en Carrière", img: "/images/engins/tombereau-rigide.png", duration: "08:15", cat: "Sécurité" },
-    { type: 'image', title: "Nouveau Parc d'Engins", img: "/images/engins/chargeuse.png", cat: "Equipement" },
-    { type: 'video', title: "Interview Major de Promotion", img: "/images/engins/bulldozer.png", duration: "03:50", cat: "Témoignage" },
-    { type: 'image', title: "Visite Site SMB", img: "/images/engins/grue-mobile.png", cat: "Partenariat" },
+    { type: 'image', title: "Nouveau Parc d'Engins", img: "/images/engins/chargeuse-sur-pneus.png", cat: "Equipement" },
+    { type: 'video', title: "Manceuvre de Compacteur", img: "/images/engins/compacteur-vibreur.png", duration: "03:50", cat: "Témoignage" },
+    { type: 'image', title: "Levage Mobile Précision", img: "/images/engins/grue-mobile.png", cat: "Partenariat" },
   ]
 
   const filteredItems = filter === 'all' ? items : items.filter(i => i.type === filter)
 
   return (
-    <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG - Pelle for "Digging through Archives" */}
-      <div className="absolute left-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="pelle" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="MÉDIATHÈQUE GALF"
+        subtitle="Immersion totale dans l'univers BTP & Mines. Découvrez nos formations, nos équipements et la réussite de nos apprenants en images."
+        badge="Archives Visuelles"
+        centered={true}
+      />
 
-      <div className="container-galf relative z-10">
-        <FadeIn>
-          <div className="text-center mb-16">
-            <div className="text-xs text-galf-yellow font-black uppercase tracking-[0.4em] mb-4">Archives Visuelles</div>
-            <TextReveal 
-              text="MÉDIATHÈQUE GALF" 
-              className="text-5xl md:text-8xl font-black tracking-tighter mb-8 text-white center" 
-            />
-            <p className="max-w-2xl mx-auto text-lg leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
-              Immersion totale dans l'univers BTP & Mines. Découvrez nos formations, nos équipements et la réussite de nos apprenants en images.
-            </p>
-          </div>
-        </FadeIn>
+      <div className="container-galf relative z-10 mt-16">
 
         {/* Filters */}
         <div className="flex justify-center gap-4 mb-12">
@@ -64,7 +54,7 @@ export default function Mediatheque() {
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <AnimatePresence mode='popLayout'>
-            {filteredItems.map((item, i) => (
+            {filteredItems.map((item) => (
               <motion.div
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -74,7 +64,13 @@ export default function Mediatheque() {
                 className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer"
                 onClick={() => setSelectedItem(item)}
               >
-                <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <Image 
+                  src={item.img} 
+                  alt={item.title} 
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700" 
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-galf-carbon via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity" />
                 
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100">
@@ -119,7 +115,12 @@ export default function Mediatheque() {
                 </button>
                 
                 <div className="aspect-video bg-black relative">
-                   <img src={selectedItem.img} alt={selectedItem.title} className="w-full h-full object-contain opacity-40" />
+                   <Image 
+                    src={selectedItem.img} 
+                    alt={selectedItem.title} 
+                    fill
+                    className="object-contain opacity-40" 
+                  />
                    <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center p-8">
                          {selectedItem.type === 'video' ? (
@@ -131,7 +132,13 @@ export default function Mediatheque() {
                                <p className="text-white/60">Lancement du lecteur vidéo premium...</p>
                             </>
                          ) : (
-                            <img src={selectedItem.img} alt={selectedItem.title} className="max-h-[70vh] rounded-xl shadow-2xl" />
+                             <Image 
+                              src={selectedItem.img} 
+                              alt={selectedItem.title} 
+                              width={1200}
+                              height={800}
+                              className="max-h-[70vh] w-auto rounded-xl shadow-2xl mx-auto" 
+                            />
                          )}
                       </div>
                    </div>

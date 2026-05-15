@@ -72,8 +72,8 @@ export function Navbar() {
             <button onClick={toggleTheme} className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ color: 'var(--galf-text-secondary)', border: '1px solid var(--galf-border)' }}>
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
-            <button onClick={() => setIsOpen(!isOpen)} className="w-10 h-10 flex items-center justify-center" style={{ color: 'var(--galf-text)' }}>
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <button onClick={() => setIsOpen(!isOpen)} className="w-12 h-12 flex items-center justify-center -mr-2" style={{ color: 'var(--galf-text)' }}>
+              {isOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
             </button>
           </div>
         </div>

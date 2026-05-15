@@ -51,7 +51,7 @@ export function Loader() {
           <div className="loader-progress-bar absolute top-0 left-0 h-full bg-galf-yellow w-0 rounded-full shadow-[0_0_10px_#FFB000]" />
         </div>
         
-        <div className="mt-6 text-[10px] uppercase tracking-[0.5em] font-black text-white/40 animate-pulse">
+        <div className="mt-6 text-[10px] uppercase tracking-[0.5em] font-black text-white/80 animate-pulse">
           Excellence Industrielle
         </div>
       </div>

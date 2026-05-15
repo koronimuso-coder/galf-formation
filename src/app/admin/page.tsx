@@ -42,10 +42,12 @@ export default function AdminDashboard() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
                <div>
                   <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-2">Bienvenue Admin</div>
-                  <TextReveal 
-                    text="ADMINISTRATION" 
-                    className="text-3xl font-black tracking-tighter text-white" 
-                  />
+                  <div style={{ color: 'var(--galf-text)' }}>
+                     <TextReveal 
+                       text="ADMINISTRATION" 
+                       className="text-3xl font-black tracking-tighter" 
+                     />
+                  </div>
                </div>
                <div className="mt-4 md:mt-0 glass-card px-4 py-2 rounded-xl text-xs font-bold" style={{ color: 'var(--galf-text-secondary)' }}>
                   Dernières sync : Aujourd'hui à 14:32

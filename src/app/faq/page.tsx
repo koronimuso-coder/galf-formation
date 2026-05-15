@@ -1,9 +1,9 @@
 "use client"
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
-import { Plus, Minus, HelpCircle } from 'lucide-react'
+import { FadeIn } from '@/components/animations/FadeIn'
+import { Plus, Minus } from 'lucide-react'
 import { useState } from 'react'
 import Link from 'next/link'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
+import { PageHeader } from '@/components/layout/PageHeader'
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
@@ -20,25 +20,15 @@ export default function FAQ() {
   ]
 
   return (
-    <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG - Nacelle for "Higher Perspective/Clarity" */}
-      <div className="absolute left-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="nacelle" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="QUESTIONS FRÉQUENTES"
+        subtitle="Trouvez rapidement les réponses à vos interrogations sur nos formations, admissions et tarifs."
+        badge="Besoin d'aide ?"
+        centered={true}
+      />
 
-      <div className="container mx-auto px-4 max-w-4xl relative z-10">
-        <FadeIn>
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-galf-yellow/10 border border-galf-yellow/20 mb-6 font-black text-galf-yellow text-2xl">?</div>
-            <TextReveal 
-              text="QUESTIONS FRÉQUENTES" 
-              className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white text-center" 
-            />
-            <p className="text-xl leading-relaxed max-w-2xl mx-auto" style={{ color: 'var(--galf-text-secondary)' }}>
-              Trouvez rapidement les réponses à vos interrogations sur nos formations, admissions et tarifs.
-            </p>
-          </div>
-        </FadeIn>
+      <div className="container mx-auto px-4 max-w-4xl relative z-10 mt-12">
 
         <div className="space-y-4 mb-16">
           {faqs.map((faq, index) => (

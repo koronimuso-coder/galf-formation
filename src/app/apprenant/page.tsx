@@ -1,11 +1,13 @@
 "use client"
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
-import { Play, BookOpen, CheckCircle2, Clock, Award, Video, ChevronRight, Lock, FileText, Download, ExternalLink, TrendingUp } from 'lucide-react'
+import { FadeIn } from '@/components/animations/FadeIn'
+import Image from 'next/image'
+import { Play, BookOpen, CheckCircle2, Clock, Award, FileText, Download, ExternalLink, TrendingUp, Lock } from 'lucide-react'
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
+import { PageHeader } from '@/components/layout/PageHeader'
+import { HardHat } from 'lucide-react'
 
 export default function ApprenantDashboard() {
   const [activeTab, setActiveTab] = useState<'cours' | 'certificats'>('cours')
@@ -31,7 +33,7 @@ export default function ApprenantDashboard() {
     { title: "Checklist de maintenance journalière", type: "XLS", size: "1.2 MB" },
   ]
 
-  const [certData, setCertData] = useState({
+  const [certData] = useState({
     userName: "JEAN KOUADIO",
     course: "Pelle Hydraulique sur chenilles",
     date: "11 Avril 2024",
@@ -75,41 +77,31 @@ export default function ApprenantDashboard() {
   const progress = Math.round((completedCount / modules.length) * 100)
 
   return (
-    <div className="min-h-screen relative overflow-hidden pt-28 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG */}
-      <div className="absolute left-[-10%] top-[20%] w-[600px] h-[600px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="pelle" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title={`${certData.course} — FORMATION`}
+        subtitle="Suivez votre progression, accédez à vos modules et téléchargez vos certifications officielles."
+        badge="Espace apprenant"
+      >
+        <div className="flex gap-4 mt-8">
+          <button 
+            onClick={() => setActiveTab('cours')}
+            className={`px-8 py-3 rounded-xl font-bold transition-all border ${activeTab === 'cours' ? 'bg-galf-yellow text-galf-carbon border-galf-yellow' : 'border-galf-border'}`}
+            style={activeTab !== 'cours' ? { color: 'var(--galf-text)' } : {}}
+          >
+            Mon Parcours
+          </button>
+          <button 
+            onClick={() => setActiveTab('certificats')}
+            className={`px-8 py-3 rounded-xl font-bold transition-all border ${activeTab === 'certificats' ? 'bg-galf-yellow text-galf-carbon border-galf-yellow shadow-[0_0_20px_rgba(255,176,0,0.3)]' : 'border-galf-border'}`}
+            style={activeTab !== 'certificats' ? { color: 'var(--galf-text)' } : {}}
+          >
+            Certificats
+          </button>
+        </div>
+      </PageHeader>
 
-      <div className="container-galf relative z-10">
-        <FadeIn>
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
-            <div>
-              <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-2">Espace apprenant</div>
-              <TextReveal 
-                text={`${certData.course} — FORMATION`} 
-                className="text-3xl md:text-6xl font-black tracking-tighter text-white" 
-              />
-            </div>
-            
-            <div className="mt-8 md:mt-0 flex gap-4">
-              <button 
-                onClick={() => setActiveTab('cours')}
-                className={`px-8 py-3 rounded-xl font-bold transition-all border ${activeTab === 'cours' ? 'bg-galf-yellow text-galf-carbon border-galf-yellow' : 'border-galf-border'}`}
-                style={activeTab !== 'cours' ? { color: 'var(--galf-text)' } : {}}
-              >
-                Mon Parcours
-              </button>
-              <button 
-                onClick={() => setActiveTab('certificats')}
-                className={`px-8 py-3 rounded-xl font-bold transition-all border ${activeTab === 'certificats' ? 'bg-galf-yellow text-galf-carbon border-galf-yellow shadow-[0_0_20px_rgba(255,176,0,0.3)]' : 'border-galf-border'}`}
-                style={activeTab !== 'certificats' ? { color: 'var(--galf-text)' } : {}}
-              >
-                Certificats
-              </button>
-            </div>
-          </div>
-        </FadeIn>
+      <div className="container-galf relative z-10 mt-12">
 
         {activeTab === 'cours' ? (
           <div className="grid lg:grid-cols-4 gap-8">
@@ -135,7 +127,12 @@ export default function ApprenantDashboard() {
                 </div>
 
                 <div className="aspect-video rounded-3xl overflow-hidden relative mb-8 group cursor-pointer shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5" style={{ background: 'black' }}>
-                  <img src="/images/engins/pelle-hydraulique.png" alt="Module en cours" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-all duration-700 group-hover:scale-105" />
+                  <Image 
+                    src="/images/engins/pelle-hydraulique.png" 
+                    alt="Formation en cours" 
+                    fill
+                    className="object-cover opacity-60 group-hover:opacity-80 transition-all duration-700 group-hover:scale-105" 
+                  />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-24 h-24 rounded-full bg-galf-yellow flex items-center justify-center shadow-[0_0_50px_rgba(255,176,0,0.5)] group-hover:scale-110 transition-transform">
                       <Play className="w-10 h-10 text-galf-carbon ml-1" />
@@ -356,6 +353,4 @@ export default function ApprenantDashboard() {
     </div>
   )
 }
-
-import { HardHat } from 'lucide-react'
 

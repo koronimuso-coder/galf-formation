@@ -1,8 +1,8 @@
 "use client"
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import { FadeIn } from '@/components/animations/FadeIn'
 import { Search, Filter, ShieldCheck, Star, MapPin, Calendar, CheckCircle2, Phone, Briefcase, Award, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
+import { PageHeader } from '@/components/layout/PageHeader'
 
 const CANDIDATES = [
   { id: "C-001", name: "Yao Anderson", job: "Opérateur Pelle", score: "18.5/20", tag: "Expert", exp: "5 ans", location: "San Pedro", image: "Y", status: "Disponible" },
@@ -42,23 +42,20 @@ export default function RecruitmentHub() {
   const inputStyle = { background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }
 
   return (
-    <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG - Grue for "Picking Talent" */}
-      <div className="absolute right-[-10%] top-[0%] w-[900px] h-[900px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="grue" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="HUB RECRUTEUR"
+        subtitle="Accédez à l'élite des opérateurs certifiés par GALF. Qualité technique, rigueur HSE et expérience terrain garantie."
+        badge="Elite Talent Pool"
+      />
 
-      <div className="container-galf relative z-10">
+      <div className="container-galf relative z-10 mt-12">
         <FadeIn>
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
             <div className="max-w-3xl">
-              <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Elite Talent Pool</div>
-              <TextReveal 
-                text="HUB RECRUTEUR" 
-                className="text-5xl md:text-8xl font-black tracking-tighter mb-6 leading-none text-white" 
-              />
-              <p className="text-xl leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
-                Accédez à l'élite des opérateurs certifiés par GALF. Qualité technique, rigueur HSE et expérience terrain garantie.
+              <div className="text-xs font-black uppercase tracking-widest text-galf-yellow mb-4">Sourcing de Talents</div>
+              <p className="text-lg leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
+                Consultez les profils certifiés GALF et vérifiez instantanément l'authenticité de leurs certificats industriels.
               </p>
             </div>
 

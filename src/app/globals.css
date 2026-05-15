@@ -157,3 +157,116 @@ html { scroll-behavior: smooth; }
 @layer utilities {
   .container-galf { @apply container mx-auto px-4 max-w-7xl; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   INDUSTRIAL HERO THEME — Spline 3D Integration
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero Badge ── */
+.hero-badge-industrial {
+  background: rgba(255, 176, 0, 0.08);
+  border: 1px solid rgba(255, 176, 0, 0.2);
+  color: #ffb000;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 20px rgba(255, 176, 0, 0.05), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* ── Hero Title — Industrial Steel/Gold Gradient ── */
+.hero-title-industrial {
+  color: #FFFFFF;
+  text-shadow: 0 0 40px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.8);
+  filter: drop-shadow(0 0 30px rgba(255, 176, 0, 0.6));
+}
+
+@keyframes shimmerTitle {
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
+/* ── Hero Subtitle ── */
+.hero-subtitle-industrial {
+  color: rgba(245, 245, 245, 0.7);
+}
+
+/* ── Hero CTA Primary — Industrial Yellow ── */
+.hero-cta-primary {
+  background: linear-gradient(135deg, #FFB000, #f59e0b);
+  color: #0c0c0e;
+  box-shadow:
+    0 10px 40px rgba(255, 176, 0, 0.2),
+    0 0 0 1px rgba(255, 176, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.hero-cta-primary:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 15px 50px rgba(255, 176, 0, 0.35),
+    0 0 0 1px rgba(255, 176, 0, 0.2);
+}
+
+/* ── Hero CTA Secondary — Industrial Glass ── */
+.hero-cta-secondary {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  backdrop-filter: blur(16px);
+}
+.hero-cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 176, 0, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Scroll Indicator Pulse ── */
+.scroll-indicator-pulse {
+  animation: scrollPulse 2.5s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.6; transform: scaleY(1); }
+  50% { opacity: 0.2; transform: scaleY(0.7); }
+}
+
+/* ── Industrial Divider ── */
+.industrial-divider {
+  position: relative;
+  height: 100px;
+  background: linear-gradient(to bottom, #0e0e10, var(--galf-bg));
+  border-top: 1px solid rgba(255, 176, 0, 0.1);
+}
+.industrial-divider::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  width: 1px; height: 100%;
+  background: linear-gradient(to bottom, #ffb000, transparent);
+  transform: translateX(-50%);
+  opacity: 0.5;
+}
+
+/* ── Spark/Ember float animation ── */
+@keyframes emberFloat {
+  0% { transform: translateY(0) translateX(0); opacity: 0.8; }
+  50% { transform: translateY(-50vh) translateX(30px); opacity: 0.4; }
+  100% { transform: translateY(-100vh) translateX(-20px); opacity: 0; }
+}
+
+/* ── Industrial section transition ── */
+.section-industrial-transition {
+  background: linear-gradient(180deg, 
+    #0e0e10 0%, 
+    #161618 50%,
+    var(--galf-bg) 100%
+  );
+}
+
+/* ── Spline iframe watermark hide ── */
+section .spline-watermark,
+iframe + .spline-watermark {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+

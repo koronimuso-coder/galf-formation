@@ -8,6 +8,7 @@ import { WhatsAppButton } from '@/components/layout/WhatsAppButton';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { ScrollProgress } from '@/components/animations/ScrollProgress';
 import { PageTransition } from '@/components/animations/PageTransition';
+import { CookieBanner } from '@/components/layout/CookieBanner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,7 +41,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className="scroll-smooth" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen flex flex-col antialiased`} style={{ background: 'var(--galf-bg)', color: 'var(--galf-text)' }}>
+      <body className={`${inter.className} min-h-screen flex flex-col antialiased`}>
         <ThemeProvider>
           <ScrollProgress />
           <Loader />
@@ -51,6 +52,7 @@ export default function RootLayout({
             </main>
           </PageTransition>
           <WhatsAppButton />
+          <CookieBanner />
           <Footer />
         </ThemeProvider>
       </body>

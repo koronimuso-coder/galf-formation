@@ -1,94 +1,95 @@
 "use client"
 import Link from 'next/link'
-import { ArrowRight, HardHat, Trophy, Award, MapPin, Star, ChevronRight, Play, Clock, Shield, Users, BookOpen, Search, ArrowUpRight, BarChart3 } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowRight, Trophy, Award, MapPin, Star, ChevronRight, Play, Clock, Users, Factory, Settings } from 'lucide-react'
 import { FadeIn, AnimatedCounter, MagneticHover, TextReveal } from '@/components/animations/FadeIn'
-import { HeroScene } from '@/components/3d/HeroScene'
+import { SplineHero } from '@/components/3d/SplineHero'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { MachineSpecsModal } from '@/components/3d/MachineSpecsModal'
 import { useState } from 'react'
+
+import { getFormationImage } from '@/lib/images'
 
 export default function Home() {
   const [activeMachine, setActiveMachine] = useState<{slug: string, name: string, img: string} | null>(null)
   const featured = GALF_FORMATIONS.filter(f => f.featured).slice(0, 6)
 
-  /* 🏗️ Engins BTP avec images 3D réalistes générées */
+  /* 🏗️ Engins BTP avec images HD */
   const equipmentImages = [
-    { name: "Pelle Hydraulique", img: "/images/engins/pelle-hydraulique.png", cat: "Engins de chantier", desc: "L'engin roi des chantiers de terrassement" },
+    { name: "Pelle Hydraulique", img: "/images/engins/pelle-hydraulique.png", cat: "Excavation", desc: "L'engin roi des chantiers de terrassement" },
     { name: "Grue à Tour", img: "/images/engins/grue-tour.png", cat: "Levage", desc: "La pièce maîtresse des constructions en hauteur" },
-    { name: "Bulldozer", img: "/images/engins/bulldozer.png", cat: "Engins de chantier", desc: "La puissance brute du terrassement de masse" },
-    { name: "Chariot Élévateur", img: "/images/engins/chariot-elevateur.png", cat: "Logistique", desc: "Manutention de précision en entrepôt" },
-    { name: "Chargeuse", img: "/images/engins/chargeuse.png", cat: "Engins de chantier", desc: "Chargement et transport de matériaux" },
-    { name: "Grue Mobile", img: "/images/engins/grue-mobile.png", cat: "Levage", desc: "Levage mobile de haute précision" },
-    { name: "Tombereau Rigide", img: "/images/engins/tombereau-rigide.png", cat: "Mine", desc: "Le géant des carrières minières" },
-    { name: "Tractopelle", img: "/images/engins/tractopelle.png", cat: "Engins de chantier", desc: "L'engin polyvalent par excellence" },
+    { name: "Bulldozer D6", img: "/images/engins/bulldozer-d6.png", cat: "Terrassement", desc: "La puissance brute du terrassement de masse" },
+    { name: "Chariot Élévateur", img: "/images/engins/chariot-elevateur.png", cat: "Manutention", desc: "Précision et sécurité en logistique" },
+    { name: "Foreuse Minière", img: "/images/engins/foreuse-miniere.png", cat: "Mines", desc: "Technologie de pointe pour l'extraction" },
+    { name: "Tombereau Rigide", img: "/images/engins/tombereau-rigide.png", cat: "Carrière", desc: "Le géant du transport de masse" },
+    { name: "Grue Mobile", img: "/images/engins/grue-mobile.png", cat: "Levage", desc: "Flexibilité et puissance de levage mobile" },
+    { name: "Compacteur", img: "/images/engins/compacteur-vibreur.png", cat: "Routes", desc: "Finition et densification des sols" },
   ]
-
-  /* Map formation image by slug */
-  const formationImg = (slug: string) => {
-    const map: Record<string, string> = {
-      'pelle-hydraulique': '/images/engins/pelle-hydraulique.png',
-      'grue-tour': '/images/engins/grue-tour.png',
-      'bulldozer': '/images/engins/bulldozer.png',
-      'chariot-elevateur': '/images/engins/chariot-elevateur.png',
-      'chargeuse': '/images/engins/chargeuse.png',
-      'grue-mobile': '/images/engins/grue-mobile.png',
-      'tombereau-rigide': '/images/engins/tombereau-rigide.png',
-      'tractopelle': '/images/engins/tractopelle.png',
-    }
-    return map[slug] || '/images/engins/pelle-hydraulique.png'
-  }
 
   return (
     <div className="flex flex-col">
       {/* ═══════════════════════════════════════════════
-          HERO — Cinematic
+          HERO — Industrial Spline 3D Cinematic
          ═══════════════════════════════════════════════ */}
-      <section className="relative min-h-screen flex items-center overflow-hidden noise-overlay" style={{ background: 'var(--galf-bg)' }}>
-        <HeroScene />
-        <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(to top, var(--galf-bg), transparent 60%)' }} />
-        <div className="absolute inset-0 z-10" style={{ background: 'var(--galf-hero-overlay-grad)' }} />
+      <section className="relative min-h-[110vh] flex items-center overflow-hidden" style={{ background: '#0e0e10' }}>
+        {/* Spline 3D Industrial Scene */}
+        <SplineHero />
 
-        <div className="container-galf relative z-20 pt-32 pb-20">
+        {/* Content overlay */}
+        <div className="container-galf relative z-50 pt-24 pb-20">
           <div className="max-w-4xl">
-            <FadeIn delay={0.3}>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-galf-yellow/10 border border-galf-yellow/30 rounded-full text-galf-yellow text-xs font-bold tracking-[0.2em] uppercase mb-8">
-                <span className="w-2 h-2 rounded-full bg-galf-yellow animate-pulse" />
-                Centre d'Excellence BTP & Mines — Côte d'Ivoire
+            <FadeIn delay={0.6}>
+              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase mb-8 hero-badge-industrial">
+                <Factory className="w-4 h-4" />
+                L&apos;Élite de la Formation BTP &amp; Mines — Afrique de l&apos;Ouest
               </div>
             </FadeIn>
 
-            <FadeIn delay={0.5}>
-              <TextReveal 
-                text="FORGEZ VOTRE DESTIN DANS LE BTP" 
-                className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.9] mb-8 text-white" 
-              />
-            </FadeIn>
+            <TextReveal 
+              text="DOMINEZ LA PUISSANCE DES GÉANTS DE FER" 
+              className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.9] mb-8 hero-title-industrial" 
+              delay={0.8}
+            />
 
-            <FadeIn delay={0.7}>
-              <p className="text-lg md:text-xl max-w-2xl mb-12 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
-                Maîtrisez les géants de fer. Avec <strong style={{ color: 'var(--galf-text)' }}>GALF FORMATION</strong>, transformez votre ambition en expertise certifiée. Equipements de pointe, instructeurs vétérans.
+            <FadeIn delay={1.0}>
+              <p className="text-lg md:text-xl max-w-2xl mb-12 leading-relaxed hero-subtitle-industrial">
+                GALF FORMATION forge les experts de demain. Accédez à une <strong className="text-white font-bold">expertise d&apos;élite certifiée par l&apos;État</strong> sur des équipements de pointe pour conquérir les chantiers les plus ambitieux.
               </p>
             </FadeIn>
 
-            <FadeIn delay={0.9} className="flex flex-col sm:flex-row gap-6">
+            <FadeIn delay={1.3} className="flex flex-col sm:flex-row gap-6">
               <MagneticHover>
-                <Link href="/inscription" className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-lg font-black text-lg hover:brightness-110 transition-all flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(255,176,0,0.2)]">
-                  Je commence ma carrière <ArrowRight className="w-5 h-5" />
+                <Link href="/inscription" className="hero-cta-primary px-12 py-5 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3">
+                  Propulsez votre carrière <ArrowRight className="w-5 h-5" />
                 </Link>
               </MagneticHover>
-              <Link href="/formations" className="glass-card px-12 py-5 rounded-lg font-bold text-lg hover:border-galf-yellow/40 transition-all flex items-center justify-center gap-2" style={{ color: 'var(--galf-text)' }}>
-                Nos 19 formations
+              <Link href="/formations" className="hero-cta-secondary px-12 py-5 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2">
+                <Settings className="w-5 h-5" />
+                Nos parcours certifiants
               </Link>
             </FadeIn>
           </div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator — industrial themed */}
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3">
-          <div className="text-[10px] uppercase tracking-[0.5em] font-black opacity-40" style={{ color: 'var(--galf-text)' }}>Explore</div>
-          <div className="w-[1px] h-16 bg-gradient-to-b from-galf-yellow via-galf-yellow/50 to-transparent" />
+          <div className="text-[10px] uppercase tracking-[0.5em] font-black text-galf-yellow/50">Découvrir</div>
+          <div className="w-[1px] h-16 bg-gradient-to-b from-galf-yellow/70 via-galf-yellow/30 to-transparent scroll-indicator-pulse" />
+        </div>
+
+        {/* Industrial achievement markers */}
+        <div className="absolute right-8 top-1/2 -translate-y-1/2 z-20 hidden lg:flex flex-col items-center gap-4">
+          {['TECHNOLOGIE 3D', 'EXPERTISE MÉTIER', 'CERTIFICATION ÉTAT', 'INSERTION DIRECTE'].map((label, i) => (
+            <div key={i} className="flex items-center gap-2 opacity-30 hover:opacity-70 transition-opacity">
+              <div className="w-4 h-[1px] bg-galf-yellow/50" />
+              <span className="text-[9px] font-mono text-galf-yellow/60">{label}</span>
+            </div>
+          ))}
         </div>
       </section>
+
+      {/* ═══ INDUSTRIAL DIVIDER ═══ */}
+      <div className="industrial-divider" />
 
       {/* ═══ TRUST BAR (PARTNERS) ═══ */}
       <section className="py-12 relative z-20" style={{ background: 'var(--galf-bg)', borderBottom: '1px solid var(--galf-border)' }}>
@@ -154,7 +155,13 @@ export default function Home() {
                 <FadeIn key={i} delay={0.1 * i}>
                   <div className="perspective-container" onClick={() => setActiveMachine({ slug, name: eq.name, img: eq.img })}>
                     <div className="card-3d group relative h-[340px] rounded-xl overflow-hidden cursor-pointer" style={{ border: '1px solid var(--galf-border)' }}>
-                      <img src={eq.img} alt={eq.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <Image 
+                        src={eq.img} 
+                        alt={eq.name} 
+                        fill 
+                        className="object-cover group-hover:scale-110 transition-transform duration-700" 
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
                         <div className="text-[10px] text-galf-yellow font-bold uppercase tracking-[0.3em] mb-1">{eq.cat}</div>
@@ -198,7 +205,13 @@ export default function Home() {
                 <Link href={`/formations/${f.slug}`} className="group block h-full">
                   <div className="glass-card rounded-xl overflow-hidden h-full hover:border-galf-yellow/30 hover:shadow-xl hover:-translate-y-1 flex flex-col">
                     <div className="h-52 relative overflow-hidden shrink-0">
-                      <img src={formationImg(f.slug)} alt={f.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <Image 
+                        src={getFormationImage(f.slug)} 
+                        alt={f.name} 
+                        fill 
+                        className="object-cover group-hover:scale-110 transition-transform duration-700" 
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                       {f.pricePromo && <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-xs font-black uppercase rounded-md animate-pulse">Promo</div>}
                       <div className="absolute bottom-4 left-4">

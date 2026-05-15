@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link"
 import { HardHat, MapPin, Phone, Mail, ArrowRight, ChevronUp } from 'lucide-react'
 

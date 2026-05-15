@@ -1,8 +1,7 @@
 "use client"
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import { FadeIn } from '@/components/animations/FadeIn'
 import { useState } from 'react'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
-
+import { PageHeader } from '@/components/layout/PageHeader'
 import { MapPin, Phone, Mail, Send, Clock, MessageCircle, CheckCircle2 } from 'lucide-react'
 
 export default function Contact() {
@@ -18,23 +17,14 @@ export default function Contact() {
     }, 2000)
   }
   return (
-    <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG - Camion for "Delivery/Communication" */}
-      <div className="absolute right-[-10%] top-[0%] w-[700px] h-[700px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="camion" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="NOUS CONTACTER"
+        subtitle="Candidat, professionnel ou entreprise, notre équipe est disponible pour répondre à vos questions."
+        badge="Restons en contact"
+      />
 
-      <div className="container-galf relative z-10">
-        <FadeIn>
-          <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Restons en contact</div>
-          <TextReveal 
-            text="NOUS CONTACTER" 
-            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white" 
-          />
-          <p className="text-xl max-w-3xl leading-relaxed mb-16" style={{ color: 'var(--galf-text-secondary)' }}>
-            Candidat, professionnel ou entreprise, notre équipe est disponible pour répondre à vos questions.
-          </p>
-        </FadeIn>
+      <div className="container-galf relative z-10 mt-12">
 
         <div className="grid md:grid-cols-2 gap-12">
           <FadeIn delay={0.2} className="space-y-6">

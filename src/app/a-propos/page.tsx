@@ -1,35 +1,30 @@
 "use client"
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import { FadeIn } from '@/components/animations/FadeIn'
+import Image from 'next/image'
 import { ShieldCheck, Target, Users, MapPin, Award, Clock, TrendingUp } from 'lucide-react'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
+import { PageHeader } from '@/components/layout/PageHeader'
+import Link from 'next/link'
 
 export default function About() {
   return (
-    <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG - Foreuse for "Deep Roots/History" */}
-      <div className="absolute right-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="foreuse" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="L'EXCELLENCE INDUSTRIELLE"
+        subtitle="GALF FORMATION a été créé avec une vision claire : combler le fossé entre la théorie classique et les exigences réelles des chantiers modernes en Côte d'Ivoire et en Afrique de l'Ouest."
+        badge="Qui sommes-nous"
+      />
 
-      {/* Hero */}
-      <div className="container-galf mb-24 relative z-10">
-        <FadeIn>
-          <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Qui sommes-nous</div>
-          <TextReveal 
-            text="L'EXCELLENCE INDUSTRIELLE" 
-            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white" 
-          />
-          <p className="text-xl max-w-3xl leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
-            GALF FORMATION a été créé avec une vision claire : combler le fossé entre la théorie classique et les exigences réelles des chantiers modernes en Côte d'Ivoire et en Afrique de l'Ouest.
-          </p>
-        </FadeIn>
-      </div>
-
-      {/* Story */}
-      <div className="container-galf mb-24">
+      {/* Hero Content */}
+      <div className="container-galf mb-24 relative z-10 mt-12">
+        {/* Story */}
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <FadeIn className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl" style={{ border: '1px solid var(--galf-border)' }}>
-            <img src="/images/engins/pelle-hydraulique.png" alt="Centre GALF Formation" className="w-full h-full object-cover" />
+            <Image 
+              src="/images/engins/pelle-hydraulique.png" 
+              alt="Centre GALF Formation" 
+              fill
+              className="object-cover" 
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
               <span className="bg-galf-yellow text-galf-carbon text-[10px] font-black px-3 py-1 uppercase tracking-wider rounded-md">Depuis 2018</span>

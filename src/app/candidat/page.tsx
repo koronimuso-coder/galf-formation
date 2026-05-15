@@ -1,6 +1,6 @@
 "use client"
 import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
-import { FileText, CheckCircle2, Clock, AlertCircle, Download, Phone, ShieldCheck, ChevronRight, Upload, Info } from 'lucide-react'
+import { FileText, CheckCircle2, Clock, AlertCircle, Download, Phone, ShieldCheck, ChevronRight, Upload, Info, MapPin } from 'lucide-react'
 import Link from 'next/link'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 

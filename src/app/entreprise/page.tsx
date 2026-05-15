@@ -1,8 +1,9 @@
 "use client"
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import { FadeIn } from '@/components/animations/FadeIn'
 import { Briefcase, Users, FileText, Send, TrendingUp, CheckCircle2, Shield, ArrowRight, Star } from 'lucide-react'
 import { useState } from 'react'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
+import Link from 'next/link'
+import { PageHeader } from '@/components/layout/PageHeader'
 
 export default function EntreprisePortal() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -19,23 +20,14 @@ export default function EntreprisePortal() {
 
   const inputStyle = { background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }
   return (
-    <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG */}
-      <div className="absolute left-[-10%] top-0 w-[700px] h-[700px] opacity-10 pointer-events-none z-0">
-        <AnimatedMachineHeader type="grue" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="PORTAIL ENTREPRISES"
+        subtitle="Formez vos équipes aux standards internationaux. GALF accompagne les professionnels du BTP et des mines dans la montée en compétence de leur personnel."
+        badge="Partenaires corporate"
+      />
 
-      <div className="container-galf relative z-10">
-        <FadeIn>
-          <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Partenaires corporate</div>
-          <TextReveal 
-            text="PORTAIL ENTREPRISES" 
-            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white" 
-          />
-          <p className="text-xl max-w-3xl leading-relaxed mb-16" style={{ color: 'var(--galf-text-secondary)' }}>
-            Formez vos équipes aux standards internationaux. GALF accompagne les professionnels du BTP et des mines dans la montée en compétence de leur personnel.
-          </p>
-        </FadeIn>
+      <div className="container-galf relative z-10 mt-12">
 
         {/* Advantages */}
         <FadeIn delay={0.1}>

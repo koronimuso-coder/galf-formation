@@ -3,6 +3,8 @@ import { FadeIn } from '@/components/animations/FadeIn'
 import { Briefcase, MapPin, Building2, TrendingUp, Search, Filter, ShieldCheck, CheckCircle2 } from 'lucide-react'
 import { useState } from 'react'
 
+import { PageHeader } from '@/components/layout/PageHeader'
+
 export default function CareerHub() {
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -16,19 +18,15 @@ export default function CareerHub() {
 
 
   return (
-    <div className="min-h-screen pt-28 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      <div className="container-galf">
-        <FadeIn>
-          <div className="max-w-4xl mb-16">
-            <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Service Exclusif GALF</div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-8" style={{ color: 'var(--galf-text)' }}>
-              Propulsez votre <span className="text-galf-yellow">carrière</span>
-            </h1>
-            <p className="text-xl leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
-              Accédez au réseau d'emploi n°1 du BTP et des Mines en Afrique de l'Ouest. Des offres exclusives réservées aux diplômés GALF Formation.
-            </p>
-          </div>
-        </FadeIn>
+    <div className="min-h-screen pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="PROPULSEZ VOTRE CARRIÈRE"
+        subtitle="Accédez au réseau d'emploi n°1 du BTP et des Mines en Afrique de l'Ouest. Des offres exclusives réservées aux diplômés GALF Formation."
+        badge="Service Exclusif GALF"
+        bgImage="/images/cinematic/animate96-ezgif.com-video-to-webp-converter.webp"
+      />
+
+      <div className="container-galf mt-16">
 
         {/* Career Stats & Trust */}
         <div className="grid md:grid-cols-3 gap-6 mb-16">

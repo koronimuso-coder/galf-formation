@@ -3,9 +3,10 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { getFormationImage } from '@/lib/images'
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import Image from 'next/image'
+import { FadeIn } from '@/components/animations/FadeIn'
 import { Search, Clock, MapPin, ArrowRight, X } from 'lucide-react'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
+import { PageHeader } from '@/components/layout/PageHeader'
 
 export default function FormationsPage() {
   const [search, setSearch] = useState('')
@@ -20,25 +21,14 @@ export default function FormationsPage() {
   })
 
   return (
-    <div className="min-h-screen relative overflow-hidden pt-28 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG - Rouleau for "Solid Foundations" */}
-      <div className="absolute right-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="rouleau" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="NOS FORMATIONS EXPERTES"
+        subtitle="De 15 000 à 850 000 FCFA, trouvez la formation qui correspond à votre ambition et forgez votre avenir."
+        badge="19 parcours certifiants"
+      />
       
-      <div className="container-galf relative z-10">
-        <FadeIn>
-          <div className="mb-16 relative">
-            <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">19 parcours certifiants</div>
-            <TextReveal 
-              text="NOS FORMATIONS EXPERTES" 
-              className="text-5xl md:text-8xl font-black tracking-tighter mb-8 text-white" 
-            />
-            <p className="text-lg max-w-3xl" style={{ color: 'var(--galf-text-secondary)' }}>
-              De 15 000 à 850 000 FCFA, trouvez la formation qui correspond à votre ambition.
-            </p>
-          </div>
-        </FadeIn>
+      <div className="container-galf relative z-10 mt-16">
 
         <FadeIn delay={0.2}>
           <div className="flex flex-col lg:flex-row gap-4 mb-12">
@@ -72,9 +62,14 @@ export default function FormationsPage() {
             <FadeIn key={f.id} delay={Math.min(0.08 * i, 0.5)}>
               <Link href={`/formations/${f.slug}`} className="group block h-full">
                 <div className="glass-card rounded-xl overflow-hidden h-full hover:border-galf-yellow/30 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 flex flex-col">
-                  <div className="h-44 relative overflow-hidden shrink-0">
-                    <img src={getFormationImage(f.slug)} alt={f.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                   <div className="h-44 relative overflow-hidden shrink-0">
+                    <Image 
+                      src={getFormationImage(f.slug)} 
+                      alt={f.name}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700" 
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                     {f.pricePromo && <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-0.5 text-[10px] font-black uppercase rounded-md animate-pulse">Promo</div>}
                     <div className="absolute bottom-3 left-3">
