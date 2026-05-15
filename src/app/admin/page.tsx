@@ -1,5 +1,5 @@
 "use client"
-import { Users, BookOpen, Banknote, Briefcase, ChevronRight, Activity, LayoutDashboard, Settings, FileText, PieChart } from 'lucide-react'
+import { Users, BookOpen, Banknote, Briefcase, Activity, LayoutDashboard, Settings, FileText, PieChart } from 'lucide-react'
 import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
