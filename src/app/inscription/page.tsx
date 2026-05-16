@@ -202,11 +202,11 @@ export default function Inscription() {
                   <a href="https://pay.wave.com/m/M_ci_1b4IJS09Q_cJ/c/ci/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-[#1DB9D4] text-white px-6 py-4 rounded-xl font-black hover:brightness-110 transition-all flex-1">
                     <span className="text-xl">🌊</span> Payer via Wave
                   </a>
-                  <a href="tel:*144*" className="flex flex-col items-center justify-center gap-1 bg-[#FF7900] text-white px-6 py-3 rounded-xl font-black hover:brightness-110 transition-all flex-1">
+                  <a href="tel:+2250708736871" className="flex flex-col items-center justify-center gap-1 bg-[#FF7900] text-white px-6 py-3 rounded-xl font-black hover:brightness-110 transition-all flex-1">
                     <span className="flex items-center gap-2"><span className="text-xl">🍊</span> Orange Money</span>
                     <span className="text-xs font-normal">+225 07 08 73 68 71</span>
                   </a>
-                  <a href="tel:*133*" className="flex flex-col items-center justify-center gap-1 bg-[#FFCC00] text-black px-6 py-3 rounded-xl font-black hover:brightness-110 transition-all flex-1">
+                  <a href="tel:+2250556966492" className="flex flex-col items-center justify-center gap-1 bg-[#FFCC00] text-black px-6 py-3 rounded-xl font-black hover:brightness-110 transition-all flex-1">
                     <span className="flex items-center gap-2"><span className="text-xl">💸</span> MTN MoMo</span>
                     <span className="text-xs font-normal">+225 05 56 96 64 92</span>
                   </a>
