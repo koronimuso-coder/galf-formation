@@ -194,12 +194,27 @@ export default function Inscription() {
                   <CheckCircle2 className="w-12 h-12 text-green-500" />
                 </div>
                 <h2 className="text-3xl font-black mb-4">Dossier transmis !</h2>
-                <p className="text-sm mb-10 opacity-70 max-w-sm mx-auto">
-                  Excellent choix ! Notre équipe examine vos informations. Un conseiller vous contactera d'ici 1 heure pour finaliser le dépôt.
+                <p className="text-sm mb-6 opacity-70 max-w-md mx-auto">
+                  Votre pré-inscription est enregistrée. Pour valider définitivement votre place, veuillez procéder au paiement de votre acompte de <span className="font-bold text-galf-yellow">{totalAcompte.toLocaleString('fr-FR')} F</span> via l'un des moyens ci-dessous :
                 </p>
+
+                <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10 max-w-2xl mx-auto">
+                  <a href="https://pay.wave.com/m/M_ci_1b4IJS09Q_cJ/c/ci/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-[#1DB9D4] text-white px-6 py-4 rounded-xl font-black hover:brightness-110 transition-all flex-1">
+                    <span className="text-xl">🌊</span> Payer via Wave
+                  </a>
+                  <a href="tel:*144*" className="flex flex-col items-center justify-center gap-1 bg-[#FF7900] text-white px-6 py-3 rounded-xl font-black hover:brightness-110 transition-all flex-1">
+                    <span className="flex items-center gap-2"><span className="text-xl">🍊</span> Orange Money</span>
+                    <span className="text-xs font-normal">+225 07 08 73 68 71</span>
+                  </a>
+                  <a href="tel:*133*" className="flex flex-col items-center justify-center gap-1 bg-[#FFCC00] text-black px-6 py-3 rounded-xl font-black hover:brightness-110 transition-all flex-1">
+                    <span className="flex items-center gap-2"><span className="text-xl">💸</span> MTN MoMo</span>
+                    <span className="text-xs font-normal">+225 05 56 96 64 92</span>
+                  </a>
+                </div>
+
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Link href="/apprenant" className="bg-galf-yellow text-galf-carbon px-10 py-5 rounded-xl font-black hover:brightness-110 flex items-center justify-center gap-2">
-                    Accéder à mon espace <ArrowRight className="w-5 h-5" />
+                  <Link href="/apprenant" className="bg-galf-surface border border-galf-border text-galf-text px-10 py-5 rounded-xl font-black hover:border-galf-yellow/30 flex items-center justify-center gap-2 transition-all">
+                    Aller à mon espace <ArrowRight className="w-5 h-5" />
                   </Link>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { HardHat, MapPin, Phone, Mail, ArrowRight, ChevronUp } from 'lucide-react'
+import { HardHat, MapPin, Phone, Mail, ArrowRight, ChevronUp, Facebook, Youtube } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -17,19 +17,30 @@ export function Footer() {
                 GALF<span className="text-galf-yellow">.</span>
               </div>
             </Link>
-            <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--galf-text-secondary)' }}>
+            <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--galf-text-secondary)' }}>
               Centre d'excellence pour la formation aux engins de chantier, équipements BTP, mines et transport lourd en Côte d'Ivoire.
+            </p>
+            <p className="text-[10px] font-black tracking-widest uppercase mb-6 p-2 rounded-md bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow">
+              Agréé par le Ministère de l\'Enseignement Technique et de la Formation Professionnelle
             </p>
             <div className="space-y-3">
               <a href="https://wa.me/2250711826507" className="flex items-center gap-2 font-bold text-sm hover:text-galf-yellow transition-colors" style={{ color: 'var(--galf-text)' }}>
                 <Phone className="w-4 h-4 text-galf-yellow" /> +225 07 11 82 65 07
               </a>
-              <a href="mailto:contact@galf-formation.ci" className="flex items-center gap-2 text-sm hover:text-galf-yellow transition-colors" style={{ color: 'var(--galf-text-secondary)' }}>
-                <Mail className="w-4 h-4 text-galf-yellow" /> contact@galf-formation.ci
+              <a href="mailto:galformation@gmail.com" className="flex items-center gap-2 text-sm hover:text-galf-yellow transition-colors" style={{ color: 'var(--galf-text-secondary)' }}>
+                <Mail className="w-4 h-4 text-galf-yellow" /> galformation@gmail.com
               </a>
               <div className="flex items-start gap-2 text-sm" style={{ color: 'var(--galf-text-secondary)' }}>
                 <MapPin className="w-4 h-4 text-galf-yellow shrink-0 mt-0.5" /> Zone Industrielle de Yopougon, Abidjan
               </div>
+            </div>
+            <div className="flex gap-4 mt-6">
+              <a href="https://facebook.com/galf.officiel" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all bg-galf-surface border border-galf-border" style={{ color: 'var(--galf-text-secondary)' }}>
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="https://youtube.com/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-[#FF0000] hover:text-white transition-all bg-galf-surface border border-galf-border" style={{ color: 'var(--galf-text-secondary)' }}>
+                <Youtube className="w-5 h-5" />
+              </a>
             </div>
           </div>
 
