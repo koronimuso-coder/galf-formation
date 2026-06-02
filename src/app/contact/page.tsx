@@ -29,7 +29,7 @@ export default function Contact() {
         <div className="grid md:grid-cols-2 gap-12">
           <FadeIn delay={0.2} className="space-y-6">
             {[
-              { icon: MapPin, t: "Notre Centre", d: "Zone Industrielle de Yopougon, Abidjan, Côte d'Ivoire" },
+              { icon: MapPin, t: "Notre Centre", d: "Yopougon, Marché Bagnon, Abidjan, Côte d'Ivoire" },
               { icon: Phone, t: "Téléphone & WhatsApp", d: "+225 07 11 82 65 07" },
               { icon: Mail, t: "Email", d: "contact@galf-formation.ci" },
               { icon: Clock, t: "Horaires", d: "Lun - Sam : 08h00 - 18h00" },

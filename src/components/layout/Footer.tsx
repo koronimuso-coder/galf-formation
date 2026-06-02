@@ -31,7 +31,7 @@ export function Footer() {
                 <Mail className="w-4 h-4 text-galf-yellow" /> galformation@gmail.com
               </a>
               <div className="flex items-start gap-2 text-sm" style={{ color: 'var(--galf-text-secondary)' }}>
-                <MapPin className="w-4 h-4 text-galf-yellow shrink-0 mt-0.5" /> Zone Industrielle de Yopougon, Abidjan
+                <MapPin className="w-4 h-4 text-galf-yellow shrink-0 mt-0.5" /> Yopougon, Marché Bagnon, Abidjan
               </div>
             </div>
             <div className="flex gap-4 mt-6">
