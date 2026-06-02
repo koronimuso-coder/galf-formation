@@ -461,5 +461,18 @@ export const EQUIPMENT_SPECS: Record<string, any> = {
     loaderCap: "1.1 m³",
     steering: "4 roues directrices",
     features: ["Bras extensible", "Godet 4-en-1", "Transmission Torque Lock"]
+  },
+  'forage-minier': {
+    power: "350 ch",
+    weight: "28 Tonnes",
+    depth: "30m",
+    capacity: "152 mm",
+    features: ["Système de dépoussiérage intégré", "Cabine pressurisée FOPS/ROPS", "Changement automatique de tiges"]
+  },
+  'compacteur': {
+    power: "156 ch",
+    weight: "12 Tonnes",
+    width: "2.13 m",
+    features: ["Double vibration haute fréquence", "Système d'arrosage automatique", "Contrôle de compactage intelligent"]
   }
 };

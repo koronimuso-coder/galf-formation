@@ -11,12 +11,12 @@ export default function Mediatheque() {
 
   const items = [
     { type: 'video', title: "Formation Pelle sur site minier", img: "/images/engins/pelle-hydraulique.png", duration: "12:45", cat: "Chantier" },
-    { type: 'image', title: "Promotion 2024 - San Pedro", img: "/images/engins/bulldozer-d6.png", cat: "Vie du centre" },
+    { type: 'image', title: "Promotion 2024 - San Pedro", img: "/images/engins/bulldozer.png", cat: "Vie du centre" },
     { type: 'video', title: "Démonstration Grue à Tour", img: "/images/engins/grue-tour.png", duration: "05:20", cat: "Levage" },
-    { type: 'image', title: "Techniques de forage minier", img: "/images/engins/foreuse-miniere.png", cat: "Technique" },
+    { type: 'image', title: "Techniques de forage minier", img: "/images/engins/forage-minier.png", cat: "Technique" },
     { type: 'video', title: "Sécurité Incendie en Carrière", img: "/images/engins/tombereau-rigide.png", duration: "08:15", cat: "Sécurité" },
-    { type: 'image', title: "Nouveau Parc d'Engins", img: "/images/engins/chargeuse-sur-pneus.png", cat: "Equipement" },
-    { type: 'video', title: "Manceuvre de Compacteur", img: "/images/engins/compacteur-vibreur.png", duration: "03:50", cat: "Témoignage" },
+    { type: 'image', title: "Nouveau Parc d'Engins", img: "/images/engins/chargeuse.png", cat: "Equipement" },
+    { type: 'video', title: "Manœuvre de Compacteur", img: "/images/engins/compacteur.png", duration: "03:50", cat: "Témoignage" },
     { type: 'image', title: "Levage Mobile Précision", img: "/images/engins/grue-mobile.png", cat: "Partenariat" },
   ]
 

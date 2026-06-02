@@ -13,7 +13,7 @@ interface MachineSpecsModalProps {
   machineImg: string
 }
 
-function StatCounter({ value, label }: { value: string, label: string }) {
+function StatCounter({ value }: { value: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [displayValue, setDisplayValue] = useState("0")
   
@@ -106,9 +106,9 @@ export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, m
               <div className="grid grid-cols-2 gap-6 mb-12">
                 {Object.entries(specs).map(([key, value], idx) => {
                   if (key === 'features') return null
-                  const icons: any = { power: Cpu, weight: Weight, depth: Move, bucket: Zap, capacity: Zap, reach: Move, height: Move }
+                  const icons: any = { power: Cpu, weight: Weight, depth: Move, bucket: Zap, capacity: Zap, reach: Move, height: Move, width: Move }
                   const Icon = icons[key] || CheckCircle2
-                  const labels: any = { power: 'Puissance', weight: 'Poids', depth: 'Profondeur max', bucket: 'Capacité Godet', capacity: 'Capacité', reach: 'Portée', height: 'Hauteur max' }
+                  const labels: any = { power: 'Puissance', weight: 'Poids', depth: 'Profondeur max', bucket: 'Capacité Godet', capacity: 'Capacité', reach: 'Portée', height: 'Hauteur max', width: 'Largeur Tambour' }
                   
                   return (
                     <motion.div
@@ -124,7 +124,7 @@ export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, m
                         </div>
                         <span className="text-[10px] uppercase font-bold tracking-widest text-galf-yellow/60">{labels[key] || key}</span>
                       </div>
-                      <StatCounter value={value as string} label={key} />
+                      <StatCounter value={value as string} />
                     </motion.div>
                   )
                 })}

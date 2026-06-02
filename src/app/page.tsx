@@ -16,14 +16,14 @@ export default function Home() {
 
   /* 🏗️ Engins BTP avec images HD */
   const equipmentImages = [
-    { name: "Pelle Hydraulique", img: "/images/engins/pelle-hydraulique.png", cat: "Excavation", desc: "L'engin roi des chantiers de terrassement" },
-    { name: "Grue à Tour", img: "/images/engins/grue-tour.png", cat: "Levage", desc: "La pièce maîtresse des constructions en hauteur" },
-    { name: "Bulldozer D6", img: "/images/engins/bulldozer-d6.png", cat: "Terrassement", desc: "La puissance brute du terrassement de masse" },
-    { name: "Chariot Élévateur", img: "/images/engins/chariot-elevateur.png", cat: "Manutention", desc: "Précision et sécurité en logistique" },
-    { name: "Foreuse Minière", img: "/images/engins/foreuse-miniere.png", cat: "Mines", desc: "Technologie de pointe pour l'extraction" },
-    { name: "Tombereau Rigide", img: "/images/engins/tombereau-rigide.png", cat: "Carrière", desc: "Le géant du transport de masse" },
-    { name: "Grue Mobile", img: "/images/engins/grue-mobile.png", cat: "Levage", desc: "Flexibilité et puissance de levage mobile" },
-    { name: "Compacteur", img: "/images/engins/compacteur-vibreur.png", cat: "Routes", desc: "Finition et densification des sols" },
+    { name: "Pelle Hydraulique", slug: "pelle-hydraulique", img: "/images/engins/pelle-hydraulique.png", cat: "Excavation", desc: "L'engin roi des chantiers de terrassement" },
+    { name: "Grue à Tour", slug: "grue-tour", img: "/images/engins/grue-tour.png", cat: "Levage", desc: "La pièce maîtresse des constructions en hauteur" },
+    { name: "Bulldozer D6", slug: "bulldozer", img: "/images/engins/bulldozer.png", cat: "Terrassement", desc: "La puissance brute du terrassement de masse" },
+    { name: "Chariot Élévateur", slug: "chariot-elevateur", img: "/images/engins/chariot-elevateur.png", cat: "Manutention", desc: "Précision et sécurité en logistique" },
+    { name: "Foreuse Minière", slug: "forage-minier", img: "/images/engins/forage-minier.png", cat: "Mines", desc: "Technologie de pointe pour l'extraction" },
+    { name: "Tombereau Rigide", slug: "tombereau-rigide", img: "/images/engins/tombereau-rigide.png", cat: "Carrière", desc: "Le géant du transport de masse" },
+    { name: "Grue Mobile", slug: "grue-mobile", img: "/images/engins/grue-mobile.png", cat: "Levage", desc: "Flexibilité et puissance de levage mobile" },
+    { name: "Compacteur", slug: "compacteur", img: "/images/engins/compacteur.png", cat: "Routes", desc: "Finition et densification des sols" },
   ]
 
   return (
@@ -150,10 +150,9 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {equipmentImages.map((eq, i) => {
-              const slug = eq.name.toLowerCase().replace(/ /g, '-').replace(/à/g, 'a').replace(/é/g, 'e');
               return (
                 <FadeIn key={i} delay={0.1 * i}>
-                  <div className="perspective-container" onClick={() => setActiveMachine({ slug, name: eq.name, img: eq.img })}>
+                  <div className="perspective-container" onClick={() => setActiveMachine({ slug: eq.slug, name: eq.name, img: eq.img })}>
                     <div className="card-3d group relative h-[340px] rounded-xl overflow-hidden cursor-pointer" style={{ border: '1px solid var(--galf-border)' }}>
                       <Image 
                         src={eq.img} 

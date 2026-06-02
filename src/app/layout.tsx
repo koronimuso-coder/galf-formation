@@ -25,12 +25,8 @@ export const metadata: Metadata = {
     locale: "fr_CI",
     url: "https://galfformation.com",
     siteName: "GALF FORMATION",
-    images: [{
-      url: "/images/og-main.png",
-      width: 1200,
-      height: 630,
-      alt: "GALF FORMATION - Excellence Industrielle"
-    }]
+    title: "GALF FORMATION | Excellence Industrielle BTP & Mines",
+    description: "Leader de la formation professionnelle BTP en Côte d'Ivoire. Certifications engins lourds, levage, mines et sécurité HSE.",
   }
 };
 

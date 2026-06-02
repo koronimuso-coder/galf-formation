@@ -36,13 +36,34 @@ export function SplineHero() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [showSpline, setShowSpline] = useState(true)
+  const [shouldLoadIframe, setShouldLoadIframe] = useState(false)
   const [embers] = useState(() => generateEmbers(15))
   const [dust] = useState(() => generateDust(30))
   const [spotlights] = useState(() => generateSpotlights(4))
 
   useEffect(() => {
     setMounted(true)
+    const delayTimer = setTimeout(() => {
+      setShouldLoadIframe(true)
+    }, 500)
+    return () => {
+      clearTimeout(delayTimer)
+    }
   }, [])
+
+  useEffect(() => {
+    if (!shouldLoadIframe) return
+
+    const timer = setTimeout(() => {
+      if (!isLoaded) {
+        setShowSpline(false)
+        console.warn("Spline took too long to load, falling back to static background.")
+      }
+    }, 8000)
+
+    return () => clearTimeout(timer)
+  }, [shouldLoadIframe, isLoaded])
 
   useEffect(() => {
     if (!mounted) return
@@ -93,23 +114,26 @@ export function SplineHero() {
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full z-0 overflow-hidden">
       {/* ── Spline 3D Scene (Industrial Transition) ── */}
-      <iframe
-        src="https://my.spline.design/underwatertransition-8FSK06H8l3gK9VL4qah91vrS/"
-        frameBorder="0"
-        width="100%"
-        height="100%"
-        className="absolute inset-0 w-full h-full"
-        style={{
-          border: 'none',
-          opacity: isLoaded ? 1 : 0,
-          transition: 'opacity 2s ease-in-out',
-          pointerEvents: 'none',
-          filter: 'hue-rotate(170deg) saturate(1.4) brightness(0.8) contrast(1.1)',
-        }}
-        onLoad={() => setIsLoaded(true)}
-        title="GALF Formation - Industrial 3D"
-        allow="autoplay"
-      />
+      {showSpline && shouldLoadIframe && (
+        <iframe
+          src="https://my.spline.design/underwatertransition-8FSK06H8l3gK9VL4qah91vrS/"
+          frameBorder="0"
+          width="100%"
+          height="100%"
+          className="absolute inset-0 w-full h-full"
+          style={{
+            border: 'none',
+            opacity: isLoaded ? 1 : 0,
+            transition: 'opacity 2s ease-in-out',
+            pointerEvents: 'none',
+            filter: 'hue-rotate(170deg) saturate(1.4) brightness(0.8) contrast(1.1)',
+          }}
+          onLoad={() => setIsLoaded(true)}
+          title="GALF Formation - Industrial 3D"
+          allow="autoplay"
+          loading="lazy"
+        />
+      )}
 
       {/* ── Fallback background while Spline loads ── */}
       <div

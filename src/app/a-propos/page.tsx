@@ -21,13 +21,10 @@ export default function About() {
           <FadeIn className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl" style={{ border: '1px solid var(--galf-border)' }}>
             {/* The image should be replaced with the one provided by the user if placed in public/images/about/director.jpg */}
             <Image 
-              src="/images/about/director.jpg" 
+              src="/images/engins/pelle-hydraulique.png" 
               alt="Direction GALF Formation" 
               fill
               className="object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "/images/engins/pelle-hydraulique.png"
-              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
