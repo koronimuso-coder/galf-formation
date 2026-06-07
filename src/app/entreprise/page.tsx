@@ -143,7 +143,7 @@ export default function EntreprisePortal() {
                         </li>
                       ))}
                    </ul>
-                   <Link href="/entreprise/recrutement" className="bg-white text-galf-carbon px-12 py-5 rounded-2xl font-black text-lg hover:bg-galf-yellow transition-all flex items-center justify-center gap-3 shrink-0">
+                   <Link href="/entreprise/recrutement" className="bg-slate-900 dark:bg-white text-white dark:text-galf-carbon hover:bg-galf-yellow dark:hover:bg-galf-yellow px-12 py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shrink-0">
                       Accéder au Hub Recruteur <ArrowRight className="w-5 h-5" />
                    </Link>
                 </div>

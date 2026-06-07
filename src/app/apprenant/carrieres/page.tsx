@@ -71,7 +71,7 @@ export default function CareerHub() {
                  onChange={(e) => setSearchTerm(e.target.value)}
               />
            </div>
-           <button className="px-8 py-4 rounded-xl glass-card flex items-center gap-3 font-bold text-white hover:border-galf-yellow/30">
+           <button className="px-8 py-4 rounded-xl glass-card flex items-center gap-3 font-bold text-slate-900 dark:text-white hover:border-galf-yellow/30">
               <Filter className="w-5 h-5" /> Filtres avancés
            </button>
         </div>
@@ -97,7 +97,7 @@ export default function CareerHub() {
                              <span className="text-galf-yellow/80">{job.salary}</span>
                           </div>
                        </div>
-                       <button className="bg-white text-galf-carbon px-10 py-4 rounded-xl font-black text-sm uppercase group-hover:bg-galf-yellow transition-all">
+                       <button className="bg-slate-900 dark:bg-white text-white dark:text-galf-carbon px-10 py-4 rounded-xl font-black text-sm uppercase hover:bg-galf-yellow dark:hover:bg-galf-yellow group-hover:bg-galf-yellow dark:group-hover:bg-galf-yellow transition-all">
                           Postuler maintenant
                        </button>
                     </div>

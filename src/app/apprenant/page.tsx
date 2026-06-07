@@ -192,7 +192,7 @@ export default function ApprenantDashboard() {
                       className={`w-full text-left p-5 rounded-2xl transition-all relative overflow-hidden group border-2 ${activeModule === i ? 'border-galf-yellow shadow-xl' : 'border-transparent'}`}
                       style={activeModule === i ? { background: 'var(--galf-yellow-glow)' } : { background: 'var(--galf-surface)', border: '1px solid var(--galf-border)' }}>
                       <div className="flex items-center gap-4 relative z-10">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${mod.completed ? 'bg-green-500/20 text-green-500' : mod.current ? 'bg-galf-yellow text-galf-carbon' : 'bg-white/5 text-white/20'}`}>
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${mod.completed ? 'bg-green-500/20 text-green-500' : mod.current ? 'bg-galf-yellow text-galf-carbon' : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-white/20'}`}>
                           {mod.completed ? <CheckCircle2 className="w-5 h-5" /> : mod.current ? <Play className="w-4 h-4 fill-current" /> : <Lock className="w-5 h-5" />}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -336,7 +336,7 @@ export default function ApprenantDashboard() {
                        <Download className={`w-6 h-6 ${isDownloading ? 'animate-bounce' : 'group-hover:-translate-y-1 transition-transform'}`} /> 
                        {isDownloading ? "Traitement HD en cours..." : "Télécharger mon Diplôme (PDF Ultra-HD)"}
                      </button>
-                     <button className="glass-card flex-1 px-12 py-5 rounded-[1.5rem] font-black text-lg text-white flex items-center justify-center gap-3 hover:border-galf-yellow/50 transition-all group">
+                     <button className="glass-card flex-1 px-12 py-5 rounded-[1.5rem] font-black text-lg text-slate-900 dark:text-white flex items-center justify-center gap-3 hover:border-galf-yellow/50 transition-all group">
                        <ExternalLink className="w-6 h-6 group-hover:rotate-12 transition-transform" /> Propulser sur LinkedIn
                      </button>
                    </div>

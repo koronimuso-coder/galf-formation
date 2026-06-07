@@ -27,14 +27,14 @@ export default function BlogDetail() {
     content: `
       <p class="mb-6">L'industrie minière en Afrique de l'Ouest connaît une transformation radicale de ses standards de sécurité. Avec l'arrivée de nouveaux acteurs internationaux et le durcissement des régulations locales (notamment en Côte d'Ivoire et au Burkina Faso), la certification des opérateurs n'est plus une option, mais une nécessité absolue pour la survie des entreprises.</p>
       
-      <h2 class="text-2xl font-black mb-4 text-white">1. Vers un standard « Zéro Accident »</h2>
+      <h2 class="text-2xl font-black mb-4 text-slate-900 dark:text-white">1. Vers un standard « Zéro Accident »</h2>
       <p class="mb-6">Le concept de Vision Zero n'est plus réservé aux géants comme Rio Tinto ou Glencore. Aujourd'hui, les sous-traitants locaux doivent prouver que leurs conducteurs de pelles, bulldozers et forages maîtrisent non seulement la machine, mais aussi l'environnement complexe du site minier.</p>
       
       <div class="glass-card p-8 rounded-2xl border-l-4 border-galf-yellow mb-8">
         <p class="italic text-lg">"La sécurité n'est pas un coût, c'est l'investissement le plus rentable pour une entreprise minière. Un arrêt de chantier suite à un incident peut coûter des millions de FCFA par heure."</p>
       </div>
 
-      <h2 class="text-2xl font-black mb-4 text-white">2. Ce que GALF Formation apporte</h2>
+      <h2 class="text-2xl font-black mb-4 text-slate-900 dark:text-white">2. Ce que GALF Formation apporte</h2>
       <p class="mb-6">Nos programmes 2026 intègrent désormais des modules sur la psychologie de la sécurité et la détection précoce des risques mécaniques. Un opérateur formé chez GALF ne se contente pas de déplacer de la terre ; il gère une unité de production critique avec une conscience aiguë des protocoles VGP (Vérification Générale Périodique).</p>
     `,
     tags: ["Mines", "HSE", "Afrique", "Certification", "Sécurité"]
@@ -75,7 +75,7 @@ export default function BlogDetail() {
               
               <TextReveal 
                 text={post.title}
-                className="text-4xl md:text-6xl font-black tracking-tighter mb-8 leading-tight text-white" 
+                className="text-4xl md:text-6xl font-black tracking-tighter mb-8 leading-tight text-slate-900 dark:text-white" 
               />
               
               <div className="aspect-video rounded-3xl overflow-hidden mb-12 relative border border-galf-border shadow-2xl">
@@ -84,7 +84,7 @@ export default function BlogDetail() {
               </div>
 
               <div 
-                className="prose prose-invert prose-yellow max-w-none text-lg leading-relaxed mb-16"
+                className="prose dark:prose-invert prose-yellow max-w-none text-lg leading-relaxed mb-16"
                 style={{ color: 'var(--galf-text-secondary)' }}
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
@@ -108,7 +108,7 @@ export default function BlogDetail() {
                     {post.author[0]}
                   </div>
                   <div>
-                    <div className="font-black text-white">{post.author}</div>
+                    <div className="font-black text-slate-900 dark:text-white">{post.author}</div>
                     <div className="text-[10px] font-bold text-galf-yellow uppercase tracking-widest">{post.authorTitle}</div>
                   </div>
                 </div>
@@ -117,13 +117,13 @@ export default function BlogDetail() {
                   <button className="w-full bg-galf-yellow text-galf-carbon font-black py-3 rounded-xl hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg">
                     <Share2 className="w-4 h-4" /> Partager l'article
                   </button>
-                  <button className="w-full glass-card text-white font-bold py-3 rounded-xl hover:border-galf-yellow/30 transition-all flex items-center justify-center gap-2 border border-galf-border">
+                  <button className="w-full glass-card text-slate-900 dark:text-white font-bold py-3 rounded-xl hover:border-galf-yellow/30 transition-all flex items-center justify-center gap-2 border border-slate-200 dark:border-galf-border">
                     <Bookmark className="w-4 h-4" /> Sauvegarder
                   </button>
                 </div>
 
                 <div className="pt-8" style={{ borderTop: '1px solid var(--galf-border)' }}>
-                   <h3 className="font-black text-white mb-4 uppercase tracking-widest text-xs">Articles Recommandés</h3>
+                   <h3 className="font-black text-slate-900 dark:text-white mb-4 uppercase tracking-widest text-xs">Articles Recommandés</h3>
                    <div className="space-y-6">
                       {[1, 2].map(i => (
                         <div key={i} className="group cursor-pointer">

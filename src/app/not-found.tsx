@@ -24,7 +24,7 @@ export default function NotFound() {
           
           <TextReveal 
             text="CHANTIER INTROUVABLE" 
-            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white" 
+            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-slate-900 dark:text-white" 
           />
           
           <p className="text-xl max-w-2xl mx-auto mb-16 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
@@ -35,7 +35,7 @@ export default function NotFound() {
             <Link href="/" className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition-transform shadow-2xl shadow-galf-yellow/30">
               <Home className="w-5 h-5" /> Retour à l'accueil
             </Link>
-            <Link href="/formations" className="glass-card px-12 py-5 rounded-2xl font-black text-lg text-white flex items-center justify-center gap-3 hover:border-galf-yellow/30 transition-all">
+            <Link href="/formations" className="glass-card px-12 py-5 rounded-2xl font-black text-lg text-slate-900 dark:text-white flex items-center justify-center gap-3 hover:border-galf-yellow/30 transition-all">
               <ArrowLeft className="w-5 h-5" /> Nos formations
             </Link>
           </div>

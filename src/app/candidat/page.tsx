@@ -36,7 +36,7 @@ export default function CandidatDashboard() {
               <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.4em] mb-4">Espace personnel</div>
               <TextReveal 
                 text="SUIVI INSCRIPTION" 
-                className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-white" 
+                className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-slate-900 dark:text-white" 
               />
               <p className="text-xl mt-4" style={{ color: 'var(--galf-text-secondary)' }}>Bienvenue, M. Kouakou. Votre dossier est en cours d'examen prioritaire.</p>
             </div>

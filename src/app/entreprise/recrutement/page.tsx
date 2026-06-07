@@ -205,7 +205,7 @@ export default function RecruitmentHub() {
                   <a href="https://wa.me/2250711826507" className="bg-green-500 text-white px-10 py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl">
                     <Phone className="w-5 h-5" /> Parler à un expert
                   </a>
-                  <button className="glass-card px-10 py-4 rounded-2xl font-black text-lg text-white hover:border-galf-yellow/30 transition-all">
+                  <button className="glass-card px-10 py-4 rounded-2xl font-black text-lg text-slate-900 dark:text-white hover:border-galf-yellow/30 transition-all">
                     Demander une étude
                   </button>
                 </div>

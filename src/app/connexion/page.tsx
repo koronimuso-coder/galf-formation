@@ -22,7 +22,7 @@ export default function Login() {
 
             <TextReveal 
               text="CONNEXION" 
-              className="text-5xl md:text-8xl font-black tracking-tighter mb-4 text-white" 
+              className="text-5xl md:text-8xl font-black tracking-tighter mb-4 text-slate-900 dark:text-white" 
             />
             <p className="mb-8" style={{ color: 'var(--galf-text-secondary)' }}>Accédez à votre espace Candidat ou Apprenant.</p>
 

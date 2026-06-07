@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
               </div>
               <TextReveal 
                 text="CONFIDENTIALITÉ" 
-                className="text-4xl md:text-5xl font-black tracking-tighter text-white" 
+                className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white" 
               />
             </div>
             <p className="max-w-2xl text-lg opacity-70" style={{ color: 'var(--galf-text)' }}>

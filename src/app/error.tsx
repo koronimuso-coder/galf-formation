@@ -35,7 +35,7 @@ export default function Error({
           
           <TextReveal 
             text="CHAMP D'ACTION BLOQUÉ" 
-            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-white" 
+            className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-none text-slate-900 dark:text-white" 
           />
           
           <p className="text-xl max-w-2xl mx-auto mb-16 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
@@ -49,13 +49,13 @@ export default function Error({
             >
               <RefreshCw className="w-5 h-5" /> Relancer les machines
             </button>
-            <Link href="/" className="glass-card px-12 py-5 rounded-2xl font-black text-lg text-white flex items-center justify-center gap-3 hover:border-galf-yellow/30 transition-all">
+            <Link href="/" className="glass-card px-12 py-5 rounded-2xl font-black text-lg text-slate-900 dark:text-white flex items-center justify-center gap-3 hover:border-galf-yellow/30 transition-all">
               <Home className="w-5 h-5" /> Hub Principal
             </Link>
           </div>
           
           {error.digest && (
-             <div className="mt-12 text-[10px] font-mono opacity-20 text-white uppercase tracking-widest">
+             <div className="mt-12 text-[10px] font-mono opacity-20 text-slate-900 dark:text-white uppercase tracking-widest">
                 Log ID: {error.digest}
              </div>
           )}

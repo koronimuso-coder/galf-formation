@@ -49,7 +49,7 @@ export default function FormationDetail() {
           <div className="lg:col-span-2 space-y-8">
             <FadeIn delay={0.2}>
               <div className="glass-card p-8 rounded-3xl border-galf-yellow/20">
-                <h2 className="text-2xl font-black mb-6 text-white">Présentation du parcours</h2>
+                <h2 className="text-2xl font-black mb-6 text-slate-900 dark:text-white">Présentation du parcours</h2>
                 <p className="text-lg leading-relaxed mb-8" style={{ color: 'var(--galf-text-secondary)' }}>{formation.longDesc}</p>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
