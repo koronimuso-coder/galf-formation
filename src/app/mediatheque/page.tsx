@@ -12,12 +12,12 @@ export default function Mediatheque() {
   const items = [
     { type: 'video', title: "Formation Pelle sur site minier", img: "/images/mediatheque/pelle-site-minier.png", duration: "12:45", cat: "Chantier" },
     { type: 'image', title: "Promotion 2024 - San Pedro", img: "/images/mediatheque/promo-san-pedro.png", cat: "Vie du centre" },
-    { type: 'video', title: "Démonstration Grue à Tour", img: "/images/engins/grue-tour.png", duration: "05:20", cat: "Levage" },
+    { type: 'video', title: "Démonstration Grue à Tour", img: "/images/formations/grue-tour.png", duration: "05:20", cat: "Levage" },
     { type: 'image', title: "Techniques de forage minier", img: "/images/mediatheque/forage-technique.png", cat: "Technique" },
     { type: 'video', title: "Sécurité Incendie en Carrière", img: "/images/mediatheque/securite-incendie-carriere.png", duration: "08:15", cat: "Sécurité" },
     { type: 'image', title: "Nouveau Parc d'Engins", img: "/images/mediatheque/nouveau-parc.png", cat: "Equipement" },
     { type: 'video', title: "Manœuvre de Compacteur", img: "/images/mediatheque/compacteur-manoeuvre.png", duration: "03:50", cat: "Témoignage" },
-    { type: 'image', title: "Levage Mobile Précision", img: "/images/engins/grue-mobile.png", cat: "Partenariat" },
+    { type: 'image', title: "Levage Mobile Précision", img: "/images/formations/grue-mobile.png", cat: "Partenariat" },
   ]
 
   const filteredItems = filter === 'all' ? items : items.filter(i => i.type === filter)

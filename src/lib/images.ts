@@ -1,28 +1,28 @@
 /** Maps formation slugs to their corresponding equipment images */
 export function getFormationImage(slug: string): string {
   const map: Record<string, string> = {
-    'carte-operateur': '/images/formations/chariot-elevateur.png',
-    'chariot-elevateur': '/images/formations/chariot-elevateur.png',
-    'hse': '/images/formations/hse.png',
-    'anglais-minier': '/images/formations/anglais-minier.png',
-    'pelle-hydraulique': '/images/formations/pelle-hydraulique.png',
-    'chargeuse': '/images/formations/chargeuse.png',
-    'sino-truck': '/images/formations/tombereau-rigide.png',
-    'grue-mobile': '/images/engins/grue-mobile.png',
-    'grue-auxiliaire': '/images/engins/grue-auxiliaire.png',
-    'challenger': '/images/formations/challenger.png',
-    'bulldozer': '/images/formations/bulldozer.png',
-    'tractopelle': '/images/formations/tractopelle.png',
-    'tombereau-articule': '/images/formations/tombereau-articule.png',
-    'tombereau-rigide': '/images/formations/tombereau-rigide.png',
-    'compacteur': '/images/formations/compacteur.png',
-    'forage-hydraulique': '/images/formations/forage-hydraulique.png',
-    'forage-minier': '/images/formations/forage-minier.png',
-    'grue-tour': '/images/engins/grue-tour.png',
-    'porte-char': '/images/formations/porte-char.png',
-    'chariot-telescopique': '/images/formations/chariot-telescopique.png',
+    'carte-operateur': '/images/formations/carte-operateur.png?v=3',
+    'chariot-elevateur': '/images/formations/chariot-elevateur.png?v=3',
+    'hse': '/images/formations/hse.png?v=3',
+    'anglais-minier': '/images/formations/anglais-minier.png?v=3',
+    'pelle-hydraulique': '/images/formations/pelle-hydraulique.png?v=3',
+    'chargeuse': '/images/formations/chargeuse.png?v=3',
+    'sino-truck': '/images/formations/sino-truck.png?v=3',
+    'grue-mobile': '/images/formations/grue-mobile.png?v=3',
+    'grue-auxiliaire': '/images/formations/grue-auxiliaire.png?v=3',
+    'challenger': '/images/formations/challenger.png?v=3',
+    'bulldozer': '/images/formations/bulldozer.png?v=3',
+    'tractopelle': '/images/formations/tractopelle.png?v=3',
+    'tombereau-articule': '/images/formations/tombereau-articule.png?v=3',
+    'tombereau-rigide': '/images/formations/tombereau-rigide.png?v=3',
+    'compacteur': '/images/formations/compacteur.png?v=3',
+    'forage-hydraulique': '/images/formations/forage-hydraulique.png?v=3',
+    'forage-minier': '/images/formations/forage-minier.png?v=3',
+    'grue-tour': '/images/formations/grue-tour.png?v=3',
+    'porte-char': '/images/formations/porte-char.png?v=3',
+    'chariot-telescopique': '/images/formations/chariot-telescopique.png?v=3',
   }
-  return map[slug] || '/images/formations/pelle-hydraulique.png'
+  return map[slug] || '/images/formations/pelle-hydraulique.png?v=3'
 }
 
 /** Maps page paths to their corresponding cinematic header animations */

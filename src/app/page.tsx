@@ -16,14 +16,14 @@ export default function Home() {
 
   /* 🏗️ Engins BTP avec images HD */
   const equipmentImages = [
-    { name: "Pelle Hydraulique", slug: "pelle-hydraulique", img: "/images/engins/pelle-hydraulique.png", cat: "Excavation", desc: "L'engin roi des chantiers de terrassement" },
-    { name: "Grue à Tour", slug: "grue-tour", img: "/images/engins/grue-tour.png", cat: "Levage", desc: "La pièce maîtresse des constructions en hauteur" },
-    { name: "Bulldozer D6", slug: "bulldozer", img: "/images/engins/bulldozer.png", cat: "Terrassement", desc: "La puissance brute du terrassement de masse" },
-    { name: "Chariot Élévateur", slug: "chariot-elevateur", img: "/images/engins/chariot-elevateur.png", cat: "Manutention", desc: "Précision et sécurité en logistique" },
-    { name: "Foreuse Minière", slug: "forage-minier", img: "/images/engins/forage-minier.png", cat: "Mines", desc: "Technologie de pointe pour l'extraction" },
-    { name: "Tombereau Rigide", slug: "tombereau-rigide", img: "/images/engins/tombereau-rigide.png", cat: "Carrière", desc: "Le géant du transport de masse" },
-    { name: "Grue Mobile", slug: "grue-mobile", img: "/images/engins/grue-mobile.png", cat: "Levage", desc: "Flexibilité et puissance de levage mobile" },
-    { name: "Compacteur", slug: "compacteur", img: "/images/engins/compacteur.png", cat: "Routes", desc: "Finition et densification des sols" },
+    { name: "Pelle Hydraulique", slug: "pelle-hydraulique", img: "/images/formations/pelle-hydraulique.png", cat: "Excavation", desc: "L'engin roi des chantiers de terrassement" },
+    { name: "Grue à Tour", slug: "grue-tour", img: "/images/formations/grue-tour.png", cat: "Levage", desc: "La pièce maîtresse des constructions en hauteur" },
+    { name: "Bulldozer D6", slug: "bulldozer", img: "/images/formations/bulldozer.png", cat: "Terrassement", desc: "La puissance brute du terrassement de masse" },
+    { name: "Chariot Élévateur", slug: "chariot-elevateur", img: "/images/formations/chariot-elevateur.png", cat: "Manutention", desc: "Précision et sécurité en logistique" },
+    { name: "Foreuse Minière", slug: "forage-minier", img: "/images/formations/forage-minier.png", cat: "Mines", desc: "Technologie de pointe pour l'extraction" },
+    { name: "Tombereau Rigide", slug: "tombereau-rigide", img: "/images/formations/tombereau-rigide.png", cat: "Carrière", desc: "Le géant du transport de masse" },
+    { name: "Grue Mobile", slug: "grue-mobile", img: "/images/formations/grue-mobile.png", cat: "Levage", desc: "Flexibilité et puissance de levage mobile" },
+    { name: "Compacteur", slug: "compacteur", img: "/images/formations/compacteur.png", cat: "Routes", desc: "Finition et densification des sols" },
   ]
 
   return (

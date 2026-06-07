@@ -23,7 +23,7 @@ export default function BlogDetail() {
     author: "Équipe Pédagogique",
     authorTitle: "Expert HSE & Formation mobile",
     readTime: "8 min de lecture",
-    img: "/images/engins/chargeuse.png",
+    img: "/images/formations/chargeuse.png",
     content: `
       <p class="mb-6">L'industrie minière en Afrique de l'Ouest connaît une transformation radicale de ses standards de sécurité. Avec l'arrivée de nouveaux acteurs internationaux et le durcissement des régulations locales (notamment en Côte d'Ivoire et au Burkina Faso), la certification des opérateurs n'est plus une option, mais une nécessité absolue pour la survie des entreprises.</p>
       

@@ -1,5 +1,6 @@
 import { GALF_FORMATIONS } from '@/lib/data'
 import { Metadata } from 'next'
+import { getFormationImage } from '@/lib/images'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: formation.name,
       description: formation.shortDesc,
-      images: [`/images/engins/${formation.slug}.png`],
+      images: [getFormationImage(formation.slug)],
     }
   }
 }
