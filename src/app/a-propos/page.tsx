@@ -1,7 +1,7 @@
 "use client"
 import { FadeIn } from '@/components/animations/FadeIn'
 import Image from 'next/image'
-import { ShieldCheck, Target, Users, MapPin, Award, Clock, TrendingUp, Calendar, BookOpen, Truck, Briefcase, Network, Globe } from 'lucide-react'
+import { ShieldCheck, Target, Users, Award, Calendar, Briefcase, Network, CheckCircle2, Scale, Lightbulb } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import Link from 'next/link'
 
@@ -21,7 +21,7 @@ export default function About() {
           <FadeIn className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl" style={{ border: '1px solid var(--galf-border)' }}>
             {/* The image should be replaced with the one provided by the user if placed in public/images/about/director.jpg */}
             <Image 
-              src="/images/engins/pelle-hydraulique.png" 
+              src="/images/about/director.png" 
               alt="Direction GALF Formation" 
               fill
               className="object-cover"
@@ -32,9 +32,9 @@ export default function About() {
             </div>
           </FadeIn>
           <FadeIn delay={0.2} direction="left">
-            <h2 className="text-3xl font-black mb-6" style={{ color: 'var(--galf-text)' }}>Groupe Africain de Logistique et Formation</h2>
+            <h2 className="text-3xl font-black mb-6" style={{ color: 'var(--galf-text)' }}>Groupe Africain Logistique & Formation</h2>
             <p className="leading-relaxed mb-6" style={{ color: 'var(--galf-text-secondary)' }}>
-              Le <strong>Groupe Africain de Logistique et Formation (GALF Formation)</strong> est un organisme ivoirien de formation professionnelle spécialisé dans les métiers de la logistique, du BTP et de la conduite d’engins. 
+              Le <strong>Groupe Africain Logistique & Formation (GALF Formation)</strong> est un organisme ivoirien de formation professionnelle spécialisé dans les métiers de la logistique, du BTP et de la conduite d’engins. 
             </p>
             <p className="leading-relaxed mb-8" style={{ color: 'var(--galf-text-secondary)' }}>
               Le groupe s’est donné pour mission de répondre aux défis du chômage et du sous-emploi des jeunes en Côte d’Ivoire en formant une main-d’œuvre qualifiée et immédiatement opérationnelle.
@@ -86,25 +86,66 @@ export default function About() {
       {/* Mission & Valeurs */}
       <div className="py-24" style={{ background: 'var(--galf-bg)', borderTop: '1px solid var(--galf-border)' }}>
         <div className="container-galf">
-          <FadeIn><h2 className="text-3xl font-black mb-16 text-center" style={{ color: 'var(--galf-text)' }}>Mission & <span className="text-galf-yellow">Valeurs</span></h2></FadeIn>
+          <FadeIn>
+            <h2 className="text-3xl font-black mb-12 text-center" style={{ color: 'var(--galf-text)' }}>
+              Notre <span className="text-galf-yellow">Mission</span>
+            </h2>
+          </FadeIn>
           
-          <FadeIn className="max-w-3xl mx-auto text-center mb-16">
-            <p className="text-lg leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
-              La mission de GALF Formation est de contribuer à l’essor d’une jeunesse qualifiée et prête à répondre aux besoins du marché du travail en Côte d’Ivoire comme à l’étranger.
-            </p>
+          <div className="max-w-4xl mx-auto mb-20">
+            <FadeIn>
+              <p className="text-lg leading-relaxed text-center font-medium mb-12" style={{ color: 'var(--galf-text-secondary)' }}>
+                Notre mission est de former, accompagner et insérer durablement les jeunes et les professionnels dans le monde du travail en leur offrant des formations pratiques, certifiantes et adaptées aux besoins réels des entreprises.
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.2}>
+              <div className="glass-card p-8 md:p-10 rounded-[2rem] border-galf-yellow/20">
+                <h3 className="text-sm font-black mb-8 text-galf-yellow uppercase tracking-[0.2em] text-center">Nous nous engageons à :</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {[
+                    "Développer les compétences techniques et professionnelles de nos apprenants ;",
+                    "Fournir des formations de qualité répondant aux exigences du marché de l'emploi ;",
+                    "Faciliter l'insertion professionnelle grâce à des partenariats avec les entreprises ;",
+                    "Accompagner les organisations dans le renforcement des capacités de leurs collaborateurs ;",
+                    "Promouvoir l'excellence, la sécurité au travail et le professionnalisme ;",
+                    "Contribuer au développement économique et social de la Côte d'Ivoire et de l'Afrique par la formation et l'emploi."
+                  ].map((commitment, i) => (
+                    <div key={i} className="flex gap-4 items-start">
+                      <div className="w-6 h-6 rounded-lg bg-galf-yellow/10 flex items-center justify-center shrink-0 mt-0.5 border border-galf-yellow/20">
+                        <CheckCircle2 className="w-4 h-4 text-galf-yellow" />
+                      </div>
+                      <p className="text-xs leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>{commitment}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+
+          <div className="w-16 h-[1px] bg-galf-border mx-auto my-16" />
+
+          <FadeIn>
+            <h2 className="text-3xl font-black mb-16 text-center" style={{ color: 'var(--galf-text)' }}>
+              Nos <span className="text-galf-yellow">Valeurs</span>
+            </h2>
           </FadeIn>
 
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {[
-              { icon: Award, t: "Excellence", p: "Excellence professionnelle dans toutes nos formations." },
-              { icon: ShieldCheck, t: "Sécurité", p: "La sécurité au travail est notre priorité absolue." },
-              { icon: Users, t: "Inclusion", p: "Accès facilité des femmes aux métiers techniques." },
-              { icon: BookOpen, t: "Innovation", p: "Innovation pédagogique et éthique au service des communautés." },
+              { icon: Briefcase, t: "Professionnalisme", p: "Le respect des normes et l'éthique dans toutes nos interventions." },
+              { icon: Award, t: "Excellence", p: "La recherche constante de la qualité et de la performance." },
+              { icon: ShieldCheck, t: "Discipline", p: "La rigueur et l'auto-discipline au cœur de l'apprentissage." },
+              { icon: Scale, t: "Intégrité", p: "L'honnêteté, la transparence et la droiture au quotidien." },
+              { icon: Users, t: "Respect", p: "La considération envers chaque apprenant, collaborateur et partenaire." },
+              { icon: Lightbulb, t: "Innovation", p: "L'adaptation et le développement d'outils pédagogiques modernes." },
+              { icon: Network, t: "Esprit d'équipe", p: "La force du collectif pour atteindre nos objectifs." },
+              { icon: Target, t: "Engagement", p: "L'implication totale pour la réussite de nos apprenants." },
             ].map((val, i) => (
-              <FadeIn key={i} delay={i * 0.1} direction="up">
-                <div className="glass-card p-6 rounded-xl text-center h-full hover:border-galf-yellow/30 transition-colors">
-                  <val.icon className="w-10 h-10 text-galf-yellow mx-auto mb-4" />
-                  <h3 className="text-lg font-black mb-3" style={{ color: 'var(--galf-text)' }}>{val.t}</h3>
+              <FadeIn key={i} delay={i * 0.05} direction="up">
+                <div className="glass-card p-6 rounded-xl text-center h-full hover:border-galf-yellow/30 transition-colors flex flex-col justify-center items-center">
+                  <val.icon className="w-10 h-10 text-galf-yellow mb-4" />
+                  <h3 className="text-lg font-black mb-2" style={{ color: 'var(--galf-text)' }}>{val.t}</h3>
                   <p className="text-xs leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>{val.p}</p>
                 </div>
               </FadeIn>

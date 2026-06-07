@@ -1,8 +1,8 @@
 "use client"
 import Link from 'next/link'
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
-import { ArrowRight, Calendar, User, Tag, Newspaper } from 'lucide-react'
-import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
+import { FadeIn } from '@/components/animations/FadeIn'
+import { Calendar, User } from 'lucide-react'
+import { PageHeader } from '@/components/layout/PageHeader'
 
 export default function BlogPortal() {
   const posts = [
@@ -15,23 +15,14 @@ export default function BlogPortal() {
   ]
 
   return (
-    <div className="min-h-screen relative overflow-hidden pt-32 pb-24" style={{ background: 'var(--galf-bg)' }}>
-      {/* Background Machine SVG - Grue for "Visionary News" */}
-      <div className="absolute right-[-10%] top-[0%] w-[800px] h-[800px] opacity-[0.03] pointer-events-none z-0">
-        <AnimatedMachineHeader type="grue" />
-      </div>
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+      <PageHeader 
+        title="ACTUALITÉS & EXPERTISE"
+        subtitle="Restez informés sur les évolutions du BTP, les normes industrielles et les opportunités d'emploi."
+        badge="Actualités & ressources"
+      />
 
-      <div className="container-galf relative z-10">
-        <FadeIn>
-          <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Actualités & ressources</div>
-          <TextReveal 
-            text="ACTUALITÉS & EXPERTISE" 
-            className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none text-white" 
-          />
-          <p className="text-xl max-w-3xl leading-relaxed mb-16" style={{ color: 'var(--galf-text-secondary)' }}>
-            Restez informés sur les évolutions du BTP, les normes industrielles et les opportunités d'emploi.
-          </p>
-        </FadeIn>
+      <div className="container-galf relative z-10 mt-12">
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post, idx) => (

@@ -128,7 +128,7 @@ export default function ApprenantDashboard() {
 
                 <div className="aspect-video rounded-3xl overflow-hidden relative mb-8 group cursor-pointer shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5" style={{ background: 'black' }}>
                   <Image 
-                    src="/images/engins/pelle-hydraulique.png" 
+                    src="/images/about/apprenant-action.png" 
                     alt="Formation en cours" 
                     fill
                     className="object-cover opacity-60 group-hover:opacity-80 transition-all duration-700 group-hover:scale-105" 

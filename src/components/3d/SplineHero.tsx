@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 
 /* Generate bubble/particle data only on the client to avoid hydration mismatch */
@@ -34,36 +35,14 @@ function generateSpotlights(count: number) {
 
 export function SplineHero() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const [showSpline, setShowSpline] = useState(true)
-  const [shouldLoadIframe, setShouldLoadIframe] = useState(false)
   const [embers] = useState(() => generateEmbers(15))
   const [dust] = useState(() => generateDust(30))
   const [spotlights] = useState(() => generateSpotlights(4))
 
   useEffect(() => {
     setMounted(true)
-    const delayTimer = setTimeout(() => {
-      setShouldLoadIframe(true)
-    }, 500)
-    return () => {
-      clearTimeout(delayTimer)
-    }
   }, [])
-
-  useEffect(() => {
-    if (!shouldLoadIframe) return
-
-    const timer = setTimeout(() => {
-      if (!isLoaded) {
-        setShowSpline(false)
-        console.warn("Spline took too long to load, falling back to static background.")
-      }
-    }, 8000)
-
-    return () => clearTimeout(timer)
-  }, [shouldLoadIframe, isLoaded])
 
   useEffect(() => {
     if (!mounted) return
@@ -113,35 +92,13 @@ export function SplineHero() {
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full z-0 overflow-hidden">
-      {/* ── Spline 3D Scene (Industrial Transition) ── */}
-      {showSpline && shouldLoadIframe && (
-        <iframe
-          src="https://my.spline.design/underwatertransition-8FSK06H8l3gK9VL4qah91vrS/"
-          frameBorder="0"
-          width="100%"
-          height="100%"
-          className="absolute inset-0 w-full h-full"
-          style={{
-            border: 'none',
-            opacity: isLoaded ? 1 : 0,
-            transition: 'opacity 2s ease-in-out',
-            pointerEvents: 'none',
-            filter: 'hue-rotate(170deg) saturate(1.4) brightness(0.8) contrast(1.1)',
-          }}
-          onLoad={() => setIsLoaded(true)}
-          title="GALF Formation - Industrial 3D"
-          allow="autoplay"
-          loading="lazy"
-        />
-      )}
-
-      {/* ── Fallback background while Spline loads ── */}
-      <div
-        className="absolute inset-0 transition-opacity duration-1000"
-        style={{
-          opacity: isLoaded ? 0 : 1,
-          background: 'linear-gradient(180deg, #0e0e10 0%, #161618 50%, #0e0e10 100%)',
-        }}
+      {/* ── Background Image ── */}
+      <Image
+        src="/images/headers/accueil.png"
+        alt="GALF Formation - Accueil"
+        fill
+        className="object-cover"
+        priority
       />
 
       {/* ── Industrial embers / sparks (client-only) ── */}

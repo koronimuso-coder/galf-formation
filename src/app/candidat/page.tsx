@@ -96,7 +96,7 @@ export default function CandidatDashboard() {
                 </h3>
                 <div className="flex flex-col md:flex-row gap-8 items-center">
                   <Link href="/formations/pelle-hydraulique" className="w-full md:w-48 aspect-video rounded-2xl overflow-hidden border border-galf-border shadow-2xl block">
-                    <img src="/images/engins/pelle-hydraulique.png" alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <img src="/images/about/candidat-check.png" alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   </Link>
                   <div className="flex-1">
                     <Link href="/formations/pelle-hydraulique">
