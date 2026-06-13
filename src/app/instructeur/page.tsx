@@ -244,7 +244,7 @@ export default function InstructeurDashboard() {
   const activeReportStudent = students.find(s => s.id === activeReportStudentId)
 
   return (
-    <div className="flex bg-galf-carbon min-h-screen">
+    <div className="flex bg-galf-bg min-h-screen">
       {/* Sidebar Instructeur */}
       <aside className="w-64 bg-galf-bg-alt border-r border-galf-border hidden md:flex flex-col pt-24 shrink-0">
          <div className="px-6 pb-6 border-b border-galf-border">
@@ -317,14 +317,14 @@ export default function InstructeurDashboard() {
                     
                     <div className="space-y-4">
                       {students.map((student) => (
-                        <div key={student.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-black/20 rounded-xl border border-galf-border gap-4">
+                        <div key={student.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-black/5 dark:bg-black/20 rounded-xl border border-galf-border gap-4">
                           <div>
-                            <div className="text-sm font-black text-white mb-1">{student.name}</div>
+                            <div className="text-sm font-black text-galf-text mb-1">{student.name}</div>
                             <div className="text-[10px] text-galf-text-secondary uppercase font-bold">Inscrit : Pelle + Grue</div>
                           </div>
                           
                           {/* Segmented control for presence */}
-                          <div className="flex gap-1.5 bg-black/40 p-1.5 rounded-lg border border-white/5">
+                          <div className="flex gap-1.5 bg-black/5 dark:bg-black/40 p-1.5 rounded-lg border border-galf-border">
                             {[
                               { status: 'present', label: 'Présent', color: 'bg-green-500 text-white' },
                               { status: 'late', label: 'En Retard', color: 'bg-yellow-500 text-black' },
@@ -336,7 +336,7 @@ export default function InstructeurDashboard() {
                                 className={`px-3 py-1.5 rounded-md text-[10px] uppercase font-black tracking-wider transition-all cursor-pointer ${
                                   student.presence === btn.status 
                                     ? btn.color 
-                                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                    : 'text-galf-text-secondary hover:text-galf-text hover:bg-black/5 dark:hover:bg-white/5'
                                   }`}
                               >
                                 {btn.label}
@@ -351,15 +351,15 @@ export default function InstructeurDashboard() {
                   {/* ═══════════════════════════════════════════════
                       FEATURE 1: SIMULATEUR D'ASSIDUITE GLOBAL (SVG + FILTRES)
                      ═══════════════════════════════════════════════ */}
-                  <div className="mt-8 pt-6 border-t border-white/5">
+                  <div className="mt-8 pt-6 border-t border-galf-border">
                     <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
                       <div>
-                        <h4 className="text-xs font-black text-white uppercase tracking-wider">Taux d'Assiduité Global</h4>
-                        <p className="text-[9px] text-white/50">Statistiques agrégées par mois.</p>
+                        <h4 className="text-xs font-black text-galf-text uppercase tracking-wider">Taux d'Assiduité Global</h4>
+                        <p className="text-[9px] text-galf-text-secondary">Statistiques agrégées par mois.</p>
                       </div>
 
                       {/* Month Filter tabs */}
-                      <div className="flex bg-black/40 border border-white/5 p-1 rounded-lg">
+                      <div className="flex bg-black/5 dark:bg-black/40 border border-galf-border p-1 rounded-lg">
                         {[
                           { key: 'june', label: 'Juin' },
                           { key: 'may', label: 'Mai' },
@@ -374,7 +374,7 @@ export default function InstructeurDashboard() {
                             className={`text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all cursor-pointer ${
                               attendanceMonth === month.key 
                                 ? 'bg-galf-yellow text-galf-carbon' 
-                                : 'text-white/60 hover:text-white'
+                                : 'text-galf-text-secondary hover:text-galf-text'
                             }`}
                           >
                             {month.label}
@@ -384,16 +384,16 @@ export default function InstructeurDashboard() {
                     </div>
 
                     {/* SVG Stacked Bar Chart */}
-                    <div className="bg-black/30 border border-white/5 p-4 rounded-xl flex items-center justify-between gap-6">
+                    <div className="bg-black/5 dark:bg-black/30 border border-galf-border p-4 rounded-xl flex items-center justify-between gap-6">
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center justify-between text-[10px] font-bold">
-                          <span className="text-green-400">Présence : {ATTENDANCE_STATS[attendanceMonth].present}%</span>
-                          <span className="text-yellow-400">Retards : {ATTENDANCE_STATS[attendanceMonth].late}%</span>
-                          <span className="text-red-400">Absences : {ATTENDANCE_STATS[attendanceMonth].absent}%</span>
+                          <span className="text-green-500 dark:text-green-400">Présence : {ATTENDANCE_STATS[attendanceMonth].present}%</span>
+                          <span className="text-yellow-600 dark:text-yellow-400">Retards : {ATTENDANCE_STATS[attendanceMonth].late}%</span>
+                          <span className="text-red-500 dark:text-red-400">Absences : {ATTENDANCE_STATS[attendanceMonth].absent}%</span>
                         </div>
 
                         {/* Stacked bar drawing */}
-                        <svg viewBox="0 0 100 10" className="w-full h-4 rounded-full overflow-hidden bg-white/5">
+                        <svg viewBox="0 0 100 10" className="w-full h-4 rounded-full overflow-hidden bg-black/5 dark:bg-white/5">
                           <rect x="0" y="0" width={ATTENDANCE_STATS[attendanceMonth].present} height="10" fill="#22c55e" className="transition-all duration-700" />
                           <rect x={ATTENDANCE_STATS[attendanceMonth].present} y="0" width={ATTENDANCE_STATS[attendanceMonth].late} height="10" fill="#eab308" className="transition-all duration-700" />
                           <rect x={ATTENDANCE_STATS[attendanceMonth].present + ATTENDANCE_STATS[attendanceMonth].late} y="0" width={ATTENDANCE_STATS[attendanceMonth].absent} height="10" fill="#ef4444" className="transition-all duration-700" />
@@ -401,7 +401,7 @@ export default function InstructeurDashboard() {
                       </div>
 
                       <div className="text-center shrink-0">
-                        <span className="text-[8px] font-black text-white/40 block uppercase tracking-wider">Ratio Total</span>
+                        <span className="text-[8px] font-black text-galf-text-muted block uppercase tracking-wider">Ratio Total</span>
                         <span className="text-xl font-black text-galf-yellow">{ATTENDANCE_STATS[attendanceMonth].present}%</span>
                       </div>
                     </div>
@@ -432,7 +432,7 @@ export default function InstructeurDashboard() {
                           cy="100"
                           r={r}
                           fill="none"
-                          stroke="rgba(255,255,255,0.05)"
+                          stroke="var(--galf-border)"
                           strokeWidth="1"
                         />
                       ))}
@@ -458,7 +458,7 @@ export default function InstructeurDashboard() {
                         return (
                           <g key={i}>
                             {/* Axis line */}
-                            <line x1="100" y1="100" x2={100 + 80 * Math.cos(angle)} y2={100 + 80 * Math.sin(angle)} stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                            <line x1="100" y1="100" x2={100 + 80 * Math.cos(angle)} y2={100 + 80 * Math.sin(angle)} stroke="var(--galf-border)" strokeWidth="1" />
                             {/* Data dot */}
                             <circle cx={x} cy={y} r="3.5" fill="#FFB000" />
                             {/* Text Label */}
@@ -509,8 +509,8 @@ export default function InstructeurDashboard() {
                         {students.map((student) => {
                           const average = (student.notes.pelle + student.notes.grue + student.notes.safety) / 3
                           return (
-                            <tr key={student.id} className="hover:bg-white/5 transition-colors">
-                              <td className="py-4 font-black text-white">{student.name}</td>
+                            <tr key={student.id} className="hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                              <td className="py-4 font-black text-galf-text">{student.name}</td>
                               
                               {/* Pelle grade */}
                               <td className="py-2 px-2 text-center">
@@ -518,7 +518,7 @@ export default function InstructeurDashboard() {
                                   type="number"
                                   value={student.notes.pelle}
                                   onChange={(e) => handleUpdateGrade(student.id, 'pelle', Number(e.target.value))}
-                                  className={`w-12 text-center bg-black/40 border border-white/10 rounded p-1 font-mono text-white ${student.notes.pelle < 10 ? 'text-red-500 border-red-500/30' : ''}`}
+                                  className={`w-12 text-center bg-black/5 dark:bg-black/40 border border-galf-border rounded p-1 font-mono text-galf-text ${student.notes.pelle < 10 ? 'text-red-500 border-red-500/30' : ''}`}
                                 />
                               </td>
                               
@@ -528,7 +528,7 @@ export default function InstructeurDashboard() {
                                   type="number"
                                   value={student.notes.grue}
                                   onChange={(e) => handleUpdateGrade(student.id, 'grue', Number(e.target.value))}
-                                  className={`w-12 text-center bg-black/40 border border-white/10 rounded p-1 font-mono text-white ${student.notes.grue < 10 ? 'text-red-500 border-red-500/30' : ''}`}
+                                  className={`w-12 text-center bg-black/5 dark:bg-black/40 border border-galf-border rounded p-1 font-mono text-galf-text ${student.notes.grue < 10 ? 'text-red-500 border-red-500/30' : ''}`}
                                 />
                               </td>
                               
@@ -538,7 +538,7 @@ export default function InstructeurDashboard() {
                                   type="number"
                                   value={student.notes.safety}
                                   onChange={(e) => handleUpdateGrade(student.id, 'safety', Number(e.target.value))}
-                                  className={`w-12 text-center bg-black/40 border border-white/10 rounded p-1 font-mono text-white ${student.notes.safety < 10 ? 'text-red-500 border-red-500/30' : ''}`}
+                                  className={`w-12 text-center bg-black/5 dark:bg-black/40 border border-galf-border rounded p-1 font-mono text-galf-text ${student.notes.safety < 10 ? 'text-red-500 border-red-500/30' : ''}`}
                                 />
                               </td>
                               
@@ -556,7 +556,7 @@ export default function InstructeurDashboard() {
                                     setActiveReportStudentId(student.id)
                                     triggerSound(600, 'sine', 0.1)
                                   }}
-                                  className="p-1.5 rounded-lg border border-white/5 bg-white/5 hover:border-galf-yellow hover:bg-galf-yellow/10 text-white hover:text-galf-yellow transition-all flex items-center gap-1.5 ml-auto text-[10px] font-black uppercase tracking-wider cursor-pointer"
+                                  className="p-1.5 rounded-lg border border-galf-border bg-black/5 dark:bg-white/5 hover:border-galf-yellow hover:bg-galf-yellow/10 text-galf-text hover:text-galf-yellow transition-all flex items-center gap-1.5 ml-auto text-[10px] font-black uppercase tracking-wider cursor-pointer"
                                 >
                                   <FileText className="w-3.5 h-3.5" /> Relevé
                                 </button>
@@ -577,7 +577,7 @@ export default function InstructeurDashboard() {
                 <FadeIn>
                   <div className="glass-card border-galf-border rounded-2xl p-6">
                     {/* SMS Tabs */}
-                    <div className="flex bg-black/40 border border-white/5 p-1 rounded-xl mb-4">
+                    <div className="flex bg-black/5 dark:bg-black/40 border border-galf-border p-1 rounded-xl mb-4">
                       <button
                         onClick={() => {
                           setSelectedSmsTab('alert')
@@ -585,7 +585,7 @@ export default function InstructeurDashboard() {
                           triggerSound(400, 'sine', 0.05)
                         }}
                         className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                          selectedSmsTab === 'alert' ? 'bg-galf-yellow text-galf-carbon' : 'text-slate-400'
+                          selectedSmsTab === 'alert' ? 'bg-galf-yellow text-galf-carbon' : 'text-galf-text-secondary hover:text-galf-text'
                         }`}
                       >
                         Alerte Chantier
@@ -596,18 +596,18 @@ export default function InstructeurDashboard() {
                           handleLoadCongratsMsg()
                         }}
                         className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
-                          selectedSmsTab === 'congrats' ? 'bg-galf-yellow text-galf-carbon' : 'text-slate-400'
+                          selectedSmsTab === 'congrats' ? 'bg-galf-yellow text-galf-carbon' : 'text-galf-text-secondary hover:text-galf-text'
                         }`}
                       >
                         🏆 SMS Félicitations
                       </button>
                     </div>
 
-                    <h3 className="font-black text-white mb-1 uppercase tracking-wider text-xs flex items-center gap-2">
+                    <h3 className="font-black text-galf-text mb-1 uppercase tracking-wider text-xs flex items-center gap-2">
                       <Bell className="w-4 h-4 text-galf-yellow" />
                       {selectedSmsTab === 'alert' ? "SMS Consignes" : "Félicitations aux Majors"}
                     </h3>
-                    <p className="text-[9px] text-white/50 mb-3">
+                    <p className="text-[9px] text-galf-text-secondary mb-3">
                       {selectedSmsTab === 'alert' 
                         ? "Diffuser une alerte météo ou consigne urgente."
                         : "Générer et envoyer un SMS d'honneur aux élèves ayant >= 15/20."}
@@ -618,14 +618,14 @@ export default function InstructeurDashboard() {
                       placeholder={selectedSmsTab === 'alert' ? "Saisissez votre consigne..." : "Cliquez sur générer..."}
                       value={smsMessage}
                       onChange={(e) => setSmsMessage(e.target.value)}
-                      className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow font-sans mb-3 resize-none"
+                      className="w-full bg-black/5 dark:bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-galf-text outline-none focus:border-galf-yellow font-sans mb-3 resize-none"
                     />
 
                     {selectedSmsTab === 'congrats' && (
                       <button
                         type="button"
                         onClick={handleLoadCongratsMsg}
-                        className="w-full mb-2 bg-white/5 border border-white/10 text-white/70 hover:text-white py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all"
+                        className="w-full mb-2 bg-black/5 dark:bg-white/5 border border-galf-border text-galf-text-secondary hover:text-galf-text py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all"
                       >
                         Actualiser les majors
                       </button>
@@ -669,9 +669,9 @@ export default function InstructeurDashboard() {
                         <div className="text-[10px] text-galf-text-secondary text-center py-4">Aucun examen planifié.</div>
                       ) : (
                         exams.map((ex) => (
-                          <div key={ex.id} className="p-3 bg-black/25 border border-galf-border rounded-lg flex items-center justify-between gap-2">
+                          <div key={ex.id} className="p-3 bg-black/5 dark:bg-black/25 border border-galf-border rounded-lg flex items-center justify-between gap-2">
                             <div className="min-w-0">
-                              <div className="text-[11px] font-black text-white truncate">{ex.studentName}</div>
+                              <div className="text-[11px] font-black text-galf-text truncate">{ex.studentName}</div>
                               <div className="text-[9px] text-galf-yellow uppercase font-bold tracking-wider">{ex.machine}</div>
                               <div className="text-[9px] text-galf-text-secondary flex items-center gap-1 mt-0.5">
                                 <Clock className="w-3 h-3 text-galf-yellow" /> {ex.date} à {ex.time}
@@ -713,16 +713,16 @@ export default function InstructeurDashboard() {
 
                     <div className="space-y-3 max-h-40 overflow-y-auto pr-1">
                       {assignedSubs.length === 0 ? (
-                        <div className="text-[10px] text-white/30 text-center py-4 italic">
+                        <div className="text-[10px] text-galf-text-muted text-center py-4 italic">
                           Aucun remplacement de secours actif.
                         </div>
                       ) : (
                         assignedSubs.map((sub, idx) => (
-                          <div key={idx} className="p-3 bg-black/25 border border-galf-border rounded-lg flex items-center justify-between gap-2 text-xs">
+                          <div key={idx} className="p-3 bg-black/5 dark:bg-black/25 border border-galf-border rounded-lg flex items-center justify-between gap-2 text-xs">
                             <div>
-                              <div className="font-black text-white">{sub.teacher}</div>
+                              <div className="font-black text-galf-text">{sub.teacher}</div>
                               <div className="text-[9px] text-galf-yellow uppercase font-semibold">{sub.machine}</div>
-                              <div className="text-[9px] text-white/40 mt-0.5">{sub.date}</div>
+                              <div className="text-[9px] text-galf-text-secondary mt-0.5">{sub.date}</div>
                             </div>
                             <button
                               onClick={() => handleDeleteSub(idx)}
@@ -748,7 +748,7 @@ export default function InstructeurDashboard() {
           <div className="w-full max-w-md bg-galf-surface h-full border-l border-galf-border p-8 flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center mb-8">
-                <h3 className="text-xl font-black text-white uppercase tracking-wider">Planifier un examen</h3>
+                <h3 className="text-xl font-black text-galf-text uppercase tracking-wider">Planifier un examen</h3>
                 <button
                   onClick={() => setIsAlertDrawerOpen(false)}
                   className="hover:scale-110 transition-transform p-1.5 rounded-lg border border-galf-border cursor-pointer"
@@ -763,10 +763,10 @@ export default function InstructeurDashboard() {
                   <select
                     value={examStudentId}
                     onChange={(e) => setExamStudentId(Number(e.target.value))}
-                    className="w-full bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                    className="w-full bg-black/5 dark:bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-galf-text outline-none focus:border-galf-yellow"
                   >
                     {students.map(s => (
-                      <option key={s.id} value={s.id} className="bg-galf-surface text-white">{s.name}</option>
+                      <option key={s.id} value={s.id} className="bg-galf-surface text-galf-text">{s.name}</option>
                     ))}
                   </select>
                 </div>
@@ -776,12 +776,12 @@ export default function InstructeurDashboard() {
                   <select
                     value={examMachine}
                     onChange={(e) => setExamMachine(e.target.value)}
-                    className="w-full bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                    className="w-full bg-black/5 dark:bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-galf-text outline-none focus:border-galf-yellow"
                   >
-                    <option value="Pelle Hydraulique" className="bg-galf-surface text-white">Pelle Hydraulique</option>
-                    <option value="Grue à Tour" className="bg-galf-surface text-white">Grue à Tour</option>
-                    <option value="Bulldozer D6" className="bg-galf-surface text-white">Bulldozer D6</option>
-                    <option value="Chariot Élévateur" className="bg-galf-surface text-white">Chariot Élévateur</option>
+                    <option value="Pelle Hydraulique" className="bg-galf-surface text-galf-text">Pelle Hydraulique</option>
+                    <option value="Grue à Tour" className="bg-galf-surface text-galf-text">Grue à Tour</option>
+                    <option value="Bulldozer D6" className="bg-galf-surface text-galf-text">Bulldozer D6</option>
+                    <option value="Chariot Élévateur" className="bg-galf-surface text-galf-text">Chariot Élévateur</option>
                   </select>
                 </div>
  
@@ -792,7 +792,7 @@ export default function InstructeurDashboard() {
                       type="date"
                       value={examDate}
                       onChange={(e) => setExamDate(e.target.value)}
-                      className="w-full bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow font-mono"
+                      className="w-full bg-black/5 dark:bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-galf-text outline-none focus:border-galf-yellow font-mono"
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -801,7 +801,7 @@ export default function InstructeurDashboard() {
                       type="time"
                       value={examTime}
                       onChange={(e) => setExamTime(e.target.value)}
-                      className="w-full bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow font-mono"
+                      className="w-full bg-black/5 dark:bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-galf-text outline-none focus:border-galf-yellow font-mono"
                     />
                   </div>
                 </div>
@@ -832,7 +832,7 @@ export default function InstructeurDashboard() {
               <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-5 h-5 text-galf-yellow" />
-                  <h3 className="text-xl font-black text-white uppercase tracking-wider">Trouver un Remplaçant</h3>
+                  <h3 className="text-xl font-black text-galf-text uppercase tracking-wider">Trouver un Remplaçant</h3>
                 </div>
                 <button
                   onClick={() => setIsSubDrawerOpen(false)}
@@ -844,32 +844,32 @@ export default function InstructeurDashboard() {
 
               <div className="space-y-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Date de l'absence</label>
+                  <label className="text-[10px] font-black uppercase text-galf-text-secondary tracking-wider">Date de l'absence</label>
                   <input
                     type="date"
                     value={subDate}
                     onChange={(e) => setSubDate(e.target.value)}
-                    className="w-full bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                    className="w-full bg-black/5 dark:bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-galf-text outline-none focus:border-galf-yellow"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Machine concernée</label>
+                  <label className="text-[10px] font-black uppercase text-galf-text-secondary tracking-wider">Machine concernée</label>
                   <select
                     value={subMachine}
                     onChange={(e) => setSubMachine(e.target.value)}
-                    className="w-full bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                    className="w-full bg-black/5 dark:bg-black/30 border border-galf-border rounded-xl p-3 text-xs text-galf-text outline-none focus:border-galf-yellow"
                   >
-                    <option value="Pelle Hydraulique" className="bg-galf-surface text-white">Pelle Hydraulique</option>
-                    <option value="Grue à Tour" className="bg-galf-surface text-white">Grue à Tour</option>
-                    <option value="Bulldozer D6" className="bg-galf-surface text-white">Bulldozer D6</option>
-                    <option value="Chariot Élévateur" className="bg-galf-surface text-white">Chariot Élévateur</option>
+                    <option value="Pelle Hydraulique" className="bg-galf-surface text-galf-text">Pelle Hydraulique</option>
+                    <option value="Grue à Tour" className="bg-galf-surface text-galf-text">Grue à Tour</option>
+                    <option value="Bulldozer D6" className="bg-galf-surface text-galf-text">Bulldozer D6</option>
+                    <option value="Chariot Élévateur" className="bg-galf-surface text-galf-text">Chariot Élévateur</option>
                   </select>
                 </div>
 
                 {/* Match substitute results list */}
                 <div className="pt-4 space-y-3">
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block">Instructeurs qualifiés :</span>
+                  <span className="text-[10px] font-black uppercase text-galf-text-secondary tracking-wider block">Instructeurs qualifiés :</span>
                   
                   {SUBSTITUTES_DB.map((sub, idx) => {
                     const isQualified = sub.machines.includes(subMachine)
@@ -882,10 +882,10 @@ export default function InstructeurDashboard() {
                           : 'bg-black/60 border-white/5 opacity-40'
                       }`}>
                         <div>
-                          <div className="text-xs font-black text-white">{sub.name}</div>
-                          <div className="text-[9px] text-white/50 mt-1 flex flex-wrap gap-1">
+                          <div className="text-xs font-black text-galf-text">{sub.name}</div>
+                          <div className="text-[9px] text-galf-text-secondary mt-1 flex flex-wrap gap-1">
                             {sub.machines.map((m, mIdx) => (
-                              <span key={mIdx} className="bg-white/5 px-1.5 py-0.5 rounded border border-white/5">
+                              <span key={mIdx} className="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-galf-border">
                                 {m}
                               </span>
                             ))}
@@ -916,7 +916,7 @@ export default function InstructeurDashboard() {
               </div>
             </div>
 
-            <div className="text-[9px] text-white/30 text-center mt-6">
+            <div className="text-[9px] text-galf-text-muted text-center mt-6">
               * Les affectations de remplacement mettent à jour automatiquement l'agenda de la cohorte et alertent l'instructeur remplaçant.
             </div>
           </div>

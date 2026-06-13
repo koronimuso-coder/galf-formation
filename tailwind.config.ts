@@ -59,7 +59,16 @@ const config: Config = {
           carbon: "#0E0E10",
           steel: "#8B939C",
           blue: "#0A2540",
-          copper: "#C47137"
+          copper: "#C47137",
+          bg: "var(--galf-bg)",
+          "bg-alt": "var(--galf-bg-alt)",
+          surface: "var(--galf-surface)",
+          "surface-alt": "var(--galf-surface-alt)",
+          text: "var(--galf-text)",
+          "text-secondary": "var(--galf-text-secondary)",
+          "text-muted": "var(--galf-text-muted)",
+          border: "var(--galf-border)",
+          "border-hover": "var(--galf-border-hover)",
         }
       },
       borderRadius: {

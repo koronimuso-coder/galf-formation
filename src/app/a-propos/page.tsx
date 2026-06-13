@@ -633,7 +633,7 @@ export default function About() {
       </section>
 
       {/* CTA */}
-      <div className="py-20" style={{ background: 'var(--galf-carbon)' }}>
+      <div className="py-20 bg-galf-carbon">
         <div className="container-galf text-center">
           <FadeIn>
             <h2 className="text-4xl font-black mb-4 text-white">

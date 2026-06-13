@@ -429,7 +429,7 @@ export default function Mediatheque() {
              >
                 <button 
                   onClick={() => setSelectedItem(null)}
-                  className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-galf-yellow hover:text-galf-carbon transition-all flex items-center justify-center"
+                  className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/10 text-white hover:bg-galf-yellow hover:text-galf-carbon transition-all flex items-center justify-center"
                 >
                   <X className="w-6 h-6" />
                 </button>

@@ -198,7 +198,7 @@ export default function Inscription() {
                     step > i + 1 ? 'bg-green-500 text-white rotate-[360deg]' :
                     step === i + 1 ? 'bg-galf-yellow text-galf-carbon shadow-[0_0_20px_rgba(255,176,0,0.3)]' :
                     'bg-galf-surface border border-galf-border text-galf-text-muted'
-                  }`} style={{ color: step === i + 1 ? 'var(--galf-carbon)' : 'inherit' }}>
+                  }`}>
                     {step > i + 1 ? <CheckCircle2 className="w-5 h-5" /> : <s.icon className="w-5 h-5" />}
                   </div>
                   <span className={`text-[9px] font-black uppercase tracking-widest mt-3 hidden sm:block ${step === i + 1 ? 'text-galf-yellow' : 'opacity-40'}`}>

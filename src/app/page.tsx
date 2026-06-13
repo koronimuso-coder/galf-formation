@@ -385,15 +385,15 @@ export default function Home() {
         <div className="container-galf relative z-10">
           
           {/* Live Activity Feed Ribbon */}
-          <div className="mb-12 bg-black/60 border border-white/5 rounded-2xl py-3 px-6 flex items-center justify-between flex-wrap gap-4">
+          <div className="mb-12 bg-black/5 dark:bg-black/60 border border-[var(--galf-border)] rounded-2xl py-3 px-6 flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
               </span>
-              <span className="text-[10px] font-black uppercase text-white/50 tracking-wider">Mises à jour en direct :</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-[var(--galf-text-secondary)]">Mises à jour en direct :</span>
             </div>
-            <p className="text-xs text-white/80 font-semibold animate-fadeIn flex-1" key={liveEventText}>
+            <p className="text-xs font-semibold animate-fadeIn flex-1 text-[var(--galf-text)]" key={liveEventText}>
               {liveEventText}
             </p>
             <div className="text-[9px] font-bold text-galf-yellow bg-galf-yellow/10 border border-galf-yellow/20 px-2 py-0.5 rounded uppercase">
@@ -403,63 +403,63 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Stat 1: 98% Success */}
-            <FadeIn delay={0.1} className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center relative group">
+            <FadeIn delay={0.1} className="glass-card p-6 rounded-2xl flex flex-col items-center text-center relative group">
               <div className="relative w-24 h-24 mb-4">
                 <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
-                  <path className="text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path className="text-black/5 dark:text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   <path className="text-galf-yellow transition-all duration-1000" strokeDasharray="98, 100" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-black text-white">98%</span>
+                  <span className="text-2xl font-black text-[var(--galf-text)]">98%</span>
                 </div>
               </div>
-              <h3 className="text-sm font-black text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <h3 className="text-sm font-black uppercase tracking-wider mb-1 flex items-center gap-1.5 text-[var(--galf-text)]">
                 <Trophy className="w-4 h-4 text-galf-yellow" /> Taux de réussite
               </h3>
-              <p className="text-[11px] text-white/50 leading-relaxed">Sur examen de conduite et théorie réglementaire.</p>
+              <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Sur examen de conduite et théorie réglementaire.</p>
             </FadeIn>
 
             {/* Stat 2: 1530+ Certifies */}
-            <FadeIn delay={0.2} className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center relative group">
+            <FadeIn delay={0.2} className="glass-card p-6 rounded-2xl flex flex-col items-center text-center relative group">
               <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-galf-yellow/5 rounded-full border border-galf-yellow/15 group-hover:scale-105 transition-transform">
                 <Users className="w-10 h-10 text-galf-yellow animate-pulse" />
               </div>
-              <h3 className="text-2xl font-black text-white mb-1">
+              <h3 className="text-2xl font-black mb-1 text-[var(--galf-text)]">
                 {liveStudents}
               </h3>
               <p className="text-xs font-black text-galf-yellow uppercase tracking-widest mb-1 flex items-center gap-1">
                 <Zap className="w-3.5 h-3.5 text-galf-yellow" /> Opérateurs Formés
               </p>
-              <p className="text-[11px] text-white/50 leading-relaxed">Compteur live actualisé en direct.</p>
+              <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Compteur live actualisé en direct.</p>
             </FadeIn>
 
             {/* Stat 3: 19 Parcours */}
-            <FadeIn delay={0.3} className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center relative group">
+            <FadeIn delay={0.3} className="glass-card p-6 rounded-2xl flex flex-col items-center text-center relative group">
               <div className="relative w-24 h-24 mb-4">
                 <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
-                  <path className="text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path className="text-black/5 dark:text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   <path className="text-galf-yellow/80" strokeDasharray="75, 100" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-black text-white">19</span>
+                  <span className="text-2xl font-black text-[var(--galf-text)]">19</span>
                 </div>
               </div>
-              <h3 className="text-sm font-black text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <h3 className="text-sm font-black uppercase tracking-wider mb-1 flex items-center gap-1.5 text-[var(--galf-text)]">
                 <Award className="w-4 h-4 text-galf-yellow" /> Spécialités
               </h3>
-              <p className="text-[11px] text-white/50 leading-relaxed">Formations certifiantes reconnues par l'État.</p>
+              <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Formations certifiantes reconnues par l'État.</p>
             </FadeIn>
 
             {/* Stat 4: 50+ Partners */}
-            <FadeIn delay={0.4} className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center relative group">
+            <FadeIn delay={0.4} className="glass-card p-6 rounded-2xl flex flex-col items-center text-center relative group">
               <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-galf-yellow/5 rounded-full border border-galf-yellow/15 group-hover:rotate-12 transition-transform">
                 <TrendingUp className="w-10 h-10 text-galf-yellow" />
               </div>
-              <h3 className="text-2xl font-black text-white mb-1">50+</h3>
+              <h3 className="text-2xl font-black mb-1 text-[var(--galf-text)]">50+</h3>
               <p className="text-xs font-black text-galf-yellow uppercase tracking-widest mb-1 flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 fill-galf-yellow text-galf-yellow" /> Entreprises
               </p>
-              <p className="text-[11px] text-white/50 leading-relaxed">Partenariats actifs de recrutement.</p>
+              <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Partenariats actifs de recrutement.</p>
             </FadeIn>
           </div>
         </div>
@@ -590,10 +590,10 @@ export default function Home() {
           <FadeIn>
             <div className="text-center mb-16">
               <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Parcours d'apprentissage</span>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-white">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-[var(--galf-text)]">
                 De l'inscription <span className="text-galf-yellow">à l'emploi</span>
               </h2>
-              <p className="text-lg max-w-2xl mx-auto text-white/60">
+              <p className="text-lg max-w-2xl mx-auto text-[var(--galf-text-secondary)]">
                 Découvrez les étapes clés de votre formation et les compétences certifiées à chaque jalon de votre carrière.
               </p>
             </div>
@@ -609,22 +609,22 @@ export default function Home() {
                   className={`w-full text-left p-5 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
                     activeTimelineStep === idx 
                       ? 'bg-galf-yellow/10 border-galf-yellow/40 shadow-lg glow-yellow'
-                      : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
+                      : 'bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/10 dark:hover:border-white/10'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-mono font-black text-sm transition-colors ${
-                      activeTimelineStep === idx ? 'bg-galf-yellow text-galf-carbon' : 'bg-white/10 text-white/70'
+                      activeTimelineStep === idx ? 'bg-galf-yellow text-galf-carbon' : 'bg-black/10 dark:bg-white/10 text-[var(--galf-text-secondary)]'
                     }`}>
                       {idx + 1}
                     </span>
                     <div>
-                      <h4 className="text-sm font-black text-white">{step.title}</h4>
-                      <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider">{step.duration}</span>
+                      <h4 className="text-sm font-black text-[var(--galf-text)]">{step.title}</h4>
+                      <span className="text-[10px] text-[var(--galf-text-muted)] font-bold uppercase tracking-wider">{step.duration}</span>
                     </div>
                   </div>
                   <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border ${
-                    activeTimelineStep === idx ? 'bg-galf-yellow/20 text-galf-yellow border-galf-yellow/30' : 'bg-white/5 text-white/40 border-white/5'
+                    activeTimelineStep === idx ? 'bg-galf-yellow/20 text-galf-yellow border-galf-yellow/30' : 'bg-black/5 dark:bg-white/5 text-[var(--galf-text-muted)] border-black/5 dark:border-white/5'
                   }`}>
                     {step.badge}
                   </span>
@@ -634,7 +634,7 @@ export default function Home() {
 
             {/* Step Detail Display Panel */}
             <div className="lg:col-span-7">
-              <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,176,0,0.03),transparent)]">
+              <div className="glass-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,176,0,0.03),transparent)]">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[8rem]" />
                 
                 <div>
@@ -643,26 +643,26 @@ export default function Home() {
                     <span>Focus Étape {activeTimelineStep + 1} / {careerSteps.length}</span>
                   </div>
 
-                  <h3 className="text-3xl font-black text-white mb-6 uppercase tracking-tight">
+                  <h3 className="text-3xl font-black mb-6 uppercase tracking-tight text-[var(--galf-text)]">
                     {careerSteps[activeTimelineStep].title}
                   </h3>
 
-                  <p className="text-sm text-white/70 leading-relaxed font-semibold mb-8">
+                  <p className="text-sm leading-relaxed font-semibold mb-8 text-[var(--galf-text-secondary)]">
                     {careerSteps[activeTimelineStep].desc}
                   </p>
                 </div>
 
-                <div className="pt-6 border-t border-white/5 flex flex-wrap items-center justify-between gap-6">
+                <div className="pt-6 border-t border-[var(--galf-border)] flex flex-wrap items-center justify-between gap-6">
                   <div>
-                    <span className="text-[10px] text-white/40 font-black uppercase tracking-wider block mb-1">Récompense / Jalon débloqué :</span>
+                    <span className="text-[10px] text-[var(--galf-text-muted)] font-black uppercase tracking-wider block mb-1">Récompense / Jalon débloqué :</span>
                     <span className="text-sm font-black text-galf-yellow flex items-center gap-2">
                       {careerSteps[activeTimelineStep].reward}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-white/30 font-bold uppercase tracking-wider">Durée :</span>
-                    <span className="text-xs font-black text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                    <span className="text-[10px] text-[var(--galf-text-muted)] font-bold uppercase tracking-wider">Durée :</span>
+                    <span className="text-xs font-black bg-black/5 dark:bg-white/5 text-[var(--galf-text)] px-3 py-1.5 rounded-lg border border-black/5 dark:border-white/5">
                       {careerSteps[activeTimelineStep].duration}
                     </span>
                   </div>
@@ -682,14 +682,14 @@ export default function Home() {
           <FadeIn>
             <div className="text-center mb-16">
               <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Avis certifiés</span>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-[var(--galf-text)]">
                 Ils ont <span className="text-galf-yellow">réussi avec nous</span>
               </h2>
             </div>
           </FadeIn>
 
           <div className="max-w-4xl mx-auto relative">
-            <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden transition-all duration-500 glow-yellow min-h-[320px] flex flex-col justify-between">
+            <div className="glass-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden transition-all duration-500 glow-yellow min-h-[320px] flex flex-col justify-between">
               
               <div className="flex items-start justify-between gap-6 mb-8">
                 <div className="flex gap-1.5">
@@ -701,7 +701,7 @@ export default function Home() {
                 {/* Autoplay Play/Pause */}
                 <button
                   onClick={() => setIsPlayingTestimonials(!isPlayingTestimonials)}
-                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all"
+                  className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-[var(--galf-text-secondary)] hover:text-[var(--galf-text)] transition-all"
                   title={isPlayingTestimonials ? "Pause Autoplay" : "Démarrer Autoplay"}
                 >
                   {isPlayingTestimonials ? (
@@ -714,25 +714,25 @@ export default function Home() {
 
               {/* Slide text with key triggers transition */}
               <div className="mb-10 animate-fadeIn" key={activeSlide}>
-                <p className="italic text-base md:text-lg text-white/80 leading-relaxed font-medium">
+                <p className="italic text-base md:text-lg leading-relaxed font-medium text-[var(--galf-text)]">
                   "{testimonials[activeSlide].content}"
                 </p>
               </div>
 
               {/* Avatar and company metadata */}
-              <div className="pt-6 border-t border-white/5 flex flex-wrap items-center justify-between gap-6">
+              <div className="pt-6 border-t border-[var(--galf-border)] flex flex-wrap items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full bg-galf-yellow text-galf-carbon flex items-center justify-center font-black text-lg">
                     {testimonials[activeSlide].initial}
                   </div>
                   <div>
-                    <h4 className="font-black text-white">{testimonials[activeSlide].name}</h4>
-                    <span className="text-xs text-white/40 font-bold">{testimonials[activeSlide].role}</span>
+                    <h4 className="font-black text-[var(--galf-text)]">{testimonials[activeSlide].name}</h4>
+                    <span className="text-xs text-[var(--galf-text-muted)] font-bold">{testimonials[activeSlide].role}</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <span className="text-xs text-white/50 font-bold bg-black/40 border border-white/5 px-3 py-1.5 rounded-lg">
+                  <span className="text-xs font-bold bg-black/5 dark:bg-black/40 border border-black/5 dark:border-white/5 px-3 py-1.5 rounded-lg text-[var(--galf-text-secondary)]">
                     {testimonials[activeSlide].company}
                   </span>
                   <span className="text-xs font-black text-galf-yellow bg-galf-yellow/10 border border-galf-yellow/20 px-3 py-1.5 rounded-lg">
@@ -750,7 +750,7 @@ export default function Home() {
                   setActiveSlide(prev => (prev - 1 + testimonials.length) % testimonials.length)
                   setIsPlayingTestimonials(false)
                 }}
-                className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all"
+                className="w-12 h-12 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--galf-text-secondary)] hover:text-[var(--galf-text)] flex items-center justify-center transition-all"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -764,7 +764,7 @@ export default function Home() {
                       setIsPlayingTestimonials(false)
                     }}
                     className={`w-2.5 h-2.5 rounded-full transition-all ${
-                      activeSlide === idx ? 'bg-galf-yellow w-8' : 'bg-white/20'
+                      activeSlide === idx ? 'bg-galf-yellow w-8' : 'bg-black/20 dark:bg-white/20'
                     }`}
                   />
                 ))}
@@ -775,7 +775,7 @@ export default function Home() {
                   setActiveSlide(prev => (prev + 1) % testimonials.length)
                   setIsPlayingTestimonials(false)
                 }}
-                className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all"
+                className="w-12 h-12 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--galf-text-secondary)] hover:text-[var(--galf-text)] flex items-center justify-center transition-all"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -835,10 +835,10 @@ export default function Home() {
           <FadeIn>
             <div className="text-center mb-16">
               <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Réservation guidée</span>
-              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-[var(--galf-text)]">
                 Planifier une <span className="text-galf-yellow">visite du centre</span>
               </h2>
-              <p className="text-sm max-w-xl mx-auto text-white/60 mt-3">
+              <p className="text-sm max-w-xl mx-auto mt-3 text-[var(--galf-text-secondary)]">
                 Venez découvrir nos plateaux techniques de formation, inspecter les engins réels et assister à une démonstration en direct.
               </p>
             </div>
@@ -848,56 +848,56 @@ export default function Home() {
             {bookingConfirmed ? (
               <FadeIn>
                 <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-galf-yellow/30 bg-galf-yellow/5 text-center max-w-2xl mx-auto relative overflow-hidden glow-yellow">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/10 rounded-bl-[8rem]" />
+                   <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/10 rounded-bl-[8rem]" />
                   <CheckCircle2 className="w-16 h-16 text-galf-yellow mx-auto mb-6 animate-bounce" />
                   
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tight">Visite planifiée avec succès !</h3>
-                  <p className="text-xs text-white/60 mt-2 max-w-md mx-auto">
+                  <h3 className="text-2xl font-black uppercase tracking-tight text-[var(--galf-text)]">Visite planifiée avec succès !</h3>
+                  <p className="text-xs mt-2 max-w-md mx-auto text-[var(--galf-text-secondary)]">
                     Votre pass d'accès est généré. Notre équipe commerciale vous contactera pour valider les consignes de sécurité.
                   </p>
 
                   {/* Boarding Pass Ticket */}
-                  <div className="my-8 p-6 bg-black/60 rounded-3xl border border-white/10 text-left space-y-4 max-w-md mx-auto relative">
-                    <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <div className="my-8 p-6 bg-black/5 dark:bg-black/60 rounded-3xl border border-black/10 dark:border-white/10 text-left space-y-4 max-w-md mx-auto relative">
+                    <div className="flex justify-between items-center border-b border-[var(--galf-border)] pb-4">
                       <div>
-                        <span className="text-[9px] font-black uppercase text-white/40 block">Site choisi :</span>
-                        <span className="text-xs font-black text-white uppercase">
+                        <span className="text-[9px] font-black uppercase block text-[var(--galf-text-muted)]">Site choisi :</span>
+                        <span className="text-xs font-black uppercase text-[var(--galf-text)]">
                           {selectedCenter === 'abidjan' ? "Centre d'Abidjan (Yopougon)" : "Centre de San Pedro"}
                         </span>
                       </div>
                       <div className="text-right">
-                        <span className="text-[9px] font-black uppercase text-white/40 block">Ticket N° :</span>
+                        <span className="text-[9px] font-black uppercase block text-[var(--galf-text-muted)]">Ticket N° :</span>
                         <span className="text-xs font-mono font-black text-galf-yellow">{bookedPassId}</span>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-[9px] font-bold text-white/40 block">Visiteur :</span>
-                        <span className="text-xs font-black text-white">{visitorName}</span>
+                        <span className="text-[9px] font-bold block text-[var(--galf-text-muted)]">Visiteur :</span>
+                        <span className="text-xs font-black text-[var(--galf-text)]">{visitorName}</span>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-white/40 block">Téléphone :</span>
-                        <span className="text-xs font-black text-white">{visitorPhone}</span>
+                        <span className="text-[9px] font-bold block text-[var(--galf-text-muted)]">Téléphone :</span>
+                        <span className="text-xs font-black text-[var(--galf-text)]">{visitorPhone}</span>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 pt-2">
                       <div>
-                        <span className="text-[9px] font-bold text-white/40 block">Date prévue :</span>
-                        <span className="text-xs font-black text-white">{selectedDay} Juin 2026</span>
+                        <span className="text-[9px] font-bold block text-[var(--galf-text-muted)]">Date prévue :</span>
+                        <span className="text-xs font-black text-[var(--galf-text)]">{selectedDay} Juin 2026</span>
                       </div>
                       <div>
-                        <span className="text-[9px] font-bold text-white/40 block">Créneau horaire :</span>
+                        <span className="text-[9px] font-bold block text-[var(--galf-text-muted)]">Créneau horaire :</span>
                         <span className="text-xs font-black text-galf-yellow">{selectedSlot}</span>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-white/5 flex items-center justify-between gap-4">
+                    <div className="pt-4 border-t border-[var(--galf-border)] flex items-center justify-between gap-4">
                       <div className="space-y-1">
-                        <span className="text-[9px] text-red-400 font-bold block">🛡️ Consignes obligatoires :</span>
-                        <span className="text-[8px] text-white/50 block">• Chaussures fermées / EPI recommandés</span>
-                        <span className="text-[8px] text-white/50 block">• Pièce d'identité requise à l'accueil</span>
+                        <span className="text-[9px] text-red-500 dark:text-red-400 font-bold block">🛡️ Consignes obligatoires :</span>
+                        <span className="text-[8px] block text-[var(--galf-text-secondary)]">• Chaussures fermées / EPI recommandés</span>
+                        <span className="text-[8px] block text-[var(--galf-text-secondary)]">• Pièce d'identité requise à l'accueil</span>
                       </div>
                       
                       {/* Mock QR Code */}
@@ -930,7 +930,7 @@ export default function Home() {
               <div className="grid lg:grid-cols-12 gap-8 items-start">
                 
                 {/* Left Panel: Calendar Grid & Slots */}
-                <div className="lg:col-span-7 glass-card p-6 md:p-8 rounded-[2rem] border border-white/5 space-y-6">
+                <div className="lg:col-span-7 glass-card p-6 md:p-8 rounded-[2rem] space-y-6">
                   {/* Site Tabs */}
                   <div className="flex gap-2">
                     <button
@@ -941,7 +941,7 @@ export default function Home() {
                       className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all border ${
                         selectedCenter === 'abidjan'
                           ? 'bg-galf-yellow text-galf-carbon border-galf-yellow'
-                          : 'bg-white/5 text-white/70 border-white/5 hover:bg-white/10'
+                          : 'bg-black/5 dark:bg-white/5 text-[var(--galf-text-secondary)] border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10'
                       }`}
                     >
                       Plateau Abidjan
@@ -954,7 +954,7 @@ export default function Home() {
                       className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all border ${
                         selectedCenter === 'sanpedro'
                           ? 'bg-galf-yellow text-galf-carbon border-galf-yellow'
-                          : 'bg-white/5 text-white/70 border-white/5 hover:bg-white/10'
+                          : 'bg-black/5 dark:bg-white/5 text-[var(--galf-text-secondary)] border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10'
                       }`}
                     >
                       Plateau San Pedro
@@ -963,8 +963,8 @@ export default function Home() {
 
                   {/* Calendar Grid */}
                   <div>
-                    <h4 className="text-[10px] font-black uppercase text-white/50 tracking-wider mb-3">Sélecteur de Date — Juin 2026</h4>
-                    <div className="grid grid-cols-7 gap-2 text-center text-[10px] font-black text-white/40 mb-2">
+                    <h4 className="text-[10px] font-black uppercase tracking-wider mb-3 text-[var(--galf-text-muted)]">Sélecteur de Date — Juin 2026</h4>
+                    <div className="grid grid-cols-7 gap-2 text-center text-[10px] font-black mb-2 text-[var(--galf-text-muted)]">
                       <span>LU</span><span>MA</span><span>ME</span><span>JE</span><span>VE</span><span>SA</span><span>DI</span>
                     </div>
                     
@@ -985,9 +985,9 @@ export default function Home() {
                               setSelectedSlot(null)
                             }}
                             className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-bold transition-all relative ${
-                              !isAvailable ? 'text-white/10 bg-transparent cursor-not-allowed' :
+                              !isAvailable ? 'text-black/10 dark:text-white/10 bg-transparent cursor-not-allowed' :
                               selectedDay === dayNum ? 'bg-galf-yellow text-galf-carbon font-black shadow-lg scale-105' :
-                              'bg-white/5 text-white border border-white/5 hover:bg-white/15'
+                              'bg-black/5 dark:bg-white/5 text-[var(--galf-text)] border border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/15'
                             }`}
                           >
                             <span>{dayNum}</span>
@@ -1003,7 +1003,7 @@ export default function Home() {
                   {/* Slot selector */}
                   {selectedDay && (
                     <div className="space-y-3 animate-fadeIn">
-                      <h4 className="text-[10px] font-black uppercase text-white/50 tracking-wider">Créneaux horaires pour le {selectedDay} Juin :</h4>
+                      <h4 className="text-[10px] font-black uppercase tracking-wider text-[var(--galf-text-secondary)]">Créneaux horaires pour le {selectedDay} Juin :</h4>
                       <div className="grid sm:grid-cols-2 gap-3">
                         {timeSlots.map((slot, idx) => {
                           const isFull = slot.status === "Complet"
@@ -1014,12 +1014,12 @@ export default function Home() {
                               disabled={isFull}
                               onClick={() => setSelectedSlot(slot.time)}
                               className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all ${
-                                isFull ? 'bg-transparent border-white/5 opacity-40 cursor-not-allowed' :
-                                selectedSlot === slot.time ? 'bg-galf-yellow/15 border-galf-yellow text-white glow-yellow' :
-                                'bg-white/5 border-white/5 hover:border-white/20'
+                                isFull ? 'bg-transparent border-black/5 dark:border-white/5 opacity-40 cursor-not-allowed' :
+                                selectedSlot === slot.time ? 'bg-galf-yellow/15 border-galf-yellow text-[var(--galf-text)] glow-yellow' :
+                                'bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5 hover:border-black/10 dark:hover:bg-white/20'
                               }`}
                             >
-                              <span className="text-xs font-black text-white">{slot.time}</span>
+                              <span className="text-xs font-black text-[var(--galf-text)]">{slot.time}</span>
                               <span className={`text-[9px] font-bold mt-1 ${isFull ? 'text-red-400' : 'text-galf-yellow/70'}`}>
                                 {slot.status}
                               </span>
@@ -1034,9 +1034,9 @@ export default function Home() {
 
                 {/* Right Panel: Booking Credentials */}
                 <div className="lg:col-span-5">
-                  <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-white/5 h-full flex flex-col justify-between min-h-[300px]">
+                  <div className="glass-card p-6 md:p-8 rounded-[2rem] h-full flex flex-col justify-between min-h-[300px]">
                     {!selectedDay || !selectedSlot ? (
-                      <div className="my-auto text-center space-y-3 p-6 text-white/40">
+                      <div className="my-auto text-center space-y-3 p-6 text-[var(--galf-text-muted)]">
                         <Calendar className="w-10 h-10 mx-auto opacity-30" />
                         <h4 className="text-xs font-black uppercase tracking-wider">Formulaire de réservation</h4>
                         <p className="text-[10px] max-w-xs mx-auto leading-relaxed">
@@ -1045,15 +1045,15 @@ export default function Home() {
                       </div>
                     ) : (
                       <form onSubmit={handleBookingSubmit} className="space-y-4">
-                        <div className="border-b border-white/5 pb-4 mb-4">
-                          <span className="text-[10px] text-white/40 font-bold uppercase block">Visite planifiée le :</span>
+                        <div className="border-b border-[var(--galf-border)] pb-4 mb-4">
+                          <span className="text-[10px] text-[var(--galf-text-muted)] font-bold uppercase block">Visite planifiée le :</span>
                           <span className="text-sm font-black text-galf-yellow uppercase">
                             Le {selectedDay} Juin 2026 à {selectedSlot}
                           </span>
                         </div>
 
                         <div className="flex flex-col gap-1.5">
-                          <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                          <label className="text-[10px] font-black uppercase tracking-wider text-[var(--galf-text-secondary)]">
                             Nom &amp; Prénom
                           </label>
                           <input
@@ -1062,12 +1062,12 @@ export default function Home() {
                             placeholder="Votre nom complet"
                             value={visitorName}
                             onChange={(e) => setVisitorName(e.target.value)}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                            className="w-full bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 rounded-xl p-3 text-xs text-[var(--galf-text)] outline-none focus:border-galf-yellow"
                           />
                         </div>
 
                         <div className="flex flex-col gap-1.5">
-                          <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                          <label className="text-[10px] font-black uppercase tracking-wider text-[var(--galf-text-secondary)]">
                             Numéro de téléphone
                           </label>
                           <input
@@ -1076,7 +1076,7 @@ export default function Home() {
                             placeholder="Ex: +225 07 11 82 65 07"
                             value={visitorPhone}
                             onChange={(e) => setVisitorPhone(e.target.value)}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                            className="w-full bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 rounded-xl p-3 text-xs text-[var(--galf-text)] outline-none focus:border-galf-yellow"
                           />
                         </div>
 
