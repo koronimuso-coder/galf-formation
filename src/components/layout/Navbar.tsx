@@ -8,6 +8,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { theme, toggleTheme } = useTheme()
+  const [showMarquee, setShowMarquee] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -15,10 +16,31 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const closedTime = localStorage.getItem('galf_marquee_closed_time')
+    if (closedTime) {
+      const elapsed = Date.now() - parseInt(closedTime, 10)
+      if (elapsed < 24 * 60 * 60 * 1000) {
+        setShowMarquee(false)
+        document.documentElement.style.setProperty('--marquee-offset', '0px')
+        return
+      }
+    }
+    setShowMarquee(true)
+    document.documentElement.style.setProperty('--marquee-offset', '36px')
+  }, [])
+
+  const handleCloseMarquee = () => {
+    localStorage.setItem('galf_marquee_closed_time', Date.now().toString())
+    setShowMarquee(false)
+    document.documentElement.style.setProperty('--marquee-offset', '0px')
+  }
+
   const links = [
     { href: '/formations', label: 'Formations' },
     { href: '/entreprise', label: 'Entreprises' },
     { href: '/mediatheque', label: 'Médiathèque' },
+    { href: '/mediatheque/simulateur', label: 'Simulateur 3D' },
     { href: '/a-propos', label: 'À propos' },
     { href: '/blog', label: 'Actualités' },
     { href: '/contact', label: 'Contact' },
@@ -26,11 +48,39 @@ export function Navbar() {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? 'shadow-lg border-b border-[var(--galf-border)]'
-          : 'border-b border-transparent'
-      }`} style={{ background: scrolled ? 'var(--galf-surface)' : 'transparent' }}>
+      <div className="fixed top-0 left-0 right-0 z-50 flex flex-col w-full">
+        {showMarquee && (
+          <div className="bg-galf-yellow text-galf-carbon text-[11px] uppercase tracking-wider font-extrabold h-9 flex items-center relative overflow-hidden border-b border-galf-yellow/20 select-none z-[60]">
+            <div className="flex-1 overflow-hidden relative h-full flex items-center pr-12">
+              <div className="animate-marquee whitespace-nowrap flex gap-16 absolute pl-4">
+                <span className="flex items-center gap-2">⚡ Offre Exceptionnelle : -15% sur toutes les formations Grue et Pelle jusqu'à la fin du mois !</span>
+                <span className="flex items-center gap-2">🏗️ Nouveau : Ouverture de notre centre de pratique à San Pedro ! Réservez vite.</span>
+                <span className="flex items-center gap-2">🎓 Conformité : Certifications BTP de pointe en Côte d'Ivoire.</span>
+                
+                {/* Duplicated for infinite effect */}
+                <span className="flex items-center gap-2">⚡ Offre Exceptionnelle : -15% sur toutes les formations Grue et Pelle jusqu'à la fin du mois !</span>
+                <span className="flex items-center gap-2">🏗️ Nouveau : Ouverture de notre centre de pratique à San Pedro ! Réservez vite.</span>
+                <span className="flex items-center gap-2">🎓 Conformité : Certifications BTP de pointe en Côte d'Ivoire.</span>
+              </div>
+            </div>
+            
+            <div className="absolute right-0 top-0 bottom-0 flex items-center pl-6 pr-4 bg-gradient-to-l from-galf-yellow via-galf-yellow to-transparent z-20">
+              <button 
+                onClick={handleCloseMarquee} 
+                className="hover:scale-110 transition-transform p-1 rounded-full hover:bg-black/10 flex items-center justify-center cursor-pointer"
+                aria-label="Fermer l'annonce"
+              >
+                <X className="w-4 h-4 text-galf-carbon" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <nav className={`w-full transition-all duration-500 ${
+          scrolled
+            ? 'shadow-lg border-b border-[var(--galf-border)]'
+            : 'border-b border-transparent'
+        }`} style={{ background: scrolled ? 'var(--galf-surface)' : 'transparent' }}>
         <div className="container mx-auto px-4 h-20 flex items-center justify-between max-w-7xl">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-lg bg-galf-yellow flex items-center justify-center group-hover:scale-105 transition-transform shadow-md">
@@ -44,8 +94,16 @@ export function Navbar() {
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-7">
             {links.map(link => (
-              <Link key={link.href} href={link.href} className="text-[13px] font-semibold uppercase tracking-[0.12em] transition-colors hover:text-galf-yellow" style={{ color: 'var(--galf-text-secondary)' }}>
+              <Link 
+                key={link.href} 
+                href={link.href} 
+                className="text-[13px] font-semibold uppercase tracking-[0.12em] transition-colors hover:text-galf-yellow flex items-center gap-1.5" 
+                style={{ color: link.label === 'Simulateur 3D' ? 'rgb(255, 176, 0)' : 'var(--galf-text-secondary)' }}
+              >
                 {link.label}
+                {link.label === 'Simulateur 3D' && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-galf-yellow animate-pulse shadow-[0_0_8px_#ffb000]" />
+                )}
               </Link>
             ))}
 
@@ -78,6 +136,7 @@ export function Navbar() {
           </div>
         </div>
       </nav>
+      </div>
 
       {/* Mobile menu */}
       <div className={`fixed inset-0 z-40 transition-all duration-500 lg:hidden ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}

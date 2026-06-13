@@ -270,3 +270,30 @@ iframe + .spline-watermark {
   opacity: 0 !important;
 }
 
+/* ── Marquee Announcement Bar Animation ── */
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+main {
+  padding-top: calc(5rem + var(--marquee-offset, 0px)) !important;
+  transition: padding-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+

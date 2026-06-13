@@ -1,9 +1,11 @@
 "use client"
 import Image from 'next/image'
+import Link from 'next/link'
 import { Play, Image as ImageIcon, Video, Filter, Maximize2, X } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { FadeIn } from '@/components/animations/FadeIn'
 
 export default function Mediatheque() {
   const [filter, setFilter] = useState<'all' | 'image' | 'video'>('all')
@@ -32,6 +34,29 @@ export default function Mediatheque() {
       />
 
       <div className="container-galf relative z-10 mt-16">
+
+        {/* Simulator Banner Promotion */}
+        <FadeIn delay={0.1}>
+          <div className="glass-card p-8 md:p-12 rounded-[2.5rem] bg-gradient-to-r from-galf-yellow/10 to-transparent border-galf-yellow/20 relative overflow-hidden mb-16 group">
+            <div className="absolute top-0 right-0 w-[30%] h-full bg-galf-yellow/5 skew-x-12 translate-x-12 pointer-events-none" />
+            <div className="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
+              <div className="max-w-xl text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-galf-yellow/15 border border-galf-yellow/30 rounded-full text-galf-yellow text-[9px] font-black uppercase tracking-widest mb-6 animate-pulse">
+                  Nouveau : Simulateur Virtuel
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tighter" style={{ color: 'var(--galf-text)' }}>
+                  Dominez les machines en <span className="text-galf-yellow">3D active</span>
+                </h2>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>
+                  Installez-vous aux commandes de la Pelle hydraulique, de la Grue à tour ou du Bulldozer. Activez le son du moteur diesel et testez vos réflexes HSE.
+                </p>
+              </div>
+              <Link href="/mediatheque/simulateur" className="bg-slate-900 dark:bg-white text-white dark:text-galf-carbon hover:bg-galf-yellow dark:hover:bg-galf-yellow px-10 py-4.5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-xl hover:shadow-galf-yellow/10 shrink-0">
+                Lancer le Simulateur →
+              </Link>
+            </div>
+          </div>
+        </FadeIn>
 
         {/* Filters */}
         <div className="flex justify-center gap-4 mb-12">

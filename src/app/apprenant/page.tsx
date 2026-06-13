@@ -1,13 +1,84 @@
 "use client"
 import { FadeIn } from '@/components/animations/FadeIn'
 import Image from 'next/image'
-import { Play, BookOpen, CheckCircle2, Clock, Award, FileText, Download, ExternalLink, TrendingUp, Lock } from 'lucide-react'
-import { useState, useRef } from 'react'
+import { Play, BookOpen, CheckCircle2, Clock, Award, FileText, Download, ExternalLink, TrendingUp, Lock, Check, X, AlertTriangle, Timer, Edit3, ShieldAlert, Award as BadgeIcon } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { HardHat } from 'lucide-react'
+
+// Lightweight window-relative canvas confetti particles
+function ConfettiEffect() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+
+    const particles: any[] = []
+    const colors = ['#FFB000', '#FFD700', '#8b939c', '#10B981', '#3B82F6', '#EF4444']
+
+    for (let i = 0; i < 150; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: 4 + Math.random() * 6,
+        d: Math.random() * canvas.height,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+        tiltAngle: 0
+      })
+    }
+
+    let animationId: number
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      let finished = true
+
+      particles.forEach((p) => {
+        p.tiltAngle += p.tiltAngleIncremental
+        p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2
+        p.x += Math.sin(p.tiltAngle)
+        p.tilt = Math.sin(p.tiltAngle - p.r / 2) * 15
+
+        if (p.y < canvas.height) {
+          finished = false
+        }
+
+        ctx.beginPath()
+        ctx.lineWidth = p.r
+        ctx.strokeStyle = p.color
+        ctx.moveTo(p.x + p.tilt + p.r / 2, p.y)
+        ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2)
+        ctx.stroke()
+      })
+
+      if (!finished) {
+        animationId = requestAnimationFrame(draw)
+      }
+    }
+
+    draw()
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      cancelAnimationFrame(animationId)
+    }
+  }, [])
+
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-[120] w-full h-full" />
+}
 
 export default function ApprenantDashboard() {
   const [activeTab, setActiveTab] = useState<'cours' | 'certificats'>('cours')
@@ -18,14 +89,266 @@ export default function ApprenantDashboard() {
 
   const certificateRef = useRef<HTMLDivElement>(null)
 
-  const modules = [
+  // Track modules completed state dynamically
+  const [modules, setModules] = useState([
     { id: 1, title: "Module 1 : Sécurité et réglementation", duration: "2h30", completed: true, lessons: 5 },
     { id: 2, title: "Module 2 : Connaissance de l'engin", duration: "3h00", completed: true, lessons: 6 },
     { id: 3, title: "Module 3 : Conduite en terrain plat", duration: "4h00", completed: false, lessons: 8, current: true },
     { id: 4, title: "Module 4 : Travaux de terrassement", duration: "5h00", completed: false, lessons: 7 },
     { id: 5, title: "Module 5 : Situations complexes", duration: "3h30", completed: false, lessons: 5 },
     { id: 6, title: "Module 6 : Évaluation finale", duration: "2h00", completed: false, lessons: 3 },
+  ])
+
+  // HSE Quiz State
+  const [showQuiz, setShowQuiz] = useState(false)
+  const [quizStep, setQuizStep] = useState(0)
+  const [quizScore, setQuizScore] = useState(0)
+  const [selectedOption, setSelectedOption] = useState<number | null>(null)
+  const [quizFeedback, setQuizFeedback] = useState<'correct' | 'incorrect' | null>(null)
+  const [quizCompleted, setQuizCompleted] = useState(false)
+
+  // ----------------------------------------------------
+  // NEW STATES FOR ADVANCED WIDGETS
+  // ----------------------------------------------------
+  // Pomodoro
+  const [pomoMinutes, setPomoMinutes] = useState(25)
+  const [pomoSeconds, setPomoSeconds] = useState(0)
+  const [pomoActive, setPomoActive] = useState(false)
+
+  // Notes
+  const [notes, setNotes] = useState("")
+
+  // EPI Safety Game
+  const [equippedEpi, setEquippedEpi] = useState<string[]>([])
+  const [epiCompleted, setEpiCompleted] = useState(false)
+
+  const quizQuestions = [
+    {
+      q: "Quelle est la distance minimale de sécurité à respecter par rapport aux lignes électriques aériennes de moyenne tension ?",
+      options: [
+        "1 mètre",
+        "3 mètres (distance réglementaire)",
+        "5 mètres"
+      ],
+      correct: 1,
+      explain: "La distance de sécurité minimale réglementaire pour les lignes de moyenne tension (< 50 kV) est de 3 mètres pour éviter tout risque d'arc électrique."
+    },
+    {
+      q: "Lors du stationnement d'une pelle hydraulique en fin de journée, comment doit être positionné le godet ?",
+      options: [
+        "Suspendu à 1 mètre de haut pour éviter les chocs au démarrage",
+        "Posé sur la remorque du camion de transport",
+        "Posé à plat sur le sol, dents vers le bas, équipement replié"
+      ],
+      correct: 2,
+      explain: "L'équipement de travail doit toujours être abaissé et reposé au sol pour éliminer toute énergie potentielle et prévenir les chutes accidentelles."
+    },
+    {
+      q: "Quel est le premier réflexe à avoir si vous perdez le contrôle de la machine suite à une rupture de flexible hydraulique ?",
+      options: [
+        "Abaisser immédiatement tous les équipements au sol et couper le moteur",
+        "Sauter hors de la cabine en mouvement",
+        "Klaxonner en continu en attendant les secours"
+      ],
+      correct: 0,
+      explain: "Abaisser l'équipement stoppe les mouvements accidentels par gravité. Couper le moteur coupe la pression hydraulique. Ne sautez jamais d'un engin en mouvement !"
+    }
   ]
+
+  // ----------------------------------------------------
+  // AUDIO SYNTH HELPER
+  // ----------------------------------------------------
+  const triggerAudioAlert = (freq = 880, duration = 0.2) => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(freq, ctx.currentTime)
+      gain.gain.setValueAtTime(0.04, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start()
+      osc.stop(ctx.currentTime + duration)
+      setTimeout(() => ctx.close(), duration * 1000 + 100)
+    } catch (e) {}
+  }
+
+  // Load notes from localStorage on client side mount
+  useEffect(() => {
+    const savedNotes = localStorage.getItem('galf_study_notes')
+    if (savedNotes) setNotes(savedNotes)
+  }, [])
+
+  // Save notes to localStorage
+  const handleNotesChange = (val: string) => {
+    setNotes(val)
+    localStorage.setItem('galf_study_notes', val)
+  }
+
+  // Pomodoro Timer Loop
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (pomoActive) {
+      timer = setInterval(() => {
+        if (pomoSeconds > 0) {
+          setPomoSeconds(prev => prev - 1)
+        } else if (pomoMinutes > 0) {
+          setPomoMinutes(prev => prev - 1)
+          setPomoSeconds(59)
+        } else {
+          setPomoActive(false)
+          triggerAudioAlert(880, 0.4)
+          alert("Session d'étude terminée ! Prenez une pause de sécurité obligatoire.")
+        }
+      }, 1000)
+    }
+    return () => clearInterval(timer)
+  }, [pomoActive, pomoMinutes, pomoSeconds])
+
+  const togglePomodoro = () => {
+    triggerAudioAlert(pomoActive ? 440 : 660, 0.15)
+    setPomoActive(!pomoActive)
+  }
+
+  const resetPomodoro = () => {
+    triggerAudioAlert(330, 0.15)
+    setPomoActive(false)
+    setPomoMinutes(25)
+    setPomoSeconds(0)
+  }
+
+  // Export Notes
+  const handleExportNotes = () => {
+    const blob = new Blob([notes], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `Notes-Chantier-GALF-${new Date().toISOString().slice(0, 10)}.txt`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  // EPI Safety Game Logic
+  const epiItems = [
+    { id: 'casque', label: 'Casque de chantier', isEpi: true, icon: '🪖' },
+    { id: 'short', label: 'Short léger', isEpi: false, icon: '🩳' },
+    { id: 'gilet', label: 'Gilet réfléchissant', isEpi: true, icon: '🦺' },
+    { id: 'tong', label: 'Tongs de plage', isEpi: false, icon: '🩴' },
+    { id: 'bottes', label: 'Bottes de sécurité', isEpi: true, icon: '🥾' },
+    { id: 'gants', label: 'Gants renforcés', isEpi: true, icon: '🧤' },
+    { id: 'lunettes', label: 'Lunettes de protection', isEpi: true, icon: '🥽' },
+    { id: 'casquette', label: 'Casquette simple', isEpi: false, icon: '🧢' },
+  ]
+
+  const handleToggleEpi = (id: string) => {
+    if (epiCompleted) return
+    triggerAudioAlert(600, 0.05)
+    let updated: string[]
+    if (equippedEpi.includes(id)) {
+      updated = equippedEpi.filter(x => x !== id)
+    } else {
+      updated = [...equippedEpi, id]
+    }
+    setEquippedEpi(updated)
+    
+    // Validate: 5 Correct EPI items and 0 incorrect items
+    const episEquipped = updated.filter(x => epiItems.find(item => item.id === x)?.isEpi)
+    const nonEpisEquipped = updated.filter(x => !epiItems.find(item => item.id === x)?.isEpi)
+    
+    if (episEquipped.length === 5 && nonEpisEquipped.length === 0) {
+      setEpiCompleted(true)
+      triggerAudioAlert(523.25, 0.2)
+      setTimeout(() => triggerAudioAlert(659.25, 0.2), 120)
+      setTimeout(() => triggerAudioAlert(783.99, 0.35), 240)
+    }
+  }
+
+  const handleOptionSelect = (idx: number) => {
+    if (quizFeedback !== null) return
+    setSelectedOption(idx)
+    const isCorrect = idx === quizQuestions[quizStep].correct
+    if (isCorrect) {
+      setQuizFeedback('correct')
+      setQuizScore(prev => prev + 1)
+      triggerAudioAlert(880, 0.15)
+    } else {
+      setQuizFeedback('incorrect')
+      triggerAudioAlert(220, 0.3)
+    }
+  }
+
+  const handleNextQuestion = () => {
+    setSelectedOption(null)
+    setQuizFeedback(null)
+    if (quizStep < quizQuestions.length - 1) {
+      setQuizStep(prev => prev + 1)
+    } else {
+      setQuizCompleted(true)
+    }
+  }
+
+  const handleFinishQuiz = () => {
+    setShowQuiz(false)
+    setQuizCompleted(false)
+    setQuizStep(0)
+    setQuizScore(0)
+    
+    // Set Module 3 as completed, and Module 4 as current
+    setModules(prev => prev.map(m => {
+      if (m.id === 3) return { ...m, completed: true, current: false }
+      if (m.id === 4) return { ...m, current: true }
+      return m
+    }))
+  }
+
+  const [userName, setUserName] = useState("JEAN KOUADIO")
+  const [cockpitTheme, setCockpitTheme] = useState<'carbon' | 'steel' | 'gold'>('carbon')
+  const [selectedAvatar, setSelectedAvatar] = useState({ name: "Jean Kouadio", icon: "👷", role: "Opérateur de pelle" })
+  
+  const avatars = [
+    { name: "Jean Kouadio", icon: "👷", role: "Opérateur de pelle" },
+    { name: "Mariam Diallo", icon: "👩‍🔧", role: "Technicienne HSE" },
+    { name: "Kouamé N'Guessan", icon: "🏢", role: "Superviseur de chantier" }
+  ]
+
+  // Audio Guide Speech State
+  const [isSpeaking, setIsSpeaking] = useState(false)
+
+  // Waiver sign state
+  const [isWaiverSigned, setIsWaiverSigned] = useState(false)
+  const [waiverChecked, setWaiverChecked] = useState(false)
+  const [signatureName, setSignatureName] = useState("")
+
+  const speakModule = () => {
+    if ('speechSynthesis' in window) {
+      if (isSpeaking) {
+        window.speechSynthesis.cancel()
+        setIsSpeaking(false)
+        return
+      }
+      const textToSpeak = `Module de formation GALF. ${modules[activeModule].title}. Ce module dure environ ${modules[activeModule].duration}. Il contient ${modules[activeModule].lessons} leçons. Veuillez écouter les instructions de sécurité et inspecter votre équipement.`
+      const utterance = new SpeechSynthesisUtterance(textToSpeak)
+      utterance.lang = 'fr-FR'
+      utterance.onend = () => setIsSpeaking(false)
+      utterance.onerror = () => setIsSpeaking(false)
+      setIsSpeaking(true)
+      window.speechSynthesis.speak(utterance)
+    } else {
+      alert("La synthèse vocale n'est pas supportée par votre navigateur.")
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel()
+      }
+    }
+  }, [])
 
   const resources = [
     { title: "Manuel de l'opérateur - Pelle hydraulique", type: "PDF", size: "12 MB" },
@@ -34,7 +357,6 @@ export default function ApprenantDashboard() {
   ]
 
   const [certData] = useState({
-    userName: "JEAN KOUADIO",
     course: "Pelle Hydraulique sur chenilles",
     date: "11 Avril 2024",
     id: "GALF-2024-XP-03",
@@ -42,6 +364,10 @@ export default function ApprenantDashboard() {
   })
 
   const handleGenerateCertificate = () => {
+    if (!isWaiverSigned) {
+      alert("Veuillez d'abord signer le règlement de sécurité de GALF.")
+      return
+    }
     setIsGenerating(true)
     setTimeout(() => {
       setIsGenerating(false)
@@ -65,7 +391,7 @@ export default function ApprenantDashboard() {
         format: [canvas.width, canvas.height]
       });
       pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-      pdf.save(`Certificat-GALF-${certData.userName.replace(' ', '-')}.pdf`);
+      pdf.save(`Certificat-GALF-${userName.replace(/\s+/g, '-')}.pdf`);
     } catch (err) {
       console.error('Failed to generate PDF', err);
     } finally {
@@ -76,8 +402,25 @@ export default function ApprenantDashboard() {
   const completedCount = modules.filter(m => m.completed).length
   const progress = Math.round((completedCount / modules.length) * 100)
 
+  // BADGES DEFINITION
+  const badgesList = [
+    { name: "Démarrage Rapide", desc: "Modules 1 & 2 validés", icon: "🔑", unlocked: true },
+    { name: "Sécuritaire HSE", desc: "Module 3 (Quiz HSE) validé", icon: "🛡️", unlocked: modules[2].completed },
+    { name: "Inspecteur EPI", desc: "Jeu des EPI résolu", icon: "🦺", unlocked: epiCompleted },
+    { name: "As du Volant", desc: "Score de 3/3 à l'examen", icon: "🏆", unlocked: quizCompleted && quizScore === 3 },
+    { name: "Chronométreur", desc: "Bloc-notes de chantier rédigé", icon: "⏱️", unlocked: notes.trim().length > 30 },
+    { name: "Major de Promo", desc: "Score parfait global (En cours)", icon: "🎓", unlocked: false },
+  ]
+
+  const themeBgColors = {
+    carbon: 'var(--galf-bg)',
+    steel: '#111827',
+    gold: '#1c160c'
+  }
+
   return (
-    <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
+    <div className="min-h-screen relative overflow-hidden pb-24 transition-colors duration-500" style={{ background: themeBgColors[cockpitTheme] }}>
+      {(quizCompleted || epiCompleted) && <ConfettiEffect />}
       <PageHeader 
         title={`${certData.course} — FORMATION`}
         subtitle="Suivez votre progression, accédez à vos modules et téléchargez vos certifications officielles."
@@ -111,7 +454,7 @@ export default function ApprenantDashboard() {
                 {/* Progress Card Highlights */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                   {[
-                    { label: "Terminé", val: "2/6", icon: CheckCircle2 },
+                    { label: "Terminé", val: `${completedCount}/${modules.length}`, icon: CheckCircle2 },
                     { label: "Temps passé", val: "5h 30m", icon: Clock },
                     { label: "Moyenne", val: certData.score, icon: Award },
                     { label: "Progression", val: `${progress}%`, icon: TrendingUp },
@@ -126,26 +469,150 @@ export default function ApprenantDashboard() {
                   ))}
                 </div>
 
-                <div className="aspect-video rounded-3xl overflow-hidden relative mb-8 group cursor-pointer shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5" style={{ background: 'black' }}>
-                  <Image 
-                    src="/images/about/apprenant-action.png" 
-                    alt="Formation en cours" 
-                    fill
-                    className="object-cover opacity-60 group-hover:opacity-80 transition-all duration-700 group-hover:scale-105" 
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-24 h-24 rounded-full bg-galf-yellow flex items-center justify-center shadow-[0_0_50px_rgba(255,176,0,0.5)] group-hover:scale-110 transition-transform">
-                      <Play className="w-10 h-10 text-galf-carbon ml-1" />
+                {!showQuiz ? (
+                  // Normal View: Video Player
+                  <div 
+                    onClick={() => {
+                      if (activeModule === 2) {
+                        setShowQuiz(true)
+                      }
+                    }} 
+                    className="aspect-video rounded-3xl overflow-hidden relative mb-8 group cursor-pointer shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/5" 
+                    style={{ background: 'black' }}
+                  >
+                    <Image 
+                      src="/images/about/apprenant-action.png" 
+                      alt="Formation en cours" 
+                      fill
+                      className="object-cover opacity-60 group-hover:opacity-80 transition-all duration-700 group-hover:scale-105" 
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-24 h-24 rounded-full bg-galf-yellow flex items-center justify-center shadow-[0_0_50px_rgba(255,176,0,0.5)] group-hover:scale-110 transition-transform">
+                        {activeModule === 2 ? (
+                          <Award className="w-10 h-10 text-galf-carbon" />
+                        ) : (
+                          <Play className="w-10 h-10 text-galf-carbon ml-1" />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between pointer-events-none">
-                    <div className="glass-card px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-galf-yellow animate-ping" />
-                      Module 3 : Conduite en terrain plat
+                    <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between pointer-events-none">
+                      <div className="glass-card px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-galf-yellow animate-ping" />
+                        {modules[activeModule].title}
+                      </div>
+                      <div className="glass-card px-6 py-3 rounded-xl text-sm font-bold">
+                        {activeModule === 2 ? "Test Prêt" : "45:00"}
+                      </div>
                     </div>
-                    <div className="glass-card px-6 py-3 rounded-xl text-sm font-bold">45:00</div>
+                    {activeModule === 2 && (
+                      <div className="absolute top-8 right-8 bg-galf-yellow text-galf-carbon px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-2xl group-hover:scale-105 transition-transform">
+                        Passer le Test HSE →
+                      </div>
+                    )}
                   </div>
-                </div>
+                ) : (
+                  // Quiz View
+                  <div className="glass-card p-8 md:p-12 rounded-[2rem] border-galf-yellow/20 bg-galf-carbon text-white mb-8 min-h-[400px] flex flex-col justify-between relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
+                    
+                    {!quizCompleted ? (
+                      // Active Quiz Questions
+                      <div>
+                        <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+                          <span className="text-xs font-black text-galf-yellow uppercase tracking-widest">
+                            Évaluation Module 3 (HSE)
+                          </span>
+                          <span className="text-xs font-bold text-white/40">
+                            Question {quizStep + 1} sur {quizQuestions.length}
+                          </span>
+                        </div>
+
+                        <h3 className="text-xl md:text-2xl font-black mb-8 leading-snug">
+                          {quizQuestions[quizStep].q}
+                        </h3>
+
+                        <div className="space-y-4">
+                          {quizQuestions[quizStep].options.map((opt, idx) => {
+                            const isSelected = selectedOption === idx
+                            const isCorrect = idx === quizQuestions[quizStep].correct
+                            
+                            let btnStyle = "border-white/10 hover:border-galf-yellow/50 bg-white/5"
+                            if (isSelected) {
+                              if (quizFeedback === 'correct') {
+                                  btnStyle = "border-green-500 bg-green-500/20 text-white font-black"
+                              } else {
+                                  btnStyle = "border-red-500 bg-red-500/20 text-white font-black"
+                              }
+                            } else if (quizFeedback !== null && isCorrect) {
+                              btnStyle = "border-green-500 bg-green-500/10 text-white"
+                            }
+
+                            return (
+                              <button 
+                                key={idx}
+                                disabled={quizFeedback !== null}
+                                onClick={() => handleOptionSelect(idx)}
+                                className={`w-full text-left p-5 rounded-xl text-sm font-bold flex items-center justify-between border transition-all ${btnStyle}`}
+                              >
+                                <span>{opt}</span>
+                                {isSelected && (
+                                  quizFeedback === 'correct' ? <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 ml-4" /> : <X className="w-5 h-5 text-red-500 shrink-0 ml-4" />
+                                )}
+                                {!isSelected && quizFeedback !== null && isCorrect && (
+                                  <Check className="w-5 h-5 text-green-500 shrink-0 ml-4" />
+                                )}
+                              </button>
+                            )
+                          })}
+                        </div>
+
+                        {quizFeedback !== null && (
+                          <div className={`mt-8 p-5 rounded-2xl border text-xs leading-relaxed flex gap-3 ${
+                            quizFeedback === 'correct' ? 'bg-green-500/10 border-green-500/20 text-green-300' : 'bg-red-500/10 border-red-500/20 text-red-300'
+                          }`}>
+                            {quizFeedback === 'correct' ? (
+                              <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                            ) : (
+                              <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
+                            )}
+                            <div>
+                              <strong className="block font-black mb-1 uppercase tracking-wider">
+                                {quizFeedback === 'correct' ? 'Bonne Réponse !' : 'Mauvaise Réponse'}
+                              </strong>
+                              {quizQuestions[quizStep].explain}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      // Quiz Completed view
+                      <div className="text-center py-6 flex flex-col items-center justify-center">
+                        <Award className="w-20 h-20 text-galf-yellow mb-6 animate-bounce" />
+                        <h3 className="text-3xl font-black mb-2 text-white">Évaluation validée avec succès !</h3>
+                        <p className="text-sm text-white/60 max-w-sm mb-8">
+                          Vous avez obtenu un score parfait de {quizScore} / {quizQuestions.length} ({Math.round((quizScore / quizQuestions.length) * 100)}% de réussite). Le Module 3 est désormais validé.
+                        </p>
+                        <button 
+                          onClick={handleFinishQuiz}
+                          className="bg-galf-yellow text-galf-carbon px-10 py-4.5 rounded-xl font-black text-sm uppercase tracking-wider hover:brightness-110 transition-all shadow-xl shadow-galf-yellow/15"
+                        >
+                          Enregistrer et Retourner au Parcours
+                        </button>
+                      </div>
+                    )}
+
+                    {!quizCompleted && quizFeedback !== null && (
+                      <div className="mt-8 flex justify-end">
+                        <button 
+                          onClick={handleNextQuestion}
+                          className="bg-galf-yellow text-galf-carbon px-8 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all"
+                        >
+                          {quizStep === quizQuestions.length - 1 ? "Terminer le test" : "Question Suivante →"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="grid md:grid-cols-3 gap-6 mb-12">
                   <div className="glass-card p-6 rounded-2xl flex items-start gap-4">
@@ -176,6 +643,269 @@ export default function ApprenantDashboard() {
                      </div>
                   </div>
                 </div>
+
+                {/* ═══════════════════════════════════════════════
+                    NEW WIDGETS SECTION — Pomodoro, Notes & EPI Game
+                   ═══════════════════════════════════════════════ */}
+                <div className="border-t border-galf-border pt-12 mt-12">
+                  <h3 className="text-xl font-black mb-8 uppercase tracking-widest text-slate-900 dark:text-white flex items-center gap-2">
+                    <HardHat className="text-galf-yellow w-5 h-5" /> Centre d'Étude & Outils Pratiques
+                  </h3>
+
+                  <div className="grid md:grid-cols-2 gap-8 mb-8">
+                    
+                    {/* 1. Pomodoro Timer Widget */}
+                    <div className="glass-card p-6 rounded-[2rem] flex flex-col justify-between border-galf-border">
+                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                          <Timer className="w-3.5 h-3.5" /> Chronomètre d'Étude BTP
+                        </span>
+                        <span className="text-[9px] font-mono text-white/40">Pomodoro 25min</span>
+                      </div>
+
+                      <div className="flex flex-col items-center py-6">
+                        <div className="w-32 h-32 rounded-full border-4 border-dashed border-galf-yellow/20 flex flex-col items-center justify-center relative shadow-inner">
+                          {pomoActive && (
+                            <div className="absolute inset-0 rounded-full border-4 border-galf-yellow border-t-transparent animate-spin-slow pointer-events-none" />
+                          )}
+                          <div className="text-3xl font-mono font-black text-white">
+                            {String(pomoMinutes).padStart(2, '0')}:{String(pomoSeconds).padStart(2, '0')}
+                          </div>
+                          <span className="text-[8px] font-bold text-white/40 mt-1 uppercase tracking-widest">
+                            {pomoActive ? "Session en Cours" : "En Pause"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <button
+                          onClick={togglePomodoro}
+                          className={`flex-1 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                            pomoActive ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-galf-yellow text-galf-carbon hover:brightness-110'
+                          }`}
+                        >
+                          {pomoActive ? "Pause" : "Démarrer"}
+                        </button>
+                        <button
+                          onClick={resetPomodoro}
+                          className="px-4 py-2.5 rounded-xl border border-galf-border hover:border-white/20 text-xs font-bold text-white/70 transition-all"
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 2. Notes Widget */}
+                    <div className="glass-card p-6 rounded-[2rem] flex flex-col justify-between border-galf-border">
+                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                          <Edit3 className="w-3.5 h-3.5" /> Bloc-notes de Chantier
+                        </span>
+                        <span className="text-[9px] font-mono text-white/40">Autosave activé</span>
+                      </div>
+
+                      <textarea
+                        rows={5}
+                        placeholder="Prenez des notes importantes sur les modules, les consignes de sécurité, etc..."
+                        value={notes}
+                        onChange={(e) => handleNotesChange(e.target.value)}
+                        className="w-full rounded-xl p-3 text-xs bg-black/30 border border-white/10 outline-none focus:border-galf-yellow resize-none text-white placeholder-white/20 flex-1 mb-4"
+                      />
+
+                      <button
+                        onClick={handleExportNotes}
+                        disabled={notes.trim().length === 0}
+                        className="w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all bg-white/5 border border-white/10 text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        Exporter mes Notes (.TXT)
+                      </button>
+                    </div>
+
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-8">
+                    
+                    {/* 3. Safety Dress-up Gear Mini-Game */}
+                    <div className="glass-card p-6 rounded-[2rem] border-galf-border">
+                      <div className="flex items-center justify-between mb-6 pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                          <ShieldAlert className="w-3.5 h-3.5" /> Chasse aux Risques : Équiper l'opérateur
+                        </span>
+                        <span className="text-[9px] font-mono text-white/40">HSE Protocol</span>
+                      </div>
+
+                      <p className="text-[11px] text-white/60 mb-4 leading-relaxed">
+                        Sélectionnez uniquement les **5 Équipements de Protection Individuelle (EPI)** indispensables pour accéder au chantier.
+                      </p>
+
+                      {epiCompleted ? (
+                        <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-center my-6 animate-fadeIn">
+                          <CheckCircle2 className="w-10 h-10 text-green-500 mx-auto mb-2 animate-bounce" />
+                          <div className="text-xs font-black text-white uppercase tracking-wider">EPI Validés avec Succès !</div>
+                          <p className="text-[10px] text-green-300/80 mt-1">
+                            Votre opérateur est paré pour le chantier. Le badge "Inspecteur EPI" a été débloqué.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-2 mb-4">
+                          {epiItems.map(item => {
+                            const isSelected = equippedEpi.includes(item.id)
+                            return (
+                              <button
+                                key={item.id}
+                                onClick={() => handleToggleEpi(item.id)}
+                                className={`p-2 rounded-xl text-left text-xs font-bold border transition-all flex items-center gap-2.5 ${
+                                  isSelected 
+                                    ? 'bg-galf-yellow/15 border-galf-yellow text-galf-yellow' 
+                                    : 'bg-black/30 border-white/5 text-white/70 hover:border-white/20'
+                                }`}
+                              >
+                                <span className="text-lg shrink-0">{item.icon}</span>
+                                <span className="truncate">{item.label}</span>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      )}
+
+                      <div className="text-[9px] font-mono text-white/30 text-center">
+                        {equippedEpi.length}/5 Éléments sélectionnés
+                      </div>
+                    </div>
+
+                    {/* 4. Badges Cabinet */}
+                    <div className="glass-card p-6 rounded-[2rem] border-galf-border">
+                      <div className="flex items-center justify-between mb-6 pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                          <BadgeIcon className="w-3.5 h-3.5" /> Cabinet des Badges GALF
+                        </span>
+                        <span className="text-[9px] font-mono text-white/40">Gamification</span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-4">
+                        {badgesList.map((badge, idx) => (
+                          <div 
+                            key={idx} 
+                            className={`p-3 rounded-2xl border flex flex-col items-center justify-center text-center transition-all group relative ${
+                              badge.unlocked 
+                                ? 'bg-galf-yellow/5 border-galf-yellow/20 hover:border-galf-yellow/50' 
+                                : 'bg-black/40 border-white/5 opacity-30'
+                            }`}
+                          >
+                            <span className={`text-2xl mb-1.5 ${badge.unlocked ? 'animate-pulse' : ''}`}>{badge.icon}</span>
+                            <div className="text-[9px] font-black uppercase truncate max-w-full text-white">{badge.name}</div>
+                            
+                            {/* Hover Tooltip */}
+                            <div className="absolute bottom-full mb-2 bg-slate-900 border border-white/10 text-white rounded-lg p-2 text-[9px] w-28 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-2xl z-30 font-bold">
+                              {badge.desc}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-8 mt-8">
+                    {/* 5. Cockpit Theme Customizer */}
+                    <div className="glass-card p-6 rounded-[2rem] border-galf-border flex flex-col justify-between">
+                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                          <HardHat className="w-3.5 h-3.5" /> Personnalisation du Cockpit
+                        </span>
+                        <span className="text-[9px] font-mono text-white/40">Thèmes & Profils</span>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-white/50 block mb-2">Thème de Couleur</label>
+                          <div className="flex gap-2">
+                            {(['carbon', 'steel', 'gold'] as const).map(t => (
+                              <button
+                                key={t}
+                                onClick={() => { triggerAudioAlert(600, 0.05); setCockpitTheme(t); }}
+                                className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all ${
+                                  cockpitTheme === t
+                                    ? 'bg-galf-yellow text-galf-carbon border-galf-yellow'
+                                    : 'bg-black/30 border-white/5 text-white/60 hover:border-white/20'
+                                }`}
+                              >
+                                {t}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-wider text-white/50 block mb-2">Avatar de l'Opérateur</label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {avatars.map((av, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => {
+                                  triggerAudioAlert(600, 0.05);
+                                  setSelectedAvatar(av);
+                                  setUserName(av.name.toUpperCase());
+                                }}
+                                className={`p-2 rounded-xl border transition-all flex flex-col items-center gap-1 text-center ${
+                                  selectedAvatar.name === av.name
+                                    ? 'bg-galf-yellow/15 border-galf-yellow text-galf-yellow'
+                                    : 'bg-black/30 border-white/5 text-white/70 hover:border-white/20'
+                                }`}
+                              >
+                                <span className="text-xl">{av.icon}</span>
+                                <span className="text-[8px] font-bold truncate max-w-full block leading-none">{av.name.split(' ')[0]}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 6. Guide Audio Vocal & Accessibilité */}
+                    <div className="glass-card p-6 rounded-[2rem] border-galf-border flex flex-col justify-between">
+                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                          <BookOpen className="w-3.5 h-3.5" /> Guide Audio de Formation
+                        </span>
+                        <span className="text-[9px] font-mono text-white/40">Accessibilité vocal</span>
+                      </div>
+
+                      <div className="bg-black/30 rounded-2xl p-4 border border-white/5 flex-1 mb-4 flex flex-col justify-center">
+                        <p className="text-[11px] text-white/60 leading-relaxed italic text-center">
+                          "{modules[activeModule].title}. Ce module dure environ {modules[activeModule].duration}."
+                        </p>
+                        
+                        {isSpeaking && (
+                          <div className="flex justify-center items-center gap-1 mt-3 h-4">
+                            {[1, 2, 3, 4, 5].map(i => (
+                              <span
+                                key={i}
+                                className="w-0.5 bg-galf-yellow rounded animate-pulse"
+                                style={{
+                                  height: `${Math.random() * 100}%`,
+                                  animationDuration: `${0.3 + Math.random() * 0.4}s`
+                                }}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={speakModule}
+                        className={`w-full py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
+                          isSpeaking 
+                            ? 'bg-red-600 text-white hover:bg-red-700' 
+                            : 'bg-galf-yellow text-galf-carbon hover:brightness-110'
+                        }`}
+                      >
+                        {isSpeaking ? "⏹️ Arrêter la lecture" : "🔊 Lire les objectifs (Synthèse Vocale)"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
               </FadeIn>
             </div>
 
@@ -230,121 +960,183 @@ export default function ApprenantDashboard() {
           /* CERTIFICATIONS TAB */
           <div className="max-w-5xl mx-auto">
              <FadeIn>
-               {!showCertificate ? (
-                 <div className="glass-card p-12 rounded-[2.5rem] text-center border-galf-yellow/20 relative overflow-hidden">
-                   <div className="absolute top-0 left-0 w-full h-1 bg-galf-border">
-                     <div className="h-full bg-galf-yellow transition-all duration-[3000ms]" style={{ width: isGenerating ? '100%' : '33%' }} />
-                   </div>
-                   
-                   <Award className={`w-24 h-24 mx-auto mb-8 transition-all duration-1000 ${isGenerating ? 'text-galf-yellow scale-125 animate-pulse' : 'text-galf-text-muted opacity-40'}`} />
-                   <h2 className="text-4xl font-black mb-4 tracking-tighter" style={{ color: 'var(--galf-text)' }}>Certificat d'Excellence GALF</h2>
-                   <p className="text-lg max-w-md mx-auto mb-12" style={{ color: 'var(--galf-text-secondary)' }}>
-                     {isGenerating 
-                      ? "Génération de votre certificat sécurisé en cours... Nous vérifions vos scores et validations." 
-                      : "Vous avez complété la formation avec brio. Réclamez votre certification officielle maintenant."}
-                   </p>
-                   
-                   <button 
-                    disabled={isGenerating}
-                    onClick={handleGenerateCertificate}
-                    className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-2xl font-black text-xl hover:brightness-110 transition-all shadow-2xl shadow-galf-yellow/30 disabled:opacity-50"
-                   >
-                     {isGenerating ? "Moteur de génération IA actif..." : "Générer mon Certificat Officiel"}
-                   </button>
-                 </div>
-               ) : (
-                 <motion.div 
-                   initial={{ opacity: 0, scale: 0.95, y: 30 }}
-                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                   className="glass-card p-5 rounded-[3rem] border-galf-yellow/40 shadow-[0_50px_150px_-20px_rgba(0,0,0,0.6)]"
-                 >
-                   <div ref={certificateRef} className="bg-white p-12 md:p-24 rounded-[2rem] relative overflow-hidden text-[#1a1a1a] font-serif shadow-inner">
-                      {/* Premium Background Pattern */}
-                      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-                      <div className="absolute inset-0 border-[40px] border-double border-galf-yellow/10 pointer-events-none" />
-                      
-                      {/* Decorative Corner Ornaments */}
-                      <div className="absolute top-8 left-8 w-24 h-24 border-t-4 border-l-4 border-galf-yellow" />
-                      <div className="absolute bottom-8 right-8 w-24 h-24 border-b-4 border-r-4 border-galf-yellow" />
-                      
-                      <div className="text-center relative z-10">
-                        <div className="flex justify-center mb-10">
-                          <div className="w-20 h-20 rounded-xl bg-galf-carbon flex items-center justify-center p-4">
-                             <HardHat className="text-galf-yellow w-full h-full" />
-                          </div>
-                        </div>
+               {!isWaiverSigned ? (
+                  <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-galf-yellow/20 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
+                    <h2 className="text-3xl font-black mb-4 text-white flex items-center gap-2">
+                      <ShieldAlert className="text-galf-yellow w-8 h-8" /> Signature du Règlement de Sécurité Obligatoire
+                    </h2>
+                    <p className="text-xs text-white/60 mb-6 leading-relaxed">
+                      Conformément à la réglementation ivoirienne sur la conduite des engins lourds, vous devez signer numériquement notre charte de sécurité avant d'éditer votre certificat.
+                    </p>
 
-                        <div className="text-galf-yellow font-black text-2xl mb-4 tracking-[0.4em] uppercase font-sans">Attestation de Réussite</div>
-                        <h3 className="text-5xl md:text-8xl font-black mb-12 uppercase tracking-tighter text-galf-carbon font-sans">EXCELLENCE <span className="text-galf-yellow">BTP</span></h3>
-                        
-                        <div className="w-32 h-1 bg-galf-yellow mx-auto mb-12" />
-                        
-                        <p className="text-2xl mb-4 italic">Ce document certifie officiellement que</p>
-                        <div className="text-5xl md:text-6xl font-black mb-12 uppercase text-galf-carbon border-b-4 border-galf-carbon/10 inline-block px-16 pb-4 font-sans tracking-tight">
-                          {certData.userName}
-                        </div>
-                        
-                        <p className="text-xl mb-16 max-w-3xl mx-auto leading-relaxed">
-                          A complété avec succès le cycle de formation de niveau expert sur <strong>{certData.course}</strong>. 
-                          Le titulaire est reconnu apte à la manipulation technique avancée et à l'application rigoureuse des normes <strong>HSE</strong> internationales de chantier.
-                        </p>
-                        
-                        <div className="flex flex-col md:flex-row justify-between items-center mt-20 gap-12">
-                          <div className="text-center md:text-left order-2 md:order-1">
-                            <div className="font-black text-2xl font-sans text-galf-carbon">GALF Formation CI</div>
-                            <div className="text-sm uppercase font-bold tracking-widest text-galf-yellow mb-4">Le comité pédagogique</div>
-                            <div className="w-48 h-20 bg-galf-yellow/5 rounded-xl border border-dashed border-galf-yellow/20 flex items-center justify-center">
-                               <span className="text-galf-yellow/40 italic font-bold">Signature Digitale</span>
-                            </div>
-                          </div>
+                    <div className="bg-black/40 rounded-2xl p-6 border border-white/5 space-y-4 mb-6 max-h-48 overflow-y-auto text-xs text-white/70 leading-relaxed font-mono">
+                      <p className="font-bold text-galf-yellow text-center mb-2">RÈGLEMENT DE SÉCURITÉ ET CHARTE DE BONNE CONDUITE GALF FORMATION</p>
+                      <p>1. Je m'engage à porter systématiquement mes Équipements de Protection Individuelle (Casque, Gilet réfléchissant, Bottes de sécurité) sur tous les chantiers d'apprentissage.</p>
+                      <p>2. Je certifie avoir pris connaissance des procédures d'urgence et de coupure hydraulique de mon engin.</p>
+                      <p>3. Je m'engage à effectuer l'inspection pré-opérationnelle complète de ma machine avant chaque session pratique.</p>
+                      <p>4. Je promets de respecter strictement les consignes verbales et gestuelles de mon instructeur GALF.</p>
+                      <p>5. Toute fausse déclaration ou non-respect de ces règles peut entraîner la suspension immédiate de l'attestation de réussite.</p>
+                    </div>
 
-                          <div className="order-1 md:order-2">
-                             {/* Central Seal */}
-                             <div className="w-40 h-40 rounded-full bg-galf-yellow flex items-center justify-center shadow-2xl relative">
-                                <div className="absolute inset-2 border-2 border-white/40 rounded-full" />
-                                <div className="absolute inset-4 border-2 border-galf-carbon/10 rounded-full border-dashed" />
-                                <div className="text-galf-carbon text-center">
-                                   <div className="text-[10px] font-black uppercase tracking-widest mb-1">Authentifié</div>
-                                   <Award className="w-10 h-10 mx-auto mb-1" />
-                                   <div className="text-[10px] font-black uppercase tracking-widest">GALF 2024</div>
-                                </div>
-                             </div>
-                          </div>
+                    <div className="space-y-4">
+                      <label className="flex items-start gap-3 text-xs text-white/80 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={waiverChecked}
+                          onChange={(e) => setWaiverChecked(e.target.checked)}
+                          className="mt-1 accent-galf-yellow rounded border-white/10 bg-black/40"
+                        />
+                        <span>J'accepte sans réserve les termes du règlement de sécurité GALF.</span>
+                      </label>
 
-                          <div className="text-center md:text-right order-3">
-                             <div className="w-24 h-24 bg-white border-2 border-galf-carbon/10 p-2 mx-auto md:ml-auto mb-4 rounded-lg flex items-center justify-center">
-                                {/* Mock QR Code */}
-                                <div className="w-full h-full opacity-60 flex flex-wrap gap-0.5">
-                                   {Array.from({length: 64}).map((_, i) => (
-                                     <div key={i} className={`w-[11.5%] h-[11.5%] ${Math.random() > 0.5 ? 'bg-black' : 'bg-transparent'}`} />
-                                   ))}
-                                </div>
-                             </div>
-                             <div className="font-bold text-sm text-galf-carbon font-sans">Vérification ID: <span className="text-galf-yellow">{certData.id}</span></div>
-                             <div className="text-xs opacity-60 font-sans">Délivré à Abidjan le {certData.date}</div>
-                          </div>
-                        </div>
+                      <div className="flex flex-col gap-1.5 max-w-md mb-4">
+                        <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                          Signature manuscrite (Entrez votre Nom complet)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Ex: JEAN KOUADIO"
+                          value={signatureName}
+                          onChange={(e) => setSignatureName(e.target.value)}
+                          className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-galf-yellow font-mono"
+                        />
                       </div>
-                   </div>
 
-                   <div className="flex flex-col sm:flex-row justify-center gap-6 mt-16 mb-8 px-12">
-                     <button 
-                       onClick={handleDownloadPDF}
-                       disabled={isDownloading}
-                       className="flex-1 bg-galf-yellow text-galf-carbon px-12 py-5 rounded-[1.5rem] font-black text-lg flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-2xl shadow-galf-yellow/20 disabled:opacity-50 group"
-                     >
-                       <Download className={`w-6 h-6 ${isDownloading ? 'animate-bounce' : 'group-hover:-translate-y-1 transition-transform'}`} /> 
-                       {isDownloading ? "Traitement HD en cours..." : "Télécharger mon Diplôme (PDF Ultra-HD)"}
-                     </button>
-                     <button className="glass-card flex-1 px-12 py-5 rounded-[1.5rem] font-black text-lg text-slate-900 dark:text-white flex items-center justify-center gap-3 hover:border-galf-yellow/50 transition-all group">
-                       <ExternalLink className="w-6 h-6 group-hover:rotate-12 transition-transform" /> Propulser sur LinkedIn
-                     </button>
-                   </div>
-                   
-                   <div className="text-center pb-8 opacity-40 text-xs font-bold uppercase tracking-[0.3em]">
-                      Validation sécurisée par GALF Blockchain Services
-                   </div>
-                 </motion.div>
+                      <button
+                        onClick={() => {
+                          if (!waiverChecked) {
+                            alert("Veuillez cocher la case d'acceptation du règlement.")
+                            return
+                          }
+                          if (!signatureName.trim()) {
+                            alert("Veuillez saisir votre nom pour signer numériquement.")
+                            return
+                          }
+                          triggerAudioAlert(880, 0.25)
+                          setIsWaiverSigned(true)
+                        }}
+                        className="bg-galf-yellow text-galf-carbon px-8 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-lg"
+                      >
+                        Signer et Débloquer mon Diplôme
+                      </button>
+                    </div>
+                  </div>
+               ) : !showCertificate ? (
+                  <div className="glass-card p-12 rounded-[2.5rem] text-center border-galf-yellow/20 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-galf-border">
+                      <div className="h-full bg-galf-yellow transition-all duration-[3000ms]" style={{ width: isGenerating ? '100%' : '33%' }} />
+                    </div>
+                    
+                    <Award className={`w-24 h-24 mx-auto mb-8 transition-all duration-1000 ${isGenerating ? 'text-galf-yellow scale-125 animate-pulse' : 'text-galf-text-muted opacity-40'}`} />
+                    <h2 className="text-4xl font-black mb-4 tracking-tighter" style={{ color: 'var(--galf-text)' }}>Certificat d'Excellence GALF</h2>
+                    <p className="text-lg max-w-md mx-auto mb-12" style={{ color: 'var(--galf-text-secondary)' }}>
+                      {isGenerating 
+                       ? "Génération de votre certificat sécurisé en cours... Nous vérifions vos scores et validations." 
+                       : "Vous avez complété la formation avec brio. Réclamez votre certification officielle maintenant."}
+                    </p>
+                    
+                    <button 
+                     disabled={isGenerating}
+                     onClick={handleGenerateCertificate}
+                     className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-2xl font-black text-xl hover:brightness-110 transition-all shadow-2xl shadow-galf-yellow/30 disabled:opacity-50"
+                    >
+                      {isGenerating ? "Moteur de génération IA actif..." : "Générer mon Certificat Officiel"}
+                    </button>
+                  </div>
+               ) : (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    className="glass-card p-5 rounded-[3rem] border-galf-yellow/40 shadow-[0_50px_150px_-20px_rgba(0,0,0,0.6)]"
+                  >
+                    <div ref={certificateRef} className="bg-white p-12 md:p-24 rounded-[2rem] relative overflow-hidden text-[#1a1a1a] font-serif shadow-inner">
+                       {/* Premium Background Pattern */}
+                       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+                       <div className="absolute inset-0 border-[40px] border-double border-galf-yellow/10 pointer-events-none" />
+                       
+                       {/* Decorative Corner Ornaments */}
+                       <div className="absolute top-8 left-8 w-24 h-24 border-t-4 border-l-4 border-galf-yellow" />
+                       <div className="absolute bottom-8 right-8 w-24 h-24 border-b-4 border-r-4 border-galf-yellow" />
+                       
+                       <div className="text-center relative z-10">
+                         <div className="flex justify-center mb-10">
+                           <div className="w-20 h-20 rounded-xl bg-galf-carbon flex items-center justify-center p-4">
+                              <HardHat className="text-galf-yellow w-full h-full" />
+                           </div>
+                         </div>
+
+                         <div className="text-galf-yellow font-black text-2xl mb-4 tracking-[0.4em] uppercase font-sans">Attestation de Réussite</div>
+                         <h3 className="text-5xl md:text-8xl font-black mb-12 uppercase tracking-tighter text-galf-carbon font-sans">EXCELLENCE <span className="text-galf-yellow">BTP</span></h3>
+                         
+                         <div className="w-32 h-1 bg-galf-yellow mx-auto mb-12" />
+                         
+                         <p className="text-2xl mb-4 italic">Ce document certifie officiellement que</p>
+                         <div className="text-5xl md:text-6xl font-black mb-12 uppercase text-galf-carbon border-b-4 border-galf-carbon/10 inline-block px-16 pb-4 font-sans tracking-tight">
+                           {userName}
+                         </div>
+                         
+                         <p className="text-xl mb-16 max-w-3xl mx-auto leading-relaxed">
+                           A complété avec succès le cycle de formation de niveau expert sur <strong>{certData.course}</strong>. 
+                           Le titulaire est reconnu apte à la manipulation technique avancée et à l'application rigoureuse des normes <strong>HSE</strong> internationales de chantier.
+                         </p>
+                         
+                         <div className="flex flex-col md:flex-row justify-between items-center mt-20 gap-12">
+                           <div className="text-center md:text-left order-2 md:order-1">
+                             <div className="font-black text-2xl font-sans text-galf-carbon">GALF Formation CI</div>
+                             <div className="text-sm uppercase font-bold tracking-widest text-galf-yellow mb-4">Le comité pédagogique</div>
+                             <div className="w-48 h-20 bg-galf-yellow/5 rounded-xl border border-dashed border-galf-yellow/20 flex items-center justify-center">
+                                <span className="text-galf-yellow/40 italic font-bold">Signature Digitale</span>
+                             </div>
+                           </div>
+
+                           <div className="order-1 md:order-2">
+                              {/* Central Seal */}
+                              <div className="w-40 h-40 rounded-full bg-galf-yellow flex items-center justify-center shadow-2xl relative">
+                                 <div className="absolute inset-2 border-2 border-white/40 rounded-full" />
+                                 <div className="absolute inset-4 border-2 border-galf-carbon/10 rounded-full border-dashed" />
+                                 <div className="text-galf-carbon text-center">
+                                    <div className="text-[10px] font-black uppercase tracking-widest mb-1">Authentifié</div>
+                                    <Award className="w-10 h-10 mx-auto mb-1" />
+                                    <div className="text-[10px] font-black uppercase tracking-widest">GALF 2024</div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <div className="text-center md:text-right order-3">
+                              <div className="w-24 h-24 bg-white border-2 border-galf-carbon/10 p-2 mx-auto md:ml-auto mb-4 rounded-lg flex items-center justify-center">
+                                 {/* Mock QR Code */}
+                                 <div className="w-full h-full opacity-60 flex flex-wrap gap-0.5">
+                                    {Array.from({length: 64}).map((_, i) => (
+                                      <div key={i} className={`w-[11.5%] h-[11.5%] ${Math.random() > 0.5 ? 'bg-black' : 'bg-transparent'}`} />
+                                    ))}
+                                 </div>
+                              </div>
+                              <div className="font-bold text-sm text-galf-carbon font-sans">Vérification ID: <span className="text-galf-yellow">{certData.id}</span></div>
+                              <div className="text-xs opacity-60 font-sans">Délivré à Abidjan le {certData.date}</div>
+                           </div>
+                         </div>
+                       </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row justify-center gap-6 mt-16 mb-8 px-12">
+                      <button 
+                        onClick={handleDownloadPDF}
+                        disabled={isDownloading}
+                        className="flex-1 bg-galf-yellow text-galf-carbon px-12 py-5 rounded-[1.5rem] font-black text-lg flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-2xl shadow-galf-yellow/20 disabled:opacity-50 group"
+                      >
+                        <Download className={`w-6 h-6 ${isDownloading ? 'animate-bounce' : 'group-hover:-translate-y-1 transition-transform'}`} /> 
+                        {isDownloading ? "Traitement HD en cours..." : "Télécharger mon Diplôme (PDF Ultra-HD)"}
+                      </button>
+                      <button className="glass-card flex-1 px-12 py-5 rounded-[1.5rem] font-black text-lg text-slate-900 dark:text-white flex items-center justify-center gap-3 hover:border-galf-yellow/50 transition-all group">
+                        <ExternalLink className="w-6 h-6 group-hover:rotate-12 transition-transform" /> Propulser sur LinkedIn
+                      </button>
+                    </div>
+                    
+                    <div className="text-center pb-8 opacity-40 text-xs font-bold uppercase tracking-[0.3em]">
+                       Validation sécurisée par GALF Blockchain Services
+                    </div>
+                  </motion.div>
                )}
              </FadeIn>
           </div>
@@ -353,4 +1145,3 @@ export default function ApprenantDashboard() {
     </div>
   )
 }
-
