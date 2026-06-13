@@ -1106,10 +1106,10 @@ export default function Home() {
           <FadeIn>
             <div className="text-center mb-16">
               <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Conseils et simulations</span>
-              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight" style={{ color: 'var(--galf-text)' }}>
                 Espace <span className="text-galf-yellow">Carrière &amp; Financement</span>
               </h2>
-              <p className="text-sm max-w-xl mx-auto text-white/60 mt-3">
+              <p className="text-sm max-w-xl mx-auto mt-3" style={{ color: 'var(--galf-text-secondary)' }}>
                 Trouvez la formation idéale, estimez vos mensualités de paiement et évaluez vos réflexes de sécurité en quelques clics.
               </p>
             </div>
@@ -1121,18 +1121,18 @@ export default function Home() {
             <div className="space-y-8 flex flex-col justify-between">
               
               {/* Feature 81: Career Path Recommender */}
-              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 relative overflow-hidden flex-1">
+              <div className="glass-card p-8 rounded-[2rem] relative overflow-hidden flex-1">
                 <div className="absolute top-0 right-0 w-20 h-20 bg-galf-yellow/5 rounded-bl-[4rem]" />
-                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                <h3 className="text-xl font-black mb-2 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                   <Settings className="w-5 h-5 text-galf-yellow animate-spin-slow" /> Recommandateur de Spécialité CACES
                 </h3>
-                <p className="text-xs text-white/50 mb-6">
+                <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                   Découvrez en 3 questions quel engin lourd correspond à votre tempérament de conducteur.
                 </p>
 
                 {recomStep === 0 && (
                   <div className="space-y-4 py-4 text-center">
-                    <p className="text-xs text-white/80">
+                    <p className="text-xs" style={{ color: 'var(--galf-text-secondary)' }}>
                       Prêt à faire le test ? Il vous prendra moins d'une minute et ciblera vos aptitudes naturelles.
                     </p>
                     <button
@@ -1150,19 +1150,22 @@ export default function Home() {
                     <div className="grid grid-cols-1 gap-2">
                       <button 
                         onClick={() => handleRecomAnswer('env', 'mines')}
-                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                        className="w-full text-left p-3 rounded-xl border text-xs font-bold transition-all"
+                        style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                       >
                         🌋 Grand air, sites d'extraction massifs et mines
                       </button>
                       <button 
                         onClick={() => handleRecomAnswer('env', 'levage')}
-                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                        className="w-full text-left p-3 rounded-xl border text-xs font-bold transition-all"
+                        style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                       >
                         🏗️ Chantiers urbains, immeubles en hauteur et levage
                       </button>
                       <button 
                         onClick={() => handleRecomAnswer('env', 'terrain')}
-                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                        className="w-full text-left p-3 rounded-xl border text-xs font-bold transition-all"
+                        style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                       >
                         🚜 Terrassement, routes et nivellement de sols
                       </button>
@@ -1176,19 +1179,22 @@ export default function Home() {
                     <div className="grid grid-cols-1 gap-2">
                       <button 
                         onClick={() => handleRecomAnswer('style', 'heights')}
-                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                        className="w-full text-left p-3 rounded-xl border text-xs font-bold transition-all"
+                        style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                       >
                         🚁 Je n'ai pas le vertige, j'aime avoir une vue d'ensemble surélevée
                       </button>
                       <button 
                         onClick={() => handleRecomAnswer('style', 'power')}
-                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                        className="w-full text-left p-3 rounded-xl border text-xs font-bold transition-all"
+                        style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                       >
                         💪 La force pure de poussée et le déplacement de tonnes de roche
                       </button>
                       <button 
                         onClick={() => handleRecomAnswer('style', 'precision')}
-                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                        className="w-full text-left p-3 rounded-xl border text-xs font-bold transition-all"
+                        style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                       >
                         📦 L'adresse millimétrique en intérieur et le chargement rapide
                       </button>
@@ -1197,18 +1203,18 @@ export default function Home() {
                 )}
 
                 {recomStep === 3 && (
-                  <div className="space-y-4 animate-fadeIn p-4 bg-galf-yellow/5 border border-galf-yellow/20 rounded-2xl">
+                  <div className="space-y-4 animate-fadeIn p-4 rounded-2xl" style={{ background: 'var(--galf-yellow-glow)', border: '1px solid var(--galf-border)' }}>
                     <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest block">Notre Recommandation :</span>
-                    <h4 className="text-lg font-black text-white uppercase">{getRecomResult().name}</h4>
-                    <p className="text-xs text-white/70 leading-relaxed">{getRecomResult().desc}</p>
+                    <h4 className="text-lg font-black uppercase" style={{ color: 'var(--galf-text)' }}>{getRecomResult().name}</h4>
+                    <p className="text-xs leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>{getRecomResult().desc}</p>
                     
-                    <div className="flex justify-between items-center pt-3 border-t border-white/5">
+                    <div className="flex justify-between items-center pt-3" style={{ borderTop: '1px solid var(--galf-border)' }}>
                       <div>
-                        <span className="text-[8px] text-white/40 block">Certification Cible :</span>
-                        <span className="text-xs font-black text-white">{getRecomResult().caces}</span>
+                        <span className="text-[8px] block" style={{ color: 'var(--galf-text-muted)' }}>Certification Cible :</span>
+                        <span className="text-xs font-black" style={{ color: 'var(--galf-text)' }}>{getRecomResult().caces}</span>
                       </div>
                       <div>
-                        <span className="text-[8px] text-white/40 block">Tarif estimé :</span>
+                        <span className="text-[8px] block" style={{ color: 'var(--galf-text-muted)' }}>Tarif estimé :</span>
                         <span className="text-xs font-black text-galf-yellow">{getRecomResult().price.toLocaleString('fr-FR')} F CFA</span>
                       </div>
                     </div>
@@ -1216,7 +1222,8 @@ export default function Home() {
                     <div className="flex gap-2 pt-2">
                       <button
                         onClick={() => { playQuizSound('click'); setRecomStep(0); }}
-                        className="flex-1 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase py-2.5 rounded-xl hover:bg-white/10"
+                        className="flex-1 text-[10px] font-black uppercase py-2.5 rounded-xl transition-all"
+                        style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                       >
                         Recommencer
                       </button>
@@ -1237,11 +1244,11 @@ export default function Home() {
               </div>
 
               {/* Feature 83: Interactive Industry Salary Chart */}
-              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 relative overflow-hidden">
-                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+              <div className="glass-card p-8 rounded-[2rem] relative overflow-hidden">
+                <h3 className="text-xl font-black mb-2 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                   <Trophy className="w-5 h-5 text-galf-yellow" /> Salaires Moyens de l'Industrie en Côte d'Ivoire
                 </h3>
-                <p className="text-xs text-white/50 mb-6">
+                <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                   Salaire mensuel indicatif constaté d'un conducteur certifié (survolez les barres pour voir les détails).
                 </p>
 
@@ -1264,9 +1271,9 @@ export default function Home() {
                           onMouseEnter={() => setHoveredSalaryIdx(idx)}
                           onMouseLeave={() => setHoveredSalaryIdx(null)}
                         >
-                          <text x="5" y={yPos + 15} fill="#ffffff" fontSize="10" fontWeight="bold">{item.label}</text>
+                          <text x="5" y={yPos + 15} fill="var(--galf-text)" fontSize="10" fontWeight="bold">{item.label}</text>
                           {/* Background bar */}
-                          <rect x="110" y={yPos + 5} width="260" height="12" rx="4" fill="rgba(255,255,255,0.05)" />
+                          <rect x="110" y={yPos + 5} width="260" height="12" rx="4" fill="var(--galf-bg)" />
                           {/* Value bar */}
                           <rect 
                             x="110" 
@@ -1281,7 +1288,7 @@ export default function Home() {
                           <text 
                             x={115 + barWidth} 
                             y={yPos + 14} 
-                            fill={hoveredSalaryIdx === idx ? "#ffb000" : "#a1a1aa"} 
+                            fill={hoveredSalaryIdx === idx ? "#ffb000" : "var(--galf-text-muted)"} 
                             fontSize="8" 
                             fontWeight="black"
                           >
@@ -1300,12 +1307,12 @@ export default function Home() {
             <div id="tuition-estimator" className="space-y-8 flex flex-col justify-between">
               
               {/* Feature 82: Dynamic Tuition Installment Estimator */}
-              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 relative overflow-hidden flex-1">
+              <div className="glass-card p-8 rounded-[2rem] relative overflow-hidden flex-1">
                 <div className="absolute top-0 right-0 w-20 h-20 bg-galf-yellow/5 rounded-bl-[4rem]" />
-                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                <h3 className="text-xl font-black mb-2 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                   <Zap className="w-5 h-5 text-galf-yellow" /> Simulateur de Financement &amp; Mensualités
                 </h3>
-                <p className="text-xs text-white/50 mb-6">
+                <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                   Sélectionnez le prix théorique de votre formation et configurez l'acompte pour calculer le montant restant.
                 </p>
 
@@ -1313,25 +1320,26 @@ export default function Home() {
                   {/* Target Price selector */}
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-white/60 font-bold">Prix de la formation ciblé :</span>
-                      <span className="font-black text-white">{estPrice.toLocaleString('fr-FR')} CFA</span>
+                      <span className="font-bold" style={{ color: 'var(--galf-text-secondary)' }}>Prix de la formation ciblé :</span>
+                      <span className="font-black" style={{ color: 'var(--galf-text)' }}>{estPrice.toLocaleString('fr-FR')} CFA</span>
                     </div>
                     <select
                       value={estPrice}
                       onChange={(e) => { playQuizSound('click'); setEstPrice(Number(e.target.value)); }}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                      className="w-full rounded-xl p-3 text-xs outline-none focus:border-galf-yellow"
+                      style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                     >
-                      <option value={350000}>Chariot Élévateur (Manutention) - 350 000 F</option>
-                      <option value={650000}>Pelle Hydraulique (Terrassement) - 650 000 F</option>
-                      <option value={750000}>Grue à Tour / Mobile (Levage) - 750 000 F</option>
-                      <option value={850000}>Foreuse de Mine (Mines) - 850 000 F</option>
+                      <option value={350000} className="bg-neutral-900 text-white">Chariot Élévateur (Manutention) - 350 000 F</option>
+                      <option value={650000} className="bg-neutral-900 text-white">Pelle Hydraulique (Terrassement) - 650 000 F</option>
+                      <option value={750000} className="bg-neutral-900 text-white">Grue à Tour / Mobile (Levage) - 750 000 F</option>
+                      <option value={850000} className="bg-neutral-900 text-white">Foreuse de Mine (Mines) - 850 000 F</option>
                     </select>
                   </div>
 
                   {/* Acompte Slider */}
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-white/60 font-bold">Acompte à l'inscription :</span>
+                      <span className="font-bold" style={{ color: 'var(--galf-text-secondary)' }}>Acompte à l'inscription :</span>
                       <span className="font-black text-galf-yellow">{estAcompte}% ({(estPrice * estAcompte / 100).toLocaleString('fr-FR')} F)</span>
                     </div>
                     <input 
@@ -1341,7 +1349,8 @@ export default function Home() {
                       step="5"
                       value={estAcompte}
                       onChange={(e) => { playQuizSound('click'); setEstAcompte(Number(e.target.value)); }}
-                      className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                      className="w-full h-1 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                      style={{ background: 'var(--galf-border)' }}
                     />
                   </div>
 
@@ -1349,8 +1358,8 @@ export default function Home() {
                   {estAcompte < 100 && (
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-white/60 font-bold">Étalement du solde restant :</span>
-                        <span className="font-black text-white">{estMonths} mensualités</span>
+                        <span className="font-bold" style={{ color: 'var(--galf-text-secondary)' }}>Étalement du solde restant :</span>
+                        <span className="font-black" style={{ color: 'var(--galf-text)' }}>{estMonths} mensualités</span>
                       </div>
                       <div className="grid grid-cols-3 gap-2">
                         {[2, 3, 4].map((m) => (
@@ -1358,11 +1367,12 @@ export default function Home() {
                             key={m}
                             type="button"
                             onClick={() => { playQuizSound('click'); setEstMonths(m); }}
-                            className={`py-2 rounded-lg text-xs font-black border transition-all ${
-                              estMonths === m 
-                                ? 'bg-galf-yellow/15 border-galf-yellow text-white' 
-                                : 'bg-transparent border-white/5 hover:border-white/10 text-white/70'
-                            }`}
+                            className="py-2 rounded-lg text-xs font-black border transition-all"
+                            style={{
+                              background: estMonths === m ? 'var(--galf-yellow-glow)' : 'var(--galf-bg)',
+                              borderColor: estMonths === m ? '#FFB000' : 'var(--galf-border)',
+                              color: estMonths === m ? 'var(--galf-text)' : 'var(--galf-text-secondary)'
+                            }}
                           >
                             {m} Mois
                           </button>
@@ -1372,13 +1382,13 @@ export default function Home() {
                   )}
 
                   {/* Financial Summary */}
-                  <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-2">
-                    <div className="flex justify-between items-center text-[10px] text-white/50 uppercase font-black">
+                  <div className="p-4 rounded-xl space-y-2" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)' }}>
+                    <div className="flex justify-between items-center text-[10px] uppercase font-black" style={{ color: 'var(--galf-text-muted)' }}>
                       <span>Dépôt initial requis</span>
                       <span>Mensualité estimative</span>
                     </div>
                     <div className="flex justify-between items-center font-black">
-                      <span className="text-sm text-white">
+                      <span className="text-sm" style={{ color: 'var(--galf-text)' }}>
                         {Math.round(estPrice * estAcompte / 100).toLocaleString('fr-FR')} F
                       </span>
                       <span className="text-sm text-galf-yellow">
@@ -1393,11 +1403,11 @@ export default function Home() {
               </div>
 
               {/* Feature 84: Express Safety Aptitude Quiz */}
-              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 relative overflow-hidden">
-                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+              <div className="glass-card p-8 rounded-[2rem] relative overflow-hidden">
+                <h3 className="text-xl font-black mb-2 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                   <Shield className="w-5 h-5 text-galf-yellow" /> Mini-Quiz d'Aptitude Sécurité Chantier
                 </h3>
-                <p className="text-xs text-white/50 mb-6">
+                <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                   Testez vos connaissances en sécurité de conduite avant de monter en cabine réelle.
                 </p>
 
@@ -1406,7 +1416,7 @@ export default function Home() {
                     <span className="text-[10px] text-galf-yellow font-black uppercase tracking-widest block">
                       Question {quizIndex + 1} / {quizQuestions.length}
                     </span>
-                    <h4 className="text-xs font-black text-white leading-snug">
+                    <h4 className="text-xs font-black leading-snug" style={{ color: 'var(--galf-text)' }}>
                       {quizQuestions[quizIndex].q}
                     </h4>
 
@@ -1426,11 +1436,16 @@ export default function Home() {
                             }}
                             className={`w-full text-left p-3 rounded-xl border text-xs transition-all ${
                               quizSelected !== null && oIdx === quizQuestions[quizIndex].correct
-                                ? 'bg-green-500/10 border-green-500 text-white font-black'
+                                ? 'bg-green-500/10 border-green-500 text-green-600 font-black'
                                 : quizSelected === oIdx
-                                ? 'bg-red-500/10 border-red-500 text-white font-black'
-                                : 'bg-black/30 border-white/10 hover:border-galf-yellow text-white/80'
+                                ? 'bg-red-500/10 border-red-500 text-red-600 font-black'
+                                : 'hover:border-galf-yellow'
                             }`}
+                            style={{
+                              background: quizSelected === null ? 'var(--galf-bg)' : undefined,
+                              borderColor: quizSelected === null ? 'var(--galf-border)' : undefined,
+                              color: quizSelected === null ? 'var(--galf-text-secondary)' : undefined
+                            }}
                           >
                             {opt}
                           </button>
@@ -1439,8 +1454,8 @@ export default function Home() {
                     </div>
 
                     {quizSelected !== null && (
-                      <div className="p-3 bg-white/5 border border-white/5 rounded-xl space-y-2 animate-fadeIn">
-                        <p className="text-[10px] text-white/70 leading-relaxed italic">
+                      <div className="p-3 rounded-xl space-y-2 animate-fadeIn" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)' }}>
+                        <p className="text-[10px] leading-relaxed italic" style={{ color: 'var(--galf-text-secondary)' }}>
                           {quizQuestions[quizIndex].tip}
                         </p>
                         <button
@@ -1466,8 +1481,8 @@ export default function Home() {
                       <Trophy className="w-8 h-8" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-black text-white">Score : {quizScore} / {quizQuestions.length}</h4>
-                      <p className="text-xs text-white/50 max-w-xs mx-auto mt-1">
+                      <h4 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Score : {quizScore} / {quizQuestions.length}</h4>
+                      <p className="text-xs max-w-xs mx-auto mt-1" style={{ color: 'var(--galf-text-muted)' }}>
                         {quizScore === quizQuestions.length 
                           ? "Parfait ! Vos réflexes de sécurité sont excellents. Vous êtes prêt pour la cabine."
                           : "Certains concepts doivent être révisés. La formation GALF met l'accent sur ces aspects HSE."
@@ -1482,7 +1497,8 @@ export default function Home() {
                         setQuizSelected(null)
                         setQuizDone(false)
                       }}
-                      className="bg-white/5 border border-white/10 text-white text-[9px] font-black uppercase px-6 py-2.5 rounded-xl hover:bg-white/10"
+                      className="text-[9px] font-black uppercase px-6 py-2.5 rounded-xl transition-all"
+                      style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                     >
                       Recommencer le test
                     </button>

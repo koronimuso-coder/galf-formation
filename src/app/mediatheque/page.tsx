@@ -246,11 +246,11 @@ export default function Mediatheque() {
           <div className="grid md:grid-cols-2 gap-8 mb-16">
             
             {/* Weather selector */}
-            <div className="glass-card p-6 rounded-[2rem] border border-white/5 bg-white/5">
-              <h3 className="text-sm font-black uppercase text-white mb-4 tracking-widest flex items-center gap-2">
+            <div className="glass-card p-6 rounded-[2rem]">
+              <h3 className="text-sm font-black uppercase mb-4 tracking-widest flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                 <Sun className="w-4 h-4 text-galf-yellow" /> Filtre Météo Opérationnel (Simulation CSS)
               </h3>
-              <p className="text-xs text-white/50 mb-6">
+              <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                 Sélectionnez une ambiance climatique pour appliquer des filtres visuels aux médias et tester les conditions de visibilité réelles.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -266,9 +266,14 @@ export default function Mediatheque() {
                     onClick={() => handleWeatherChange(wItem.id as any)}
                     className={`py-2 px-3 rounded-xl text-[10px] font-black border transition-all flex flex-col items-center gap-1.5 ${
                       weather === wItem.id 
-                        ? 'bg-galf-yellow/15 border-galf-yellow text-white' 
-                        : 'bg-black/20 border-white/5 hover:border-white/10 text-white/70'
+                        ? 'bg-galf-yellow/15 border-galf-yellow text-galf-yellow' 
+                        : 'hover:border-galf-yellow'
                     }`}
+                    style={{
+                      background: weather !== wItem.id ? 'var(--galf-bg)' : undefined,
+                      borderColor: weather !== wItem.id ? 'var(--galf-border)' : undefined,
+                      color: weather !== wItem.id ? 'var(--galf-text-secondary)' : undefined
+                    }}
                   >
                     <wItem.icon className="w-4 h-4" />
                     {wItem.label}
@@ -278,13 +283,13 @@ export default function Mediatheque() {
             </div>
 
             {/* Audio Ambient Generator */}
-            <div className="glass-card p-6 rounded-[2rem] border border-white/5 bg-white/5 flex flex-col justify-between">
+            <div className="glass-card p-6 rounded-[2rem] flex flex-col justify-between">
               <div>
-                <h3 className="text-sm font-black uppercase text-white mb-4 tracking-widest flex items-center gap-2">
-                  {isAudioPlaying ? <Volume2 className="w-4 h-4 text-galf-yellow animate-bounce" /> : <VolumeX className="w-4 h-4 text-white/40" />}
+                <h3 className="text-sm font-black uppercase mb-4 tracking-widest flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
+                  {isAudioPlaying ? <Volume2 className="w-4 h-4 text-galf-yellow animate-bounce" /> : <VolumeX className="w-4 h-4" style={{ color: 'var(--galf-text-muted)' }} />}
                   Générateur Sonore Ambiance Chantier (Web Audio API)
                 </h3>
-                <p className="text-xs text-white/50 mb-4">
+                <p className="text-xs mb-4" style={{ color: 'var(--galf-text-muted)' }}>
                   Activer le flux audio synthétisé pour écouter le grondement diesel des pelles de chantier combiné à l'ambiance météo active.
                 </p>
               </div>
@@ -305,7 +310,8 @@ export default function Mediatheque() {
                 <button
                   disabled={downloading}
                   onClick={triggerDownload}
-                  className="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10 py-3 px-6 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="flex-1 py-3 px-6 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-50"
+                  style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                 >
                   {downloading ? (
                     <div className="flex items-center gap-2">

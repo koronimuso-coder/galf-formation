@@ -117,12 +117,12 @@ export default function BlogPortal() {
         <div className="grid md:grid-cols-12 gap-8 mb-12 items-stretch">
           
           {/* Feature 94: Search Input */}
-          <div className="md:col-span-5 glass-card p-6 rounded-2xl border border-white/5 bg-white/5 flex flex-col justify-between">
+          <div className="md:col-span-5 glass-card p-6 rounded-2xl flex flex-col justify-between">
             <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-black uppercase mb-3 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                 <Search className="w-4 h-4 text-galf-yellow" /> Recherche Rapide d'Articles
               </h3>
-              <p className="text-xs text-white/50 mb-4">
+              <p className="text-xs mb-4" style={{ color: 'var(--galf-text-muted)' }}>
                 Filtrez instantanément notre base de connaissances BTP, HSE et actualités.
               </p>
             </div>
@@ -132,26 +132,27 @@ export default function BlogPortal() {
                 placeholder="Ex: HSE, Pelle, VGP..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-xs text-white outline-none focus:border-galf-yellow transition-all"
+                className="w-full rounded-xl py-3 pl-10 pr-4 text-xs outline-none focus:border-galf-yellow transition-all"
+                style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
               />
-              <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-3.5" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3.5" style={{ color: 'var(--galf-text-muted)' }} />
             </div>
           </div>
 
           {/* Feature 93: CPF Hours Calculator */}
-          <div className="md:col-span-7 glass-card p-6 rounded-2xl border border-white/5 bg-white/5 flex flex-col justify-between">
+          <div className="md:col-span-7 glass-card p-6 rounded-2xl flex flex-col justify-between">
             <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-black uppercase mb-3 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                 <Award className="w-4 h-4 text-galf-yellow" /> Simulateur de Droits de Formation (CPF / Habilitations)
               </h3>
-              <p className="text-xs text-white/50 mb-4">
+              <p className="text-xs mb-4" style={{ color: 'var(--galf-text-muted)' }}>
                 Estimez le financement disponible selon vos heures acquises et découvrez votre reste à charge théorique.
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-white/60 font-bold">Heures CPF estimées :</span>
+                <span className="font-bold" style={{ color: 'var(--galf-text-secondary)' }}>Heures CPF estimées :</span>
                 <span className="font-black text-galf-yellow">{cpfHours} Heures ({(cpfHours * 15000).toLocaleString('fr-FR')} F CFA)</span>
               </div>
               <input
@@ -161,12 +162,13 @@ export default function BlogPortal() {
                 step="5"
                 value={cpfHours}
                 onChange={(e) => { playBlogSound('click'); setCpfHours(Number(e.target.value)); }}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                className="w-full h-1 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                style={{ background: 'var(--galf-border)' }}
               />
 
-              <div className="flex justify-between items-center pt-2 text-[10px] text-white/50 uppercase font-black border-t border-white/5">
+              <div className="flex justify-between items-center pt-2 text-[10px] uppercase font-black" style={{ borderTop: '1px solid var(--galf-border)', color: 'var(--galf-text-muted)' }}>
                 <span>Formation Pelle (650k)</span>
-                <span>Reste à charge : {Math.max(0, 650000 - (cpfHours * 15000)).toLocaleString('fr-FR')} F CFA</span>
+                <span style={{ color: 'var(--galf-text)' }}>Reste à charge : {Math.max(0, 650000 - (cpfHours * 15000)).toLocaleString('fr-FR')} F CFA</span>
               </div>
             </div>
           </div>
@@ -210,12 +212,12 @@ export default function BlogPortal() {
         <div className="grid md:grid-cols-2 gap-8 mt-16 items-stretch">
           
           {/* Feature 95: Confetti Newsletter Signup */}
-          <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 flex flex-col justify-between">
+          <div className="glass-card p-8 rounded-[2rem] flex flex-col justify-between">
             <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-black uppercase mb-3 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                 <CheckCircle2 className="w-4 h-4 text-galf-yellow" /> Newsletter Pédagogique GALF
               </h3>
-              <p className="text-xs text-white/50 mb-6">
+              <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                 Abonnez-vous pour recevoir nos alertes de recrutement en direct, astuces CACES et nouvelles normes HSE de sécurité.
               </p>
             </div>
@@ -228,7 +230,8 @@ export default function BlogPortal() {
                   placeholder="votre.email@compagnie.com"
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
-                  className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-galf-yellow"
+                  className="flex-1 rounded-xl px-4 py-3 text-xs outline-none focus:border-galf-yellow"
+                  style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                 />
                 <button
                   type="submit"
@@ -238,19 +241,19 @@ export default function BlogPortal() {
                 </button>
               </form>
             ) : (
-              <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl text-center text-xs font-black text-green-200 animate-fadeIn">
+              <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl text-center text-xs font-black text-green-600 animate-fadeIn">
                  🎉 Merci pour votre inscription ! Vous recevrez nos alertes sous peu.
               </div>
             )}
           </div>
 
           {/* Feature 96: Monthly Industry Survey Poll */}
-          <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 flex flex-col justify-between">
+          <div className="glass-card p-8 rounded-[2rem] flex flex-col justify-between">
             <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-widest mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-black uppercase mb-3 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                 <Zap className="w-4 h-4 text-galf-yellow" /> Sondage Industrie : Défi de Chantier 2026
               </h3>
-              <p className="text-xs text-white/50 mb-6">
+              <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                 Selon vos projets, quel est le défi opérationnel le plus stratégique cette année ?
               </p>
             </div>
@@ -265,7 +268,8 @@ export default function BlogPortal() {
                   <button
                     key={oIdx}
                     onClick={() => handleVote(oIdx)}
-                    className="w-full text-left p-2.5 rounded-lg border border-white/10 hover:border-galf-yellow text-xs text-white bg-black/30 transition-all"
+                    className="w-full text-left p-2.5 rounded-lg border transition-all text-xs"
+                    style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                   >
                     📊 {opt}
                   </button>
@@ -286,11 +290,11 @@ export default function BlogPortal() {
                     const pct = Math.round((result.votes / totalVotes) * 100)
                     return (
                       <div key={idx} className="text-xs">
-                        <div className="flex justify-between text-[10px] text-white/80 font-bold mb-1">
+                        <div className="flex justify-between text-[10px] font-bold mb-1" style={{ color: 'var(--galf-text-secondary)' }}>
                           <span>{result.label}</span>
                           <span>{pct}% ({result.votes} votes)</span>
                         </div>
-                        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                        <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)' }}>
                           <div 
                             className="h-full bg-galf-yellow rounded-full transition-all duration-1000"
                             style={{ width: `${pct}%` }}

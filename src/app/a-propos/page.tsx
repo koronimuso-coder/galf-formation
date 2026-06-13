@@ -142,8 +142,13 @@ export default function About() {
                   className={`px-5 py-3 rounded-xl border text-xs font-black uppercase tracking-wider transition-all flex flex-col items-center gap-1 ${
                     activeJalonIdx === i 
                       ? 'bg-galf-yellow text-galf-carbon border-galf-yellow shadow-lg' 
-                      : 'bg-white/5 border-white/5 hover:bg-white/10 text-white/70'
+                      : 'hover:border-galf-yellow'
                   }`}
+                  style={{
+                    background: activeJalonIdx !== i ? 'var(--galf-bg)' : undefined,
+                    borderColor: activeJalonIdx !== i ? 'var(--galf-border)' : undefined,
+                    color: activeJalonIdx !== i ? 'var(--galf-text-secondary)' : undefined
+                  }}
                 >
                   <span className="text-sm font-black">{jalon.year}</span>
                   <span className="text-[8px] opacity-75 font-normal">{jalon.title}</span>
@@ -152,7 +157,7 @@ export default function About() {
             </div>
 
             {/* Jalon detail Card */}
-            <div className="glass-card p-6 md:p-8 rounded-2xl border-galf-yellow/20 bg-galf-yellow/5 text-left animate-fadeIn">
+            <div className="glass-card p-6 md:p-8 rounded-2xl text-left animate-fadeIn" style={{ background: 'var(--galf-yellow-glow)', borderColor: 'var(--galf-border)' }}>
               {[
                 { year: "2022", t: "Fondation à Abidjan", desc: "Création de GALF avec l'ambition de restructurer la formation aux engins lourds. Inauguration du plateau technique d'Abidjan Yopougon et certification des premiers instructeurs d'État. Lancement de la première cohorte d'élèves.", details: "🎯 Objectif : 100% de réussite pratique. Cabines équipées, formateurs qualifiés et habilitations agréées." },
                 { year: "2023", t: "Déploiement National", desc: "Création d'une antenne stratégique à San Pedro pour accompagner le développement portuaire et industriel du Sud-Ouest. Achat de simulateurs hydrauliques de dernière génération pour réduire les risques de prise de poste.", details: "🚜 Flotte : Ajout de compacteurs et grues mobiles au parc. Intégration de la formation théorique e-learning." },
@@ -163,12 +168,12 @@ export default function About() {
                 if (idx !== activeJalonIdx) return null
                 return (
                   <div key={idx} className="space-y-4">
-                    <div className="flex justify-between items-center border-b border-white/5 pb-3">
-                      <h4 className="text-xl font-black text-white uppercase tracking-tight">{item.t}</h4>
+                    <div className="flex justify-between items-center pb-3" style={{ borderBottom: '1px solid var(--galf-border)' }}>
+                      <h4 className="text-xl font-black uppercase tracking-tight" style={{ color: 'var(--galf-text)' }}>{item.t}</h4>
                       <span className="text-lg font-black text-galf-yellow">{item.year}</span>
                     </div>
-                    <p className="text-xs text-white/80 leading-relaxed font-semibold">{item.desc}</p>
-                    <div className="p-3 bg-black/40 rounded-xl text-[10px] text-white/60 flex items-center gap-2">
+                    <p className="text-xs leading-relaxed font-semibold" style={{ color: 'var(--galf-text-secondary)' }}>{item.desc}</p>
+                    <div className="p-3 rounded-xl text-[10px] flex items-center gap-2" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text-secondary)' }}>
                       <Sparkles className="w-4 h-4 text-galf-yellow shrink-0 animate-pulse" />
                       <span>{item.details}</span>
                     </div>
@@ -351,11 +356,11 @@ export default function About() {
             <div className="space-y-8 flex flex-col justify-between">
               
               {/* Feature 90: Trombinoscope d'Équipe Interactif */}
-              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 flex-1">
-                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+              <div className="glass-card p-8 rounded-[2rem] flex-1">
+                <h3 className="text-xl font-black mb-2 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                   <Users className="w-5 h-5 text-galf-yellow animate-pulse" /> Équipe de Direction &amp; Formateurs
                 </h3>
-                <p className="text-xs text-white/50 mb-6">
+                <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                   Découvrez l'équipe pédagogique et administrative de GALF. Cliquez sur un membre pour voir sa fiche d'expertise.
                 </p>
 
@@ -366,9 +371,14 @@ export default function About() {
                       onClick={() => { playSynthBeep('click'); setSelectedMemberIdx(idx); }}
                       className={`p-4 rounded-xl border text-left transition-all ${
                         selectedMemberIdx === idx 
-                          ? 'bg-galf-yellow/15 border-galf-yellow text-white' 
-                          : 'bg-black/20 border-white/5 hover:border-white/10 text-white/70'
+                          ? 'bg-galf-yellow/15 border-galf-yellow text-galf-yellow font-black' 
+                          : 'hover:border-galf-yellow'
                       }`}
+                      style={{
+                        background: selectedMemberIdx !== idx ? 'var(--galf-bg)' : undefined,
+                        borderColor: selectedMemberIdx !== idx ? 'var(--galf-border)' : undefined,
+                        color: selectedMemberIdx !== idx ? 'var(--galf-text-secondary)' : undefined
+                      }}
                     >
                       <h4 className="text-xs font-black">{member.name}</h4>
                       <p className="text-[10px] text-galf-yellow/80 mt-1">{member.role}</p>
@@ -377,23 +387,23 @@ export default function About() {
                 </div>
 
                 {selectedMemberIdx !== null && (
-                  <div className="p-4 bg-black/40 border border-white/5 rounded-2xl animate-fadeIn space-y-2">
+                  <div className="p-4 rounded-2xl animate-fadeIn space-y-2" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)' }}>
                     <span className="text-[9px] font-black uppercase text-galf-yellow bg-galf-yellow/10 border border-galf-yellow/20 px-2 py-0.5 rounded">
                       {teamMembers[selectedMemberIdx].badge}
                     </span>
-                    <h4 className="text-sm font-black text-white mt-2">{teamMembers[selectedMemberIdx].name}</h4>
-                    <p className="text-[11px] text-white/80 font-bold">Domaine : {teamMembers[selectedMemberIdx].spec}</p>
-                    <p className="text-xs text-white/60 leading-relaxed italic mt-1">{teamMembers[selectedMemberIdx].bio}</p>
+                    <h4 className="text-sm font-black mt-2" style={{ color: 'var(--galf-text)' }}>{teamMembers[selectedMemberIdx].name}</h4>
+                    <p className="text-[11px] font-bold" style={{ color: 'var(--galf-text-secondary)' }}>Domaine : {teamMembers[selectedMemberIdx].spec}</p>
+                    <p className="text-xs leading-relaxed italic mt-1" style={{ color: 'var(--galf-text-muted)' }}>{teamMembers[selectedMemberIdx].bio}</p>
                   </div>
                 )}
               </div>
 
               {/* Feature 91: Test d'Alignement des Valeurs GALF */}
-              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5">
-                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+              <div className="glass-card p-8 rounded-[2rem]">
+                <h3 className="text-xl font-black mb-2 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                   <ShieldCheck className="w-5 h-5 text-galf-yellow" /> Test d'Alignement des Valeurs GALF
                 </h3>
-                <p className="text-xs text-white/50 mb-6">
+                <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                   Évaluez vos réflexes de sécurité et de discipline par rapport à la charte d'éthique de GALF.
                 </p>
 
@@ -407,7 +417,8 @@ export default function About() {
                       <button
                         key={val.id}
                         onClick={() => { playSynthBeep('click'); setActiveValueTest(val.id); setValueTestAnswer(null); }}
-                        className="py-2.5 px-2 rounded-xl bg-black/30 border border-white/10 hover:border-galf-yellow text-[10px] font-black text-white uppercase transition-all"
+                        className="py-2.5 px-2 rounded-xl border text-[10px] font-black uppercase transition-all hover:border-galf-yellow"
+                        style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                       >
                         {val.label}
                       </button>
@@ -418,17 +429,27 @@ export default function About() {
                     {activeValueTest === 'safety' && (
                       <div className="space-y-3">
                         <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest block">Scénario Sécurité :</span>
-                        <h4 className="text-xs font-black text-white">Vous constatez un défaut de graissage sur les chenilles avant de démarrer. Que faites-vous ?</h4>
+                        <h4 className="text-xs font-black" style={{ color: 'var(--galf-text)' }}>Vous constatez un défaut de graissage sur les chenilles avant de démarrer. Que faites-vous ?</h4>
                         <div className="flex flex-col gap-2">
                           <button
                             onClick={() => { playSynthBeep('warn'); setValueTestAnswer(false); }}
-                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === false ? 'bg-red-500/10 border-red-500 text-white' : 'bg-black/20 border-white/5'}`}
+                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === false ? 'bg-red-500/10 border-red-500 text-red-500 font-bold' : ''}`}
+                            style={{
+                              background: valueTestAnswer !== false ? 'var(--galf-bg)' : undefined,
+                              borderColor: valueTestAnswer !== false ? 'var(--galf-border)' : undefined,
+                              color: valueTestAnswer !== false ? 'var(--galf-text-secondary)' : undefined
+                            }}
                           >
                             ❌ Je démarre quand même pour ne pas perdre de temps
                           </button>
                           <button
                             onClick={() => { playSynthBeep('success'); setValueTestAnswer(true); }}
-                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === true ? 'bg-green-500/10 border-green-500 text-white' : 'bg-black/20 border-white/5'}`}
+                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === true ? 'bg-green-500/10 border-green-500 text-green-600 font-bold' : ''}`}
+                            style={{
+                              background: valueTestAnswer !== true ? 'var(--galf-bg)' : undefined,
+                              borderColor: valueTestAnswer !== true ? 'var(--galf-border)' : undefined,
+                              color: valueTestAnswer !== true ? 'var(--galf-text-secondary)' : undefined
+                            }}
                           >
                             ✅ Je consigne l'engin et j'avertis le chef de garage immédiatement
                           </button>
@@ -439,17 +460,27 @@ export default function About() {
                     {activeValueTest === 'discipline' && (
                       <div className="space-y-3">
                         <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest block">Scénario Discipline :</span>
-                        <h4 className="text-xs font-black text-white">Un retard indépendant de votre volonté survient lors d'une session de TP de levage.</h4>
+                        <h4 className="text-xs font-black" style={{ color: 'var(--galf-text)' }}>Un retard indépendant de votre volonté survient lors d'une session de TP de levage.</h4>
                         <div className="flex flex-col gap-2">
                           <button
                             onClick={() => { playSynthBeep('warn'); setValueTestAnswer(false); }}
-                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === false ? 'bg-red-500/10 border-red-500 text-white' : 'bg-black/20 border-white/5'}`}
+                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === false ? 'bg-red-500/10 border-red-500 text-red-500 font-bold' : ''}`}
+                            style={{
+                              background: valueTestAnswer !== false ? 'var(--galf-bg)' : undefined,
+                              borderColor: valueTestAnswer !== false ? 'var(--galf-border)' : undefined,
+                              color: valueTestAnswer !== false ? 'var(--galf-text-secondary)' : undefined
+                            }}
                           >
                             ❌ Je rentre discrètement sur le plateau technique sans prévenir personne
                           </button>
                           <button
                             onClick={() => { playSynthBeep('success'); setValueTestAnswer(true); }}
-                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === true ? 'bg-green-500/10 border-green-500 text-white' : 'bg-black/20 border-white/5'}`}
+                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === true ? 'bg-green-500/10 border-green-500 text-green-600 font-bold' : ''}`}
+                            style={{
+                              background: valueTestAnswer !== true ? 'var(--galf-bg)' : undefined,
+                              borderColor: valueTestAnswer !== true ? 'var(--galf-border)' : undefined,
+                              color: valueTestAnswer !== true ? 'var(--galf-text-secondary)' : undefined
+                            }}
                           >
                             ✅ Je m'excuse et je signale mon arrivée à l'instructeur principal
                           </button>
@@ -460,17 +491,27 @@ export default function About() {
                     {activeValueTest === 'integrity' && (
                       <div className="space-y-3">
                         <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest block">Scénario Intégrité :</span>
-                        <h4 className="text-xs font-black text-white">Un camarade vous propose de falsifier votre heure de début sur simulateur pour partir plus tôt.</h4>
+                        <h4 className="text-xs font-black" style={{ color: 'var(--galf-text)' }}>Un camarade vous propose de falsifier votre heure de début sur simulateur pour partir plus tôt.</h4>
                         <div className="flex flex-col gap-2">
                           <button
                             onClick={() => { playSynthBeep('warn'); setValueTestAnswer(false); }}
-                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === false ? 'bg-red-500/10 border-red-500 text-white' : 'bg-black/20 border-white/5'}`}
+                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === false ? 'bg-red-500/10 border-red-500 text-red-500 font-bold' : ''}`}
+                            style={{
+                              background: valueTestAnswer !== false ? 'var(--galf-bg)' : undefined,
+                              borderColor: valueTestAnswer !== false ? 'var(--galf-border)' : undefined,
+                              color: valueTestAnswer !== false ? 'var(--galf-text-secondary)' : undefined
+                            }}
                           >
                             ❌ J'accepte, le principal est que je sache manipuler les manettes
                           </button>
                           <button
                             onClick={() => { playSynthBeep('success'); setValueTestAnswer(true); }}
-                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === true ? 'bg-green-500/10 border-green-500 text-white' : 'bg-black/20 border-white/5'}`}
+                            className={`w-full text-left p-2.5 rounded-lg border text-[11px] ${valueTestAnswer === true ? 'bg-green-500/10 border-green-500 text-green-600 font-bold' : ''}`}
+                            style={{
+                              background: valueTestAnswer !== true ? 'var(--galf-bg)' : undefined,
+                              borderColor: valueTestAnswer !== true ? 'var(--galf-border)' : undefined,
+                              color: valueTestAnswer !== true ? 'var(--galf-text-secondary)' : undefined
+                            }}
                           >
                             ✅ Je refuse et je respecte scrupuleusement mes 10h obligatoires
                           </button>
@@ -501,22 +542,22 @@ export default function About() {
             <div className="space-y-8 flex flex-col justify-between">
               
               {/* Feature 92: Simulateur d'Impact Socio-Économique */}
-              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 flex-1 relative overflow-hidden flex flex-col justify-between">
+              <div className="glass-card p-8 rounded-[2rem] flex-1 relative overflow-hidden flex flex-col justify-between">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[6rem]" />
                 <div>
-                  <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                  <h3 className="text-xl font-black mb-2 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
                     <Target className="w-5 h-5 text-galf-yellow" /> Simulateur d'Impact Social GALF Connect
                   </h3>
-                  <p className="text-xs text-white/50 mb-6">
+                  <p className="text-xs mb-6" style={{ color: 'var(--galf-text-muted)' }}>
                     Ajustez les curseurs de formation pour projeter l'impact de l'insertion et de la féminisation en Afrique de l'Ouest.
                   </p>
 
                   <div className="space-y-4 text-xs">
                     {/* Apprenants slider */}
                     <div className="space-y-1">
-                      <div className="flex justify-between items-center text-white/70">
+                      <div className="flex justify-between items-center" style={{ color: 'var(--galf-text-secondary)' }}>
                         <span>Objectif apprenants formés :</span>
-                        <span className="font-black text-white">{simApprenants} jeunes</span>
+                        <span className="font-black" style={{ color: 'var(--galf-text)' }}>{simApprenants} jeunes</span>
                       </div>
                       <input
                         type="range"
@@ -525,15 +566,16 @@ export default function About() {
                         step="100"
                         value={simApprenants}
                         onChange={(e) => { playSynthBeep('click'); setSimApprenants(Number(e.target.value)); }}
-                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                        className="w-full h-1 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                        style={{ background: 'var(--galf-border)' }}
                       />
                     </div>
 
                     {/* Feminin slider */}
                     <div className="space-y-1">
-                      <div className="flex justify-between items-center text-white/70">
+                      <div className="flex justify-between items-center" style={{ color: 'var(--galf-text-secondary)' }}>
                         <span>Taux de féminisation ciblé :</span>
-                        <span className="font-black text-white">{simFeminin}%</span>
+                        <span className="font-black" style={{ color: 'var(--galf-text)' }}>{simFeminin}%</span>
                       </div>
                       <input
                         type="range"
@@ -542,15 +584,16 @@ export default function About() {
                         step="1"
                         value={simFeminin}
                         onChange={(e) => { playSynthBeep('click'); setSimFeminin(Number(e.target.value)); }}
-                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                        className="w-full h-1 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                        style={{ background: 'var(--galf-border)' }}
                       />
                     </div>
 
                     {/* Safety Hours slider */}
                     <div className="space-y-1">
-                      <div className="flex justify-between items-center text-white/70">
+                      <div className="flex justify-between items-center" style={{ color: 'var(--galf-text-secondary)' }}>
                         <span>Heures de pratique préventive / élève :</span>
-                        <span className="font-black text-white">{simHeures} heures</span>
+                        <span className="font-black" style={{ color: 'var(--galf-text)' }}>{simHeures} heures</span>
                       </div>
                       <input
                         type="range"
@@ -559,24 +602,25 @@ export default function About() {
                         step="5"
                         value={simHeures}
                         onChange={(e) => { playSynthBeep('click'); setSimHeures(Number(e.target.value)); }}
-                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                        className="w-full h-1 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                        style={{ background: 'var(--galf-border)' }}
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3 pt-6 border-t border-white/5 text-center mt-6">
-                  <div className="p-3 bg-black/40 border border-white/5 rounded-xl">
-                    <span className="text-[8px] text-white/40 block uppercase font-black">Emplois Directs</span>
-                    <span className="text-xs font-black text-white">{Math.round(simApprenants * 0.82)}</span>
+                <div className="grid grid-cols-3 gap-3 pt-6 text-center mt-6" style={{ borderTop: '1px solid var(--galf-border)' }}>
+                  <div className="p-3 rounded-xl" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)' }}>
+                    <span className="text-[8px] block uppercase font-black" style={{ color: 'var(--galf-text-muted)' }}>Emplois Directs</span>
+                    <span className="text-xs font-black" style={{ color: 'var(--galf-text)' }}>{Math.round(simApprenants * 0.82)}</span>
                   </div>
-                  <div className="p-3 bg-black/40 border border-white/5 rounded-xl">
-                    <span className="text-[8px] text-white/40 block uppercase font-black">Insertion %</span>
+                  <div className="p-3 rounded-xl" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)' }}>
+                    <span className="text-[8px] block uppercase font-black" style={{ color: 'var(--galf-text-muted)' }}>Insertion %</span>
                     <span className="text-xs font-black text-galf-yellow">{Math.min(98, Math.round(70 + (simHeures * 0.3)))}%</span>
                   </div>
-                  <div className="p-3 bg-black/40 border border-white/5 rounded-xl">
-                    <span className="text-[8px] text-white/40 block uppercase font-black">Femmes Qualifiées</span>
-                    <span className="text-xs font-black text-white">{Math.round(simApprenants * (simFeminin / 100))}</span>
+                  <div className="p-3 rounded-xl" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)' }}>
+                    <span className="text-[8px] block uppercase font-black" style={{ color: 'var(--galf-text-muted)' }}>Femmes Qualifiées</span>
+                    <span className="text-xs font-black" style={{ color: 'var(--galf-text)' }}>{Math.round(simApprenants * (simFeminin / 100))}</span>
                   </div>
                 </div>
               </div>

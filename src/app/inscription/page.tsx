@@ -173,8 +173,8 @@ export default function Inscription() {
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-white uppercase tracking-wider">Brouillon restauré !</h4>
-                  <p className="text-[10px] text-white/60">Nous avons récupéré vos informations de session précédente pour vous faire gagner du temps.</p>
+                  <h4 className="text-xs font-black uppercase tracking-wider" style={{ color: 'var(--galf-text)' }}>Brouillon restauré !</h4>
+                  <p className="text-[10px]" style={{ color: 'var(--galf-text-secondary)' }}>Nous avons récupéré vos informations de session précédente pour vous faire gagner du temps.</p>
                 </div>
               </div>
               <button 
@@ -320,11 +320,11 @@ export default function Inscription() {
                 </div>
 
                 {/* Feature 99: Motivation Test */}
-                <div className="mt-8 border-t border-white/5 pt-6 text-left">
+                <div className="mt-8 pt-6 text-left" style={{ borderTop: '1px solid var(--galf-border)' }}>
                   <h3 className="text-xs font-black uppercase text-galf-yellow tracking-widest mb-3 flex items-center gap-1.5">
                     <Smile className="w-4 h-4" /> Optionnel : Test de Motivation d'Opérateur
                   </h3>
-                  <p className="text-[11px] text-white/50 mb-4">
+                  <p className="text-[11px] mb-4" style={{ color: 'var(--galf-text-muted)' }}>
                     Évaluez votre profil et débloquez une réduction immédiate de 5% si vous obtenez un score de motivation optimal.
                   </p>
 
@@ -332,14 +332,15 @@ export default function Inscription() {
                     <button
                       type="button"
                       onClick={() => { playPromoSound('click'); setShowMotivationTest(true); }}
-                      className="bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase py-2.5 px-4 rounded-xl hover:bg-white/10"
+                      className="text-[10px] font-black uppercase py-2.5 px-4 rounded-xl transition-all"
+                      style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}
                     >
                       Lancer le test de motivation
                     </button>
                   ) : showMotivationTest && !motivationDone ? (
-                    <div className="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-3">
+                    <div className="p-4 rounded-2xl space-y-3" style={{ background: 'var(--galf-bg)', border: '1px solid var(--galf-border)' }}>
                       <span className="text-[9px] font-black text-galf-yellow uppercase">Question {motivationQIdx + 1} / {motivationQuestions.length}</span>
-                      <h4 className="text-xs font-black text-white">{motivationQuestions[motivationQIdx].q}</h4>
+                      <h4 className="text-xs font-black" style={{ color: 'var(--galf-text)' }}>{motivationQuestions[motivationQIdx].q}</h4>
                       <div className="flex flex-col gap-2">
                         {motivationQuestions[motivationQIdx].opts.map((opt, oIdx) => (
                           <button
@@ -356,7 +357,8 @@ export default function Inscription() {
                                 playPromoSound('success')
                               }
                             }}
-                            className="w-full text-left p-2.5 rounded-lg bg-black/40 border border-white/5 hover:border-galf-yellow text-xs text-white/80 transition-all animate-fadeIn"
+                            className="w-full text-left p-2.5 rounded-lg border text-xs transition-all animate-fadeIn"
+                            style={{ background: 'var(--galf-surface)', border: '1px solid var(--galf-border)', color: 'var(--galf-text-secondary)' }}
                           >
                             {opt.text}
                           </button>
@@ -365,8 +367,8 @@ export default function Inscription() {
                     </div>
                   ) : (
                     <div className="p-4 rounded-2xl bg-green-500/5 border border-green-500/20 text-center space-y-2">
-                      <h4 className="text-xs font-black text-white">Test terminé avec succès !</h4>
-                      <p className="text-[10px] text-white/70">
+                      <h4 className="text-xs font-black" style={{ color: 'var(--galf-text)' }}>Test terminé avec succès !</h4>
+                      <p className="text-[10px]" style={{ color: 'var(--galf-text-secondary)' }}>
                         {motivationScore >= 8 
                           ? "🌟 Félicitations ! Votre profil démontre une motivation exceptionnelle. Utilisez le code promo suivant à l'étape de paiement : MOTIVATION5" 
                           : "Merci d'avoir complété le test ! Votre dossier sera analysé en priorité par nos recruteurs."
@@ -450,7 +452,7 @@ export default function Inscription() {
                       <p className="text-green-400 text-[10px] font-bold">
                         🎉 Réduction de {discountPercent}% appliquée avec succès !
                       </p>
-                      <div className="text-[10px] text-white/50 space-y-0.5">
+                      <div className="text-[10px] space-y-0.5" style={{ color: 'var(--galf-text-muted)' }}>
                         <div className="flex justify-between">
                           <span>Tarif d'origine :</span>
                           <span className="line-through">{basePrice.toLocaleString('fr-FR')} F</span>
@@ -459,7 +461,7 @@ export default function Inscription() {
                           <span>Remise ({discountPercent}%) :</span>
                           <span>-{discountAmount.toLocaleString('fr-FR')} F</span>
                         </div>
-                        <div className="flex justify-between font-bold text-white border-t border-white/5 pt-1 mt-1">
+                        <div className="flex justify-between font-bold pt-1 mt-1" style={{ borderTop: '1px solid var(--galf-border)', color: 'var(--galf-text)' }}>
                           <span>Nouveau tarif :</span>
                           <span className="text-galf-yellow">{price.toLocaleString('fr-FR')} F CFA</span>
                         </div>
