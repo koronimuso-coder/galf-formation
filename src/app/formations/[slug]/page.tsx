@@ -20,6 +20,120 @@ export default function FormationDetail() {
   const [seatsReserved] = useState(17)
   const [totalSeats] = useState(20)
 
+  // Wave 3 features state
+  const [activeSound, setActiveSound] = useState<string | null>(null)
+  const [paymentTerm, setPaymentTerm] = useState<'1x' | '3x' | '6x'>('3x')
+  const [eligAge, setEligAge] = useState(false)
+  const [eligLicense, setEligLicense] = useState(false)
+  const [eligAptitude, setEligAptitude] = useState(false)
+  const [eligResult, setEligResult] = useState<'idle' | 'success' | 'fail'>('idle')
+
+  const handlePlaySound = (soundKey: string) => {
+    setActiveSound(soundKey)
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      
+      if (soundKey === 'engine') {
+        osc.type = 'sawtooth'
+        osc.frequency.setValueAtTime(80, ctx.currentTime)
+        osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.4)
+        osc.frequency.linearRampToValueAtTime(60, ctx.currentTime + 1.2)
+        gain.gain.setValueAtTime(0.12, ctx.currentTime)
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5)
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.start()
+        osc.stop(ctx.currentTime + 1.5)
+      } else if (soundKey === 'beep') {
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(950, ctx.currentTime)
+        gain.gain.setValueAtTime(0.1, ctx.currentTime)
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + 0.25)
+        setTimeout(() => {
+          try {
+            const osc2 = ctx.createOscillator()
+            const gain2 = ctx.createGain()
+            osc2.type = 'sine'
+            osc2.frequency.setValueAtTime(950, ctx.currentTime)
+            gain2.gain.setValueAtTime(0.1, ctx.currentTime)
+            gain2.gain.setValueAtTime(0.001, ctx.currentTime + 0.25)
+            osc2.connect(gain2)
+            gain2.connect(ctx.destination)
+            osc2.start()
+            osc2.stop(ctx.currentTime + 0.25)
+          } catch(e) {}
+        }, 350)
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.start()
+        osc.stop(ctx.currentTime + 0.25)
+      } else if (soundKey === 'hydraulic') {
+        const bufferSize = ctx.sampleRate * 1.0
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
+        const data = buffer.getChannelData(0)
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1
+        }
+        const noise = ctx.createBufferSource()
+        noise.buffer = buffer
+        
+        const filter = ctx.createBiquadFilter()
+        filter.type = 'lowpass'
+        filter.frequency.setValueAtTime(2500, ctx.currentTime)
+        filter.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.9)
+        
+        gain.gain.setValueAtTime(0.05, ctx.currentTime)
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0)
+        
+        noise.connect(filter)
+        filter.connect(gain)
+        gain.connect(ctx.destination)
+        noise.start()
+      } else if (soundKey === 'clank') {
+        osc.type = 'square'
+        osc.frequency.setValueAtTime(100, ctx.currentTime)
+        osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.4)
+        gain.gain.setValueAtTime(0.15, ctx.currentTime)
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5)
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.start()
+        osc.stop(ctx.currentTime + 0.5)
+      }
+    } catch(e) {}
+    
+    setTimeout(() => setActiveSound(null), 1500)
+  }
+
+  const handleCheckEligibility = () => {
+    if (eligAge && eligLicense && eligAptitude) {
+      setEligResult('success')
+      triggerAudioClick()
+    } else {
+      setEligResult('fail')
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+        if (AudioCtx) {
+          const ctx = new AudioCtx()
+          const osc = ctx.createOscillator()
+          const gain = ctx.createGain()
+          osc.type = 'sawtooth'
+          osc.frequency.setValueAtTime(180, ctx.currentTime)
+          gain.gain.setValueAtTime(0.08, ctx.currentTime)
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+          osc.connect(gain)
+          gain.connect(ctx.destination)
+          osc.start()
+          osc.stop(ctx.currentTime + 0.3)
+        }
+      } catch(e) {}
+    }
+  }
+
   const chapters = [
     { title: "Introduction et consignes HSE", time: "00:00", desc: "Présentation des règles indispensables de sécurité de chantier." },
     { title: "Connaissance technique de l'engin", time: "05:15", desc: "Analyse mécanique, moteurs diesel et commandes hydrauliques." },
@@ -173,6 +287,52 @@ export default function FormationDetail() {
               </div>
             </FadeIn>
 
+            {/* Feature 12: Boîte à Sons Industriels (Soundboard) */}
+            <FadeIn>
+              <div className="glass-card p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <h2 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <Play className="text-galf-yellow w-5 h-5 fill-current" /> Boîte à Sons Pédagogiques
+                </h2>
+                <p className="text-xs text-white/60 mb-6 leading-relaxed font-sans">
+                  Découvrez l'environnement sonore réel de cette machine en écoutant nos simulations acoustiques.
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {[
+                    { key: 'engine', label: "Démarrage Moteur", desc: "Rumble diesel lourd", icon: "🚜" },
+                    { key: 'beep', label: "Avertisseur Recul", desc: "Beep de sécurité", icon: "🔊" },
+                    { key: 'hydraulic', label: "Hiss Hydraulique", desc: "Soupape de décharge", icon: "💨" },
+                    { key: 'clank', label: "Bruit d'Échappement", desc: "Benne / Dent de godet", icon: "⚙️" }
+                  ].map(sound => {
+                    const isActive = activeSound === sound.key
+                    return (
+                      <button
+                        key={sound.key}
+                        onClick={() => handlePlaySound(sound.key)}
+                        className={`p-4 rounded-2xl border transition-all text-left flex flex-col justify-between h-28 cursor-pointer relative overflow-hidden ${
+                          isActive 
+                            ? 'bg-galf-yellow/20 border-galf-yellow text-galf-yellow shadow-[0_0_15px_rgba(255,176,0,0.2)] scale-[0.98]' 
+                            : 'bg-black/30 border-white/5 text-white/80 hover:border-white/20'
+                        }`}
+                      >
+                        <span className="text-2xl">{sound.icon}</span>
+                        <div>
+                          <div className="text-xs font-black truncate">{sound.label}</div>
+                          <div className="text-[9px] opacity-50 mt-0.5 truncate font-sans">{sound.desc}</div>
+                        </div>
+                        {isActive && (
+                          <span className="absolute right-2 top-2 flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-galf-yellow opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-galf-yellow" />
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </FadeIn>
+
             {/* Details Grid */}
             <div className="grid md:grid-cols-2 gap-8">
               {[
@@ -227,6 +387,71 @@ export default function FormationDetail() {
                 </div>
               </FadeIn>
             </div>
+
+            {/* Feature 14: Test d'Éligibilité Prérequis */}
+            <FadeIn>
+              <div className="glass-card p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <h2 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <Shield className="text-galf-yellow w-5 h-5" /> Test Rapide d'Éligibilité
+                </h2>
+                <p className="text-xs text-white/60 mb-6 leading-relaxed font-sans">
+                  Vérifiez en quelques clics si vous remplissez les conditions requises pour vous inscrire à cette formation certifiante.
+                </p>
+
+                <div className="space-y-4 font-sans">
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    <label className="flex items-center gap-3 p-4 bg-black/20 rounded-xl border border-white/5 cursor-pointer hover:border-white/20 transition-all select-none">
+                      <input
+                        type="checkbox"
+                        checked={eligAge}
+                        onChange={(e) => setEligAge(e.target.checked)}
+                        className="rounded border-white/10 bg-black/40 text-galf-yellow w-4 h-4 focus:ring-0 animate-fadeIn"
+                      />
+                      <span className="text-xs text-white font-bold leading-tight font-sans">Avoir 18 ans révolus</span>
+                    </label>
+
+                    <label className="flex items-center gap-3 p-4 bg-black/20 rounded-xl border border-white/5 cursor-pointer hover:border-white/20 transition-all select-none">
+                      <input
+                        type="checkbox"
+                        checked={eligLicense}
+                        onChange={(e) => setEligLicense(e.target.checked)}
+                        className="rounded border-white/10 bg-black/40 text-galf-yellow w-4 h-4 focus:ring-0 animate-fadeIn"
+                      />
+                      <span className="text-xs text-white font-bold leading-tight font-sans">Permis conduire (Auto/Poids lourd)</span>
+                    </label>
+
+                    <label className="flex items-center gap-3 p-4 bg-black/20 rounded-xl border border-white/5 cursor-pointer hover:border-white/20 transition-all select-none">
+                      <input
+                        type="checkbox"
+                        checked={eligAptitude}
+                        onChange={(e) => setEligAptitude(e.target.checked)}
+                        className="rounded border-white/10 bg-black/40 text-galf-yellow w-4 h-4 focus:ring-0 animate-fadeIn"
+                      />
+                      <span className="text-xs text-white font-bold leading-tight font-sans">Aptitude médicale conforme</span>
+                    </label>
+                  </div>
+
+                  <button
+                    onClick={handleCheckEligibility}
+                    className="w-full bg-galf-yellow text-galf-carbon py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-md cursor-pointer"
+                  >
+                    Vérifier mon éligibilité
+                  </button>
+
+                  {eligResult === 'success' && (
+                    <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-2xl text-center text-xs font-bold text-green-400 animate-fadeIn font-sans">
+                      ✅ ÉLIGIBILITÉ CONFIRMÉE : Vous remplissez toutes les conditions pour vous inscrire à cette formation !
+                    </div>
+                  )}
+
+                  {eligResult === 'fail' && (
+                    <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl text-center text-xs font-bold text-red-400 animate-fadeIn font-sans">
+                      ❌ CONSEIL : Vous devez valider l'ensemble des critères ci-dessus (18 ans, permis et aptitude médicale) avant inscription.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </FadeIn>
           </div>
 
           {/* Price & Registration Sidebar */}
@@ -266,6 +491,51 @@ export default function FormationDetail() {
                   <span className="text-[9px] text-red-400 font-bold block uppercase tracking-wider text-center animate-pulse">
                     Plus que {totalSeats - seatsReserved} places avant fermeture !
                   </span>
+                </div>
+
+                {/* Feature 13: Calculateur d'Échéancier de Paiement */}
+                <div className="mb-6 pt-4 border-t border-white/10">
+                  <label className="text-[10px] font-black uppercase text-galf-yellow tracking-wider block mb-2 font-sans">Options d'Échelonnement</label>
+                  <div className="flex gap-1.5 bg-black/40 p-1 rounded-lg border border-white/5 mb-3">
+                    {(['1x', '3x', '6x'] as const).map(term => (
+                      <button
+                        key={term}
+                        type="button"
+                        onClick={() => { triggerAudioClick(); setPaymentTerm(term); }}
+                        className={`flex-1 py-1 rounded-md text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                          paymentTerm === term
+                            ? 'bg-galf-yellow text-galf-carbon'
+                            : 'text-white/60 hover:text-white'
+                        }`}
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+
+                  {(() => {
+                    const price = formation.pricePromo || formation.price
+                    let detailText = ""
+                    let perMonth = price
+
+                    if (paymentTerm === '1x') {
+                      detailText = "Payable à l'inscription (0% frais)"
+                      perMonth = price
+                    } else if (paymentTerm === '3x') {
+                      perMonth = Math.round((price * 1.03) / 3)
+                      detailText = `${perMonth.toLocaleString('fr-FR')} F / mois pendant 3 mois`
+                    } else if (paymentTerm === '6x') {
+                      perMonth = Math.round((price * 1.06) / 6)
+                      detailText = `${perMonth.toLocaleString('fr-FR')} F / mois pendant 6 mois`
+                    }
+
+                    return (
+                      <div className="bg-black/30 p-3 rounded-xl border border-white/5">
+                        <div className="text-xs font-bold text-white font-mono">{perMonth.toLocaleString('fr-FR')} F CFA</div>
+                        <div className="text-[9px] text-white/50 mt-0.5 font-sans">{detailText}</div>
+                      </div>
+                    )
+                  })()}
                 </div>
 
                 <div className="space-y-3 mb-8 text-sm" style={{ color: 'var(--galf-text-secondary)' }}>

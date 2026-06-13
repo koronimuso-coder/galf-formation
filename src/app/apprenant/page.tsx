@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { HardHat } from 'lucide-react'
+import { HardHat, Settings } from 'lucide-react'
 
 // Lightweight window-relative canvas confetti particles
 function ConfettiEffect() {
@@ -322,6 +322,178 @@ export default function ApprenantDashboard() {
   const [isWaiverSigned, setIsWaiverSigned] = useState(false)
   const [waiverChecked, setWaiverChecked] = useState(false)
   const [signatureName, setSignatureName] = useState("")
+
+  // --- FEATURE 6: EPI Speed Trial States ---
+  const [speedGameActive, setSpeedGameActive] = useState(false)
+  const [speedGameTime, setSpeedGameTime] = useState(10)
+  const [speedGameSelected, setSpeedGameSelected] = useState<string[]>([])
+  const [speedGameStatus, setSpeedGameStatus] = useState<'idle' | 'success' | 'fail'>('idle')
+  const [speedBestTime, setSpeedBestTime] = useState<number | null>(null)
+
+  // --- FEATURE 7: Inspection States ---
+  const [inspectMachine, setInspectMachine] = useState<'pelle' | 'grue' | 'bulldozer'>('pelle')
+  const [inspectChecks, setInspectChecks] = useState<Record<string, boolean>>({
+    oil: false, hoses: false, tracks: false, windshield: false, horn: false
+  })
+  const [engineStarted, setEngineStarted] = useState(false)
+
+  // --- FEATURE 8: Certificate Verifier States ---
+  const [verifyCode, setVerifyCode] = useState("")
+  const [verifyResult, setVerifyResult] = useState<any | null>(null)
+
+  // EPI Countdown Timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (speedGameActive && speedGameTime > 0 && speedGameStatus === 'idle') {
+      timer = setInterval(() => {
+        setSpeedGameTime(prev => {
+          if (prev <= 1) {
+            setSpeedGameStatus('fail')
+            triggerAudioAlert(220, 0.3) // Fail buzzer
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+    return () => clearInterval(timer)
+  }, [speedGameActive, speedGameTime, speedGameStatus])
+
+  const speedItemsList = [
+    { id: 'gilet', label: "Gilet Réfléchissant", icon: "🦺", isEpi: true },
+    { id: 'harnais', label: "Harnais de Sécurité", icon: "🛡️", isEpi: true },
+    { id: 'bottes', label: "Bottes Renforcées", icon: "🥾", isEpi: true },
+    { id: 'bruit', label: "Casque Anti-bruit", icon: "🎧", isEpi: true },
+    { id: 'lunettes', label: "Lunettes de Protection", icon: "🥽", isEpi: true },
+    { id: 'tel', label: "Téléphone Portable", icon: "📱", isEpi: false },
+    { id: 'boisson', label: "Boisson Énergisante", icon: "🥤", isEpi: false },
+    { id: 'ecouteurs', label: "Écouteurs de Musique", icon: "🎵", isEpi: false }
+  ]
+
+  const handleToggleSpeedEpi = (itemId: string) => {
+    if (speedGameStatus !== 'idle') return
+    
+    let updated: string[]
+    if (speedGameSelected.includes(itemId)) {
+      updated = speedGameSelected.filter(id => id !== itemId)
+    } else {
+      updated = [...speedGameSelected, itemId]
+    }
+    setSpeedGameSelected(updated)
+    triggerAudioAlert(600, 0.05)
+
+    // Check if player selected exactly the 5 correct EPIs and no non-EPIs
+    const episSelected = updated.filter(id => speedItemsList.find(x => x.id === id)?.isEpi)
+    const nonEpisSelected = updated.filter(id => !speedItemsList.find(x => x.id === id)?.isEpi)
+    
+    if (episSelected.length === 5 && nonEpisSelected.length === 0) {
+      setSpeedGameStatus('success')
+      const timeTaken = 10 - speedGameTime
+      if (speedBestTime === null || timeTaken < speedBestTime) {
+        setSpeedBestTime(timeTaken)
+      }
+      triggerAudioAlert(880, 0.15)
+      setTimeout(() => triggerAudioAlert(1320, 0.25), 100)
+    }
+  }
+
+  const handleStartSpeedGame = () => {
+    setSpeedGameSelected([])
+    setSpeedGameTime(10)
+    setSpeedGameStatus('idle')
+    setSpeedGameActive(true)
+    triggerAudioAlert(440, 0.1)
+  }
+
+  const handleToggleInspect = (checkKey: string) => {
+    const updated = { ...inspectChecks, [checkKey]: true }
+    setInspectChecks(updated)
+    triggerAudioAlert(700, 0.1) // Hydraulic click sound
+  }
+
+  const handleStartVirtualEngine = () => {
+    const allChecked = Object.values(inspectChecks).every(v => v === true)
+    if (!allChecked) {
+      alert("Veuillez effectuer tous les contrôles de sécurité requis d'abord.")
+      return
+    }
+    setEngineStarted(true)
+    
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (AudioCtx) {
+        const ctx = new AudioCtx()
+        triggerAudioAlert(200, 0.1)
+        
+        setTimeout(() => {
+          const osc1 = ctx.createOscillator()
+          const osc2 = ctx.createOscillator()
+          const gain = ctx.createGain()
+          osc1.type = 'sawtooth'
+          osc1.frequency.setValueAtTime(60, ctx.currentTime)
+          osc2.type = 'square'
+          osc2.frequency.setValueAtTime(30, ctx.currentTime)
+          
+          gain.gain.setValueAtTime(0.1, ctx.currentTime)
+          gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.3)
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8)
+          
+          osc1.connect(gain)
+          osc2.connect(gain)
+          gain.connect(ctx.destination)
+          osc1.start()
+          osc2.start()
+          
+          osc1.stop(ctx.currentTime + 1.8)
+          osc2.stop(ctx.currentTime + 1.8)
+        }, 150)
+      }
+    } catch(e) {}
+  }
+
+  const handleResetInspection = () => {
+    setInspectChecks({
+      oil: false, hoses: false, tracks: false, windshield: false, horn: false
+    })
+    setEngineStarted(false)
+  }
+
+  const handleVerifyCertificate = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!verifyCode.trim()) return
+
+    const code = verifyCode.trim().toUpperCase()
+    if (code === 'GALF-PELLE-2026') {
+      setVerifyResult({
+        name: "Yao N'Guessan",
+        course: "Pelle Hydraulique",
+        score: "18.5/20",
+        date: "12 Avril 2026",
+        status: "AUTHENTIQUE"
+      })
+    } else if (code === 'GALF-GRUE-2026') {
+      setVerifyResult({
+        name: "Marc Koffi",
+        course: "Grue à Tour",
+        score: "17.0/20",
+        date: "10 Avril 2026",
+        status: "AUTHENTIQUE"
+      })
+    } else if (code.startsWith('GALF-') && isWaiverSigned && showCertificate) {
+      setVerifyResult({
+        name: userName,
+        course: certData.course,
+        score: certData.score,
+        date: certData.date,
+        status: "AUTHENTIQUE"
+      })
+    } else {
+      setVerifyResult({
+        status: "INTROUVABLE"
+      })
+    }
+  }
+
 
   const speakModule = () => {
     if ('speechSynthesis' in window) {
@@ -904,6 +1076,176 @@ export default function ApprenantDashboard() {
                       </button>
                     </div>
                   </div>
+
+                  <div className="grid md:grid-cols-2 gap-8 mt-8">
+                    {/* Feature 6: EPI Speed Trial Game */}
+                    <div className="glass-card p-6 rounded-[2rem] border-galf-border flex flex-col justify-between">
+                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                          <ShieldAlert className="w-3.5 h-3.5" /> Défi de Vitesse EPI (10 secondes)
+                        </span>
+                        <span className="text-[9px] font-mono text-white/40">Speed Challenge</span>
+                      </div>
+
+                      <p className="text-[11px] text-white/60 mb-4 leading-relaxed font-sans">
+                        Équipez votre opérateur en sélectionnant uniquement les **5 EPI réglementaires** en moins de 10 secondes.
+                      </p>
+
+                      {speedGameActive ? (
+                        <div>
+                          {speedGameStatus === 'idle' ? (
+                            <div>
+                              <div className="flex justify-between items-center mb-3">
+                                <span className="text-xs font-bold text-white">Sélectionnez les EPI :</span>
+                                <span className={`text-xs font-mono font-black px-2 py-0.5 rounded ${speedGameTime <= 3 ? 'bg-red-500 text-white animate-pulse' : 'bg-galf-yellow text-galf-carbon'}`}>
+                                  ⏱️ {speedGameTime}s
+                                </span>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2 mb-4">
+                                {speedItemsList.map(item => {
+                                  const isSelected = speedGameSelected.includes(item.id)
+                                  return (
+                                    <button
+                                      key={item.id}
+                                      onClick={() => handleToggleSpeedEpi(item.id)}
+                                      className={`p-2 rounded-xl text-left text-xs font-bold border transition-all flex items-center gap-2 ${
+                                        isSelected 
+                                          ? 'bg-galf-yellow/20 border-galf-yellow text-galf-yellow' 
+                                          : 'bg-black/30 border-white/5 text-white/70 hover:border-white/20'
+                                      }`}
+                                    >
+                                      <span>{item.icon}</span>
+                                      <span className="truncate">{item.label}</span>
+                                    </button>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          ) : speedGameStatus === 'success' ? (
+                            <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-center my-4">
+                              <span className="text-2xl block mb-2">⚡🏆</span>
+                              <div className="text-xs font-black text-white uppercase tracking-wider">Défi Réussi !</div>
+                              <p className="text-[10px] text-green-300/80 mt-1 font-sans">
+                                Vous avez équipé les EPI en {10 - speedGameTime} secondes.
+                              </p>
+                              {speedBestTime !== null && (
+                                <div className="text-[9px] font-mono text-white/40 mt-2">Meilleur temps : {speedBestTime}s</div>
+                              )}
+                              <button
+                                onClick={handleStartSpeedGame}
+                                className="mt-3 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30 px-4 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider transition-all cursor-pointer"
+                              >
+                                Rejouer
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center my-4">
+                              <span className="text-2xl block mb-2">🚨</span>
+                              <div className="text-xs font-black text-white uppercase tracking-wider font-sans">Temps Écoulé !</div>
+                              <p className="text-[10px] text-red-300/80 mt-1 font-sans">
+                                Vous n'avez pas sélectionné les bons équipements à temps.
+                              </p>
+                              <button
+                                onClick={handleStartSpeedGame}
+                                className="mt-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 px-4 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider transition-all cursor-pointer"
+                              >
+                                Réessayer
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="py-4 text-center">
+                          <button
+                            onClick={handleStartSpeedGame}
+                            className="bg-galf-yellow text-galf-carbon px-6 py-3 rounded-xl font-black text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer"
+                          >
+                            Lancer le Défi de Vitesse
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="text-[9px] font-mono text-white/30 text-center mt-2">
+                        Le port des EPI divise le risque d'accidents graves par 10 sur chantier.
+                      </div>
+                    </div>
+
+                    {/* Feature 7: Inspection Pré-opérationnelle */}
+                    <div className="glass-card p-6 rounded-[2rem] border-galf-border flex flex-col justify-between">
+                      <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                          <Settings className="w-3.5 h-3.5" /> Inspection Pré-opérationnelle
+                        </span>
+                        <span className="text-[9px] font-mono text-white/40">Circle Check</span>
+                      </div>
+
+                      <div className="mb-4">
+                        <div className="flex gap-2 mb-3 bg-black/20 p-1 rounded-lg border border-white/5">
+                          {(['pelle', 'grue', 'bulldozer'] as const).map(m => (
+                            <button
+                              key={m}
+                              onClick={() => { triggerAudioAlert(600, 0.05); setInspectMachine(m); handleResetInspection(); }}
+                              className={`flex-1 py-1 rounded-md text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                                inspectMachine === m
+                                  ? 'bg-galf-yellow text-galf-carbon'
+                                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                              }`}
+                            >
+                              {m}
+                            </button>
+                          ))}
+                        </div>
+
+                        <div className="space-y-1.5">
+                          {[
+                            { key: 'oil', label: "Vérifier le niveau d'huile moteur" },
+                            { key: 'hoses', label: "Inspecter les flexibles hydrauliques" },
+                            { key: 'tracks', label: "Contrôler les chenilles / câbles" },
+                            { key: 'windshield', label: "Propreté vitrages et cabine" },
+                            { key: 'horn', label: "Tester l'avertisseur sonore" }
+                          ].map(check => {
+                            const done = inspectChecks[check.key]
+                            return (
+                              <button
+                                key={check.key}
+                                onClick={() => handleToggleInspect(check.key)}
+                                disabled={done || engineStarted}
+                                className={`w-full p-2 rounded-xl text-left text-[11px] font-bold border transition-all flex items-center justify-between cursor-pointer ${
+                                  done 
+                                    ? 'bg-green-500/10 border-green-500/30 text-green-400' 
+                                    : 'bg-black/30 border-white/5 text-white/70 hover:border-white/20'
+                                }`}
+                              >
+                                <span>{check.label}</span>
+                                <span>{done ? "✅" : "🔍"}</span>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+
+                      {engineStarted ? (
+                        <div className="bg-galf-yellow/10 border border-galf-yellow/30 rounded-2xl p-3 text-center animate-pulse">
+                          <div className="text-xs font-black text-galf-yellow uppercase tracking-widest flex items-center justify-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-galf-yellow animate-ping" /> MOTEUR EN ROUTE (DIESEL)
+                          </div>
+                          <button
+                            onClick={handleResetInspection}
+                            className="mt-2 text-[9px] font-black uppercase tracking-wider text-white/50 hover:text-white cursor-pointer"
+                          >
+                            Éteindre le moteur
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={handleStartVirtualEngine}
+                          className="w-full bg-galf-yellow text-galf-carbon py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-md cursor-pointer"
+                        >
+                          Démarrer le Moteur Virtuel
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
               </FadeIn>
@@ -1139,6 +1481,62 @@ export default function ApprenantDashboard() {
                   </motion.div>
                )}
              </FadeIn>
+
+             {/* Feature 8: Certificate Verifier Widget */}
+             <div className="glass-card p-8 rounded-[2.5rem] border-galf-border mt-12">
+               <h3 className="text-xl font-black mb-2 flex items-center gap-2" style={{ color: 'var(--galf-text)' }}>
+                 <Award className="text-galf-yellow w-6 h-6" /> Vérificateur Public de Certificat
+               </h3>
+               <p className="text-xs text-white/60 mb-6 leading-relaxed font-sans">
+                 Outil d'accès public permettant aux recruteurs et partenaires industriels de vérifier l'authenticité d'une attestation de formation émise par GALF.
+               </p>
+
+               <form onSubmit={handleVerifyCertificate} className="flex flex-col sm:flex-row gap-4 mb-6">
+                 <input
+                   type="text"
+                   placeholder="Saisissez l'identifiant du certificat (Ex: GALF-PELLE-2026)"
+                   value={verifyCode}
+                   onChange={(e) => setVerifyCode(e.target.value)}
+                   className="flex-1 bg-black/30 border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-galf-yellow font-mono uppercase"
+                 />
+                 <button
+                   type="submit"
+                   className="bg-galf-yellow text-galf-carbon px-8 py-3.5 rounded-xl font-black text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-md shrink-0 cursor-pointer"
+                 >
+                   Vérifier le diplôme
+                 </button>
+               </form>
+
+               {verifyResult && (
+                 <div className="bg-black/40 border border-white/5 p-6 rounded-2xl animate-fadeIn">
+                   {verifyResult.status === 'AUTHENTIQUE' ? (
+                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                       <div>
+                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase mb-3 bg-green-500/10 border border-green-500/30 text-green-500">
+                           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                           {verifyResult.status}
+                         </div>
+                         <h4 className="text-lg font-black text-white">{verifyResult.name}</h4>
+                         <p className="text-xs text-white/70 mt-1 font-sans">
+                           Formation : <strong>{verifyResult.course}</strong> · Moyenne : <strong>{verifyResult.score}</strong>
+                         </p>
+                       </div>
+                       <div className="text-[10px] text-white/40 font-mono self-end sm:self-auto text-right">
+                         Émis le {verifyResult.date}
+                       </div>
+                     </div>
+                   ) : (
+                     <div className="flex items-center gap-3 text-red-500">
+                       <ShieldAlert className="w-6 h-6 shrink-0" />
+                       <div>
+                         <div className="text-xs font-black uppercase tracking-wider font-sans">CERTIFICAT INTROUVABLE</div>
+                         <p className="text-[10px] text-red-400 mt-0.5 font-sans">Aucune correspondance dans notre registre d'attestations sécurisées.</p>
+                       </div>
+                     </div>
+                   )}
+                 </div>
+               )}
+             </div>
           </div>
         )}
       </div>

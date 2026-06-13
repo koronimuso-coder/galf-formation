@@ -25,6 +25,11 @@ export default function EntreprisePortal() {
   const [fleetSize, setFleetSize] = useState(10)
   const [incidentsCount, setIncidentsCount] = useState(5)
 
+  // Fleet Optimizer states
+  const [fleetPelles, setFleetPelles] = useState(5)
+  const [fleetGrues, setFleetGrues] = useState(3)
+  const [fleetBulldozers, setFleetBulldozers] = useState(4)
+
   // B2B Annual Planner State
   const [reservedSlots, setReservedSlots] = useState<string[]>([])
   const [plannerSubmitted, setPlannerSubmitted] = useState(false)
@@ -635,6 +640,133 @@ export default function EntreprisePortal() {
                 </div>
               </div>
             )}
+          </div>
+        </FadeIn>
+
+        {/* Feature 9: Interactive Company Fleet Optimizer */}
+        <FadeIn delay={0.4}>
+          <div className="glass-card p-8 rounded-[2.5rem] border border-white/5 shadow-2xl mb-16 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
+            <h2 className="text-3xl font-black mb-2 text-white flex items-center gap-3">
+              <Calculator className="text-galf-yellow w-7 h-7" /> Optimisateur de Flotte & Risques Pannes
+            </h2>
+            <p className="text-sm text-white/60 max-w-xl mb-8 leading-relaxed font-sans">
+              Modélisez la composition de votre parc de machines de chantier pour obtenir une recommandation d'effectif qualifié et estimer la réduction des pannes.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="space-y-4 bg-black/20 p-6 rounded-2xl border border-white/5">
+                <h4 className="text-xs font-black uppercase text-galf-yellow tracking-widest mb-4 font-sans">Composition de la Flotte</h4>
+                
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs text-white/70">
+                      <span>Pelles Hydrauliques</span>
+                      <span className="text-white font-mono font-bold">{fleetPelles}</span>
+                    </div>
+                    <input
+                      type="range" min="0" max="20" value={fleetPelles}
+                      onChange={(e) => setFleetPelles(parseInt(e.target.value))}
+                      className="w-full h-1 bg-white/10 rounded accent-galf-yellow appearance-none cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs text-white/70">
+                      <span>Grues à Tour / Mobiles</span>
+                      <span className="text-white font-mono font-bold">{fleetGrues}</span>
+                    </div>
+                    <input
+                      type="range" min="0" max="15" value={fleetGrues}
+                      onChange={(e) => setFleetGrues(parseInt(e.target.value))}
+                      className="w-full h-1 bg-white/10 rounded accent-galf-yellow appearance-none cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs text-white/70">
+                      <span>Bulldozers / Tombereaux</span>
+                      <span className="text-white font-mono font-bold">{fleetBulldozers}</span>
+                    </div>
+                    <input
+                      type="range" min="0" max="25" value={fleetBulldozers}
+                      onChange={(e) => setFleetBulldozers(parseInt(e.target.value))}
+                      className="w-full h-1 bg-white/10 rounded accent-galf-yellow appearance-none cursor-pointer"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 bg-black/20 p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                  <h4 className="text-xs font-black uppercase text-galf-yellow tracking-widest mb-4 font-sans">Opérateurs à Retraîner</h4>
+                  <p className="text-[11px] text-white/60 leading-relaxed font-sans mb-4">
+                    Nombre conseillé d'opérateurs à certifier ou recycler par an pour maintenir un taux de pannes de flotte minimal (idéalement 1.2 opérateur par machine).
+                  </p>
+                </div>
+                
+                <div className="text-center py-4 bg-black/40 rounded-xl border border-white/5">
+                  <div className="text-4xl font-black text-white font-mono">{Math.round((fleetPelles + fleetGrues + fleetBulldozers) * 1.2)}</div>
+                  <div className="text-[9px] uppercase font-bold text-galf-text-secondary mt-1 tracking-widest">Opérateurs / an recommandés</div>
+                </div>
+              </div>
+
+              <div className="space-y-4 bg-black/20 p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                  <h4 className="text-xs font-black uppercase text-galf-yellow tracking-widest mb-4 font-sans">Performance Flotte</h4>
+                  <p className="text-[11px] text-white/60 leading-relaxed font-sans mb-4">
+                    Impact estimé sur le taux d'usure mécanique et la durée de vie moyenne de vos engins lourds.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex justify-between text-xs border-b border-white/5 pb-2">
+                    <span className="text-white/60">Taux de Pannes Évité :</span>
+                    <span className="text-green-400 font-bold font-mono">-{Math.round((fleetPelles*2 + fleetGrues*3 + fleetBulldozers*1.5) * 1.5)}%</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/60">Gain Durée de Vie Engins :</span>
+                    <span className="text-green-400 font-bold font-mono">+{Math.round((fleetPelles + fleetGrues + fleetBulldozers) > 0 ? 3.5 : 0)} ans</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Feature 11: Corporate Sponsor Wall */}
+        <FadeIn delay={0.45}>
+          <div className="glass-card p-8 rounded-[2.5rem] border border-white/5 shadow-2xl mb-16">
+            <h2 className="text-3xl font-black mb-2 text-white text-center">
+              Nos Partenaires de Recrutement B2B
+            </h2>
+            <p className="text-sm text-white/60 text-center max-w-xl mx-auto mb-10 leading-relaxed font-sans">
+              Ils font confiance à l'excellence GALF FORMATION pour équiper leurs chantiers d'Afrique de l'Ouest.
+            </p>
+
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+              {[
+                { name: "Bouygues Bâtiment", logo: "🏢 BOUYGUES", trained: 42, hired: 35, placement: "83%" },
+                { name: "Colas Afrique", logo: "🥾 COLAS", trained: 58, hired: 52, placement: "89%" },
+                { name: "Razel-Bec", logo: "🏗️ RAZEL", trained: 31, hired: 28, placement: "90%" },
+                { name: "Vinci Construction", logo: "⚡ VINCI", trained: 47, hired: 41, placement: "87%" },
+                { name: "Eiffage Infrastructure", logo: "🚜 EIFFAGE", trained: 25, hired: 22, placement: "88%" }
+              ].map((partner, idx) => (
+                <div
+                  key={idx}
+                  className="p-5 rounded-2xl border border-white/5 bg-black/40 hover:border-galf-yellow/40 transition-all text-center relative group cursor-pointer animate-fadeIn"
+                >
+                  <div className="text-xs font-black text-white/80 py-4 font-sans tracking-wider">{partner.logo}</div>
+                  
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-slate-900 border border-white/10 text-white rounded-xl p-4 text-[10px] w-48 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-2xl z-30 font-sans text-left leading-relaxed">
+                    <div className="font-black text-xs text-galf-yellow mb-1.5">{partner.name}</div>
+                    <div>Collaborateurs formés : <strong>{partner.trained}</strong></div>
+                    <div>Diplômés embauchés : <strong>{partner.hired}</strong></div>
+                    <div>Taux d'insertion : <strong>{partner.placement}</strong></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </FadeIn>
 

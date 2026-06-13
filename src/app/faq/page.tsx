@@ -1,6 +1,6 @@
 "use client"
 import { FadeIn } from '@/components/animations/FadeIn'
-import { Plus, Minus, MessageSquare, Send, X, Bot, CheckCircle2 } from 'lucide-react'
+import { Plus, Minus, MessageSquare, Send, X, Bot, CheckCircle2, Search, Sparkles } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/layout/PageHeader'
@@ -15,6 +15,10 @@ export default function FAQ() {
   
   // FAQ helpfulness feedback state
   const [votes, setVotes] = useState<{ [key: number]: 'yes' | 'no' }>({})
+
+  // Search and Autocomplete states
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
   // Load votes from localStorage
   useEffect(() => {
@@ -51,6 +55,15 @@ export default function FAQ() {
     { q: "Quelle est la durée des formations ?", a: "Nos formations varient de 3 jours (carte opérateur) à 3 mois (formations spécialisées comme le forage minier). La majorité dure entre 2 et 6 semaines." },
     { q: "Puis-je suivre des cours en ligne ?", a: "Oui, notre plateforme e-learning permet de suivre les modules théoriques en ligne. La partie pratique reste obligatoirement en présentiel dans nos centres." },
     { q: "Proposez-vous des formations pour les entreprises ?", a: "Oui, nous proposons des formations sur-mesure pour les entreprises : sessions intra-entreprise, formations collectives avec tarifs préférentiels, et plans de développement des compétences." },
+  ]
+
+  // Suggested keywords/questions for autocomplete
+  const suggestions = [
+    { label: "Paiement en plusieurs fois", query: "paiement" },
+    { label: "Conditions d'admission", query: "admission" },
+    { label: "Durée de la formation", query: "durée" },
+    { label: "Reconnaissance de l'État", query: "certificat" },
+    { label: "Cours théorique en ligne", query: "ligne" }
   ]
 
   // Chatbot responses lookup dictionary
@@ -112,6 +125,33 @@ export default function FAQ() {
     }, 1200)
   }
 
+  // Regex string escaping utility
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  }
+
+  // Highlight matches inside FAQ text
+  const highlightText = (text: string, query: string) => {
+    if (!query.trim()) return text
+    const parts = text.split(new RegExp(`(${escapeRegExp(query)})`, 'gi'))
+    return (
+      <>
+        {parts.map((part, i) => 
+          part.toLowerCase() === query.toLowerCase() 
+            ? <mark key={i} className="bg-galf-yellow/30 text-galf-yellow rounded px-0.5 font-bold">{part}</mark>
+            : part
+        )}
+      </>
+    )
+  }
+
+  // Filter FAQs based on search input
+  const filteredFaqs = faqs.filter(faq => {
+    const qMatch = faq.q.toLowerCase().includes(searchQuery.toLowerCase())
+    const aMatch = faq.a.toLowerCase().includes(searchQuery.toLowerCase())
+    return qMatch || aMatch
+  })
+
   return (
     <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
       <PageHeader 
@@ -123,20 +163,91 @@ export default function FAQ() {
 
       <div className="container mx-auto px-4 max-w-4xl relative z-10 mt-12">
 
+        {/* ═══════════════════════════════════════════════
+            SEARCH BAR WITH AUTOCOMPLETE PANEL (FEATURE 16)
+           ═══════════════════════════════════════════════ */}
+        <FadeIn delay={0.1}>
+          <div className="mb-10 relative">
+            <div className="glass-card p-2 rounded-2xl border border-white/5 flex items-center gap-3 focus-within:border-galf-yellow/45 transition-colors">
+              <div className="pl-4 text-white/40">
+                <Search className="w-5 h-5" />
+              </div>
+              <input
+                type="text"
+                placeholder="Rechercher une question ou un mot-clé (ex: paiement, certificat, admission...)"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  setShowSuggestions(true)
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                className="flex-1 bg-transparent border-none outline-none py-3 text-sm text-white placeholder-white/40"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('')
+                    setShowSuggestions(false)
+                    triggerAudioClick()
+                  }}
+                  className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Suggestions Panel */}
+            {showSuggestions && searchQuery.trim().length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 z-50 glass-card p-4 rounded-xl border border-white/10 shadow-2xl bg-galf-carbon/95 backdrop-blur-md animate-fadeIn">
+                <div className="flex items-center gap-1.5 text-[10px] font-black uppercase text-galf-yellow tracking-wider mb-2.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Suggestions de recherche</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {suggestions
+                    .filter(s => s.label.toLowerCase().includes(searchQuery.toLowerCase()) || s.query.includes(searchQuery.toLowerCase()))
+                    .map((s, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          setSearchQuery(s.query)
+                          setShowSuggestions(false)
+                          triggerAudioClick()
+                        }}
+                        className="text-xs px-3 py-1.5 bg-white/5 hover:bg-galf-yellow hover:text-galf-carbon rounded-lg border border-white/5 font-semibold text-white/80 transition-all"
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  {suggestions.filter(s => s.label.toLowerCase().includes(searchQuery.toLowerCase()) || s.query.includes(searchQuery.toLowerCase())).length === 0 && (
+                    <span className="text-xs text-white/40 italic">Aucune suggestion rapide pour cette saisie.</span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </FadeIn>
+
+        {/* FAQ List */}
         <div className="space-y-4 mb-16">
-          {faqs.map((faq, index) => (
+          {filteredFaqs.map((faq, index) => (
             <FadeIn key={index} delay={0.05 * index}>
               <div className={`glass-card rounded-xl overflow-hidden transition-all duration-300 border-galf-border ${openIndex === index ? 'border-galf-yellow/40 glow-yellow' : 'hover:border-galf-yellow/20'}`}>
                 <button className="w-full px-6 py-6 flex items-center justify-between focus:outline-none text-left"
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}>
-                  <span className="font-bold text-lg pr-8" style={{ color: 'var(--galf-text)' }}>{faq.q}</span>
+                  <span className="font-bold text-lg pr-8" style={{ color: 'var(--galf-text)' }}>
+                    {highlightText(faq.q, searchQuery)}
+                  </span>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${openIndex === index ? 'bg-galf-yellow text-galf-carbon' : ''}`}
                     style={openIndex !== index ? { background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text-muted)' } : {}}>
                     {openIndex === index ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                   </div>
                 </button>
                 <div className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${openIndex === index ? 'max-h-96 pb-6 opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <p className="leading-relaxed text-sm mb-4" style={{ color: 'var(--galf-text-secondary)' }}>{faq.a}</p>
+                  <p className="leading-relaxed text-sm mb-4" style={{ color: 'var(--galf-text-secondary)' }}>
+                    {highlightText(faq.a, searchQuery)}
+                  </p>
                   
                   {/* Helpfulness feedback system */}
                   <div className="pt-4 border-t border-white/5 flex items-center justify-between text-[11px] font-bold text-white/50">
@@ -168,6 +279,28 @@ export default function FAQ() {
               </div>
             </FadeIn>
           ))}
+
+          {/* Fallback if no matching FAQs */}
+          {filteredFaqs.length === 0 && (
+            <FadeIn>
+              <div className="text-center py-16 bg-white/5 border border-white/5 rounded-2xl space-y-4">
+                <Search className="w-12 h-12 text-white/20 mx-auto" />
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Aucun résultat trouvé</h3>
+                <p className="text-sm text-white/50 max-w-md mx-auto leading-relaxed">
+                  Aucune question de notre base de connaissances ne correspond à votre recherche "{searchQuery}". Essayez de saisir un autre mot-clé ou demandez de l'aide en direct à notre assistant.
+                </p>
+                <button
+                  onClick={() => {
+                    setSearchQuery('')
+                    triggerAudioClick()
+                  }}
+                  className="px-5 py-2.5 bg-galf-yellow text-galf-carbon text-xs font-black uppercase rounded-lg hover:brightness-110 transition-all"
+                >
+                  Réinitialiser la recherche
+                </button>
+              </div>
+            </FadeIn>
+          )}
         </div>
 
         <FadeIn>

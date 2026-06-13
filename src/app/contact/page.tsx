@@ -2,7 +2,39 @@
 import { FadeIn } from '@/components/animations/FadeIn'
 import { useState, useEffect } from 'react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { MapPin, Phone, Mail, Send, Clock, MessageCircle, CheckCircle2, AlertCircle, Calendar } from 'lucide-react'
+import { 
+  MapPin, Phone, Mail, Send, Clock, MessageCircle, CheckCircle2, 
+  AlertCircle, Calendar, LifeBuoy, User, Wrench, Laptop, 
+  CreditCard, Sparkles, RefreshCw, FileText, Check 
+} from 'lucide-react'
+
+// Smart diagnostic tips and technician responses for the simulator
+const SMART_DIAGNOSTICS = {
+  elearning: {
+    title: "Accès E-learning & Compte",
+    icon: Laptop,
+    tip: "💡 Astuce rapide : Les emails de connexion automatique peuvent se retrouver dans vos Courriers Indésirables (Spams). Si vous avez perdu votre mot de passe, utilisez la page dédiée de réinitialisation.",
+    techResponse: "Bonjour, je viens de vérifier l'état du serveur e-learning de GALF. Votre compte est bien actif. Si vous ne recevez pas l'email automatique, veuillez m'indiquer une adresse email alternative afin que je force la synchronisation."
+  },
+  docs: {
+    title: "Dossier d'Inscription & Pièces",
+    icon: FileText,
+    tip: "💡 Astuce rapide : Veillez à ce que vos documents (CNI, Certificat médical) soient au format PDF ou JPG et ne dépassent pas 5 Mo par fichier.",
+    techResponse: "Bonjour. Après vérification du statut d'inscription, votre dossier est actuellement en attente de la visite médicale. Dès que vous téléversez votre certificat médical d'aptitude, nos équipes valideront votre dossier en moins de 4 heures."
+  },
+  simu: {
+    title: "Simulateur 3D & Graphismes",
+    icon: Wrench,
+    tip: "💡 Astuce rapide : Nos simulateurs 3D s'exécutent via WebGL. Activez l'accélération matérielle dans les paramètres de votre navigateur (Paramètres > Système > Utiliser l'accélération matérielle).",
+    techResponse: "Bonjour. Le simulateur 3D nécessite au moins 4 Go de RAM et un processeur graphique compatible WebGL 2.0. Avez-vous essayé d'ouvrir la page dans un onglet de navigation privée sans extensions actives ?"
+  },
+  pay: {
+    title: "Paiement & Facturation",
+    icon: CreditCard,
+    tip: "💡 Astuce rapide : Pour les règlements via Wave ou Mobile Money, la transaction est instantanée. Pensez à faire une capture d'écran du reçu SMS de l'opérateur.",
+    techResponse: "Bonjour, je suis le comptable de permanence. Si votre paiement mobile money a été débité mais n'apparaît pas comme validé dans votre espace, veuillez me transmettre la référence de transaction à 10 chiffres (ex: CO2606...) ci-dessous."
+  }
+}
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -17,6 +49,22 @@ export default function Contact() {
   // Map Switcher State
   const [activeCenter, setActiveCenter] = useState<'abidjan' | 'sanpedro'>('abidjan')
 
+  // Support Ticket Simulator States
+  const [ticketCategory, setTicketCategory] = useState<'elearning' | 'docs' | 'simu' | 'pay'>('elearning')
+  const [ticketDesc, setTicketDesc] = useState('')
+  const [isCreatingTicket, setIsCreatingTicket] = useState(false)
+  const [activeTicket, setActiveTicket] = useState<{
+    id: string
+    category: 'elearning' | 'docs' | 'simu' | 'pay'
+    description: string
+    status: 'received' | 'assigned' | 'replied' | 'resolved'
+    createdAt: string
+  } | null>(null)
+  
+  const [ticketLogs, setTicketLogs] = useState<Array<{ sender: 'user' | 'tech' | 'system'; text: string; time: string }>>([])
+  const [techTyping, setTechTyping] = useState(false)
+  const [userTicketMsg, setUserTicketMsg] = useState('')
+
   // Callback countdown timer hook
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -28,12 +76,47 @@ export default function Contact() {
     return () => clearInterval(interval)
   }, [callbackScheduled, callbackTimeSlot, countdownSeconds])
 
+  // Play Web Audio Sound FX
+  const playTicketSound = (type: 'success' | 'notify') => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
+      const now = ctx.currentTime
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+
+      if (type === 'success') {
+        osc.type = 'triangle'
+        osc.frequency.setValueAtTime(440, now)
+        osc.frequency.setValueAtTime(880, now + 0.1)
+        gain.gain.setValueAtTime(0.04, now)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25)
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.start()
+        osc.stop(now + 0.25)
+      } else {
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(950, now)
+        gain.gain.setValueAtTime(0.03, now)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15)
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.start()
+        osc.stop(now + 0.15)
+      }
+      setTimeout(() => ctx.close(), 300)
+    } catch (e) {}
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setTimeout(() => {
       setIsSubmitting(false)
       setSubmitted(true)
+      playTicketSound('success')
     }, 2000)
   }
 
@@ -42,12 +125,102 @@ export default function Contact() {
     if (!phoneToCall) return
     setCallbackScheduled(true)
     setCountdownSeconds(300) // 5 minutes count
+    playTicketSound('success')
   }
 
   const formatCountdown = (sec: number) => {
     const m = Math.floor(sec / 60)
     const s = sec % 60
     return `${m}:${s.toString().padStart(2, '0')}`
+  }
+
+  // Handle support ticket creation
+  const handleCreateTicket = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!ticketDesc.trim()) return
+
+    setIsCreatingTicket(true)
+    playTicketSound('success')
+
+    const newTicketId = `GALF-TKT-${Math.floor(1000 + Math.random() * 9000)}`
+    const nowStr = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+
+    setTimeout(() => {
+      setActiveTicket({
+        id: newTicketId,
+        category: ticketCategory,
+        description: ticketDesc,
+        status: 'received',
+        createdAt: nowStr
+      })
+      setTicketLogs([
+        { sender: 'system', text: `Ticket créé avec succès. ID : ${newTicketId}`, time: nowStr },
+        { sender: 'system', text: "Diagnostic automatique en cours d'analyse...", time: nowStr }
+      ])
+      setIsCreatingTicket(false)
+      setTicketDesc('')
+
+      // Transition to assigned after 2 seconds
+      setTimeout(() => {
+        setTicketLogs(prev => [
+          ...prev,
+          { sender: 'system', text: "Ticket assigné à l'agent technique de permanence (M. Diallo).", time: nowStr }
+        ])
+        playTicketSound('notify')
+        setActiveTicket(prev => prev ? { ...prev, status: 'assigned' } : null)
+
+        // Technician typing simulation after another 2.5s
+        setTimeout(() => {
+          setTechTyping(true)
+          
+          setTimeout(() => {
+            setTechTyping(false)
+            const responseText = SMART_DIAGNOSTICS[ticketCategory].techResponse
+            setTicketLogs(prev => [
+              ...prev,
+              { sender: 'tech', text: responseText, time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }
+            ])
+            playTicketSound('notify')
+            setActiveTicket(prev => prev ? { ...prev, status: 'replied' } : null)
+          }, 3000)
+
+        }, 2500)
+
+      }, 2000)
+
+    }, 1500)
+  }
+
+  // Handle user responding on the ticket chat
+  const handleSendTicketMessage = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!userTicketMsg.trim() || !activeTicket) return
+
+    const nowStr = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+    const userText = userTicketMsg
+    setTicketLogs(prev => [
+      ...prev,
+      { sender: 'user', text: userText, time: nowStr }
+    ])
+    setUserTicketMsg('')
+    playTicketSound('success')
+
+    // Tech responds again
+    setTimeout(() => {
+      setTechTyping(true)
+      setTimeout(() => {
+        setTechTyping(false)
+        setTicketLogs(prev => [
+          ...prev,
+          { 
+            sender: 'tech', 
+            text: "Entendu. J'ai mis à jour les informations dans notre base de données. Nos agents vont faire une double vérification et reviendront vers vous par téléphone sous peu.", 
+            time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) 
+          }
+        ])
+        playTicketSound('notify')
+      }, 2500)
+    }, 1500)
   }
 
   const centerDetails = {
@@ -66,8 +239,6 @@ export default function Contact() {
   }
 
   const currentCenter = centerDetails[activeCenter]
-
-  const inputStyle = { background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }
 
   return (
     <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>
@@ -160,7 +331,7 @@ export default function Contact() {
         </div>
 
         {/* ═══════════════════════════════════════════════
-            NEW ROW: MAP SWITCHER & CALLBACK SCHEDULER
+            ROW 2: MAP SWITCHER & CALLBACK SCHEDULER
            ═══════════════════════════════════════════════ */}
         <div className="grid md:grid-cols-2 gap-12 mt-16">
           
@@ -319,7 +490,226 @@ export default function Contact() {
           </FadeIn>
         </div>
 
+        {/* ═══════════════════════════════════════════════
+            ROW 3: SUPPORT TICKET SIMULATOR (NEW FEATURE 15)
+           ═══════════════════════════════════════════════ */}
+        <div className="mt-16">
+          <FadeIn delay={0.6}>
+            <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,rgba(255,176,0,0.05),transparent)]">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[8rem]" />
+              
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-galf-yellow/10 border border-galf-yellow/20 flex items-center justify-center text-galf-yellow">
+                  <LifeBuoy className="w-5 h-5 animate-spin-slow" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black text-white uppercase tracking-tight">Simulateur de Tickets de Support</h3>
+                  <p className="text-xs text-white/60">Obtenez un diagnostic technique automatisé et suivez la résolution de votre incident en direct.</p>
+                </div>
+              </div>
+
+              <div className="grid lg:grid-cols-12 gap-8 mt-8 pt-6 border-t border-white/5">
+                {/* Left Side: Ticket Creation Form & Diagnostics */}
+                <div className="lg:col-span-5 space-y-6">
+                  <form onSubmit={handleCreateTicket} className="space-y-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                        Catégorie de l'incident
+                      </label>
+                      <select
+                        value={ticketCategory}
+                        onChange={(e) => setTicketCategory(e.target.value as any)}
+                        disabled={!!activeTicket}
+                        className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-galf-yellow disabled:opacity-50"
+                        style={{ colorScheme: 'dark' }}
+                      >
+                        <option value="elearning">Accès E-learning &amp; Connexion</option>
+                        <option value="docs">Dossier d'Inscription &amp; Documents</option>
+                        <option value="simu">Simulateur 3D &amp; Problème WebGL</option>
+                        <option value="pay">Paiement / Validation Mobile Money</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                        Description détaillée
+                      </label>
+                      <textarea
+                        required
+                        rows={4}
+                        placeholder="Ex: Je ne parviens pas à charger mon certificat médical / Mon écran reste noir sur le simulateur 3D..."
+                        value={ticketDesc}
+                        onChange={(e) => setTicketDesc(e.target.value)}
+                        disabled={!!activeTicket}
+                        className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-galf-yellow resize-none disabled:opacity-50"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isCreatingTicket || !!activeTicket}
+                      className="w-full bg-galf-yellow text-galf-carbon py-3.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {isCreatingTicket ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          Création en cours...
+                        </>
+                      ) : activeTicket ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          Ticket Actif en Simulation
+                        </>
+                      ) : (
+                        "Ouvrir un Ticket de Support"
+                      )}
+                    </button>
+                  </form>
+
+                  {/* Smart Diagnostic Block (Real-time tip based on selected category) */}
+                  <div className="bg-white/5 border border-white/5 rounded-2xl p-5 space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-black text-galf-yellow">
+                      {(() => {
+                        const Icon = SMART_DIAGNOSTICS[ticketCategory].icon
+                        return <Icon className="w-4 h-4" />
+                      })()}
+                      <span>Aide Automatisée : {SMART_DIAGNOSTICS[ticketCategory].title}</span>
+                    </div>
+                    <p className="text-[11px] text-white/75 leading-relaxed">
+                      {SMART_DIAGNOSTICS[ticketCategory].tip}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Side: Live Ticket Tracker Console */}
+                <div className="lg:col-span-7">
+                  <div className="bg-black/40 border border-white/5 rounded-[2rem] p-6 h-full flex flex-col justify-between min-h-[350px]">
+                    
+                    {!activeTicket ? (
+                      <div className="my-auto text-center space-y-3 p-6">
+                        <AlertCircle className="w-10 h-10 text-white/20 mx-auto" />
+                        <h4 className="text-xs font-black text-white/60 uppercase tracking-wider">Aucun ticket actif</h4>
+                        <p className="text-[10px] text-white/40 max-w-xs mx-auto leading-relaxed">
+                          Remplissez le formulaire de support à gauche et soumettez-le pour initier la console de suivi technique simulée.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col h-full justify-between">
+                        {/* Ticket Header Metadata */}
+                        <div className="pb-4 border-b border-white/5 flex flex-wrap items-center justify-between gap-4">
+                          <div>
+                            <span className="text-[9px] font-black uppercase text-galf-yellow bg-galf-yellow/10 px-2 py-0.5 rounded border border-galf-yellow/20">
+                              {activeTicket.id}
+                            </span>
+                            <h4 className="text-xs font-black text-white mt-1 uppercase tracking-tight">
+                              {SMART_DIAGNOSTICS[activeTicket.category].title}
+                            </h4>
+                          </div>
+
+                          <div className="text-right">
+                            <span className="text-[9px] font-bold text-white/40 block">Statut du ticket :</span>
+                            <span className={`text-[10px] font-black uppercase tracking-wider ${
+                              activeTicket.status === 'received' ? 'text-blue-400' :
+                              activeTicket.status === 'assigned' ? 'text-orange-400' :
+                              activeTicket.status === 'replied' ? 'text-green-400' :
+                              'text-white/60'
+                            }`}>
+                              {activeTicket.status === 'received' && "✓ Reçu / Diagnostic"}
+                              {activeTicket.status === 'assigned' && "⚡ Assigné (M. Diallo)"}
+                              {activeTicket.status === 'replied' && "💬 Réponse de l'agent"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Interactive Live Log Timeline */}
+                        <div className="flex-1 my-4 p-4 bg-black/30 rounded-2xl overflow-y-auto max-h-48 space-y-3 text-xs custom-scrollbar">
+                          {ticketLogs.map((log, idx) => (
+                            <div key={idx} className={`flex flex-col ${
+                              log.sender === 'user' ? 'items-end' :
+                              log.sender === 'tech' ? 'items-start' :
+                              'items-center'
+                            }`}>
+                              {log.sender === 'system' ? (
+                                <div className="text-[9px] font-bold bg-white/5 border border-white/5 text-white/50 px-2.5 py-1 rounded-full text-center">
+                                  {log.text}
+                                </div>
+                              ) : (
+                                <div className={`max-w-[85%] rounded-xl p-3 relative ${
+                                  log.sender === 'user'
+                                    ? 'bg-galf-yellow text-galf-carbon font-semibold rounded-tr-none'
+                                    : 'bg-white/5 border border-white/5 text-white/90 rounded-tl-none'
+                                }`}>
+                                  <div className="text-[9px] opacity-40 font-bold mb-1 flex items-center gap-1">
+                                    <User className="w-2.5 h-2.5" />
+                                    {log.sender === 'user' ? 'Vous' : 'M. Diallo (Support GALF)'}
+                                    <span className="ml-auto">{log.time}</span>
+                                  </div>
+                                  <p className="leading-relaxed text-[11px]">{log.text}</p>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+
+                          {techTyping && (
+                            <div className="flex items-start">
+                              <div className="bg-white/5 border border-white/5 text-white/50 px-3 py-2 rounded-xl rounded-tl-none flex items-center gap-1.5 text-[10px]">
+                                <RefreshCw className="w-3 h-3 animate-spin text-galf-yellow" />
+                                <span>M. Diallo rédige une réponse...</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Reply Form */}
+                        <div className="pt-4 border-t border-white/5 flex items-center justify-between gap-4">
+                          {activeTicket.status === 'replied' ? (
+                            <form onSubmit={handleSendTicketMessage} className="w-full flex gap-2">
+                              <input
+                                required
+                                type="text"
+                                placeholder="Tapez votre réponse ici..."
+                                value={userTicketMsg}
+                                onChange={(e) => setUserTicketMsg(e.target.value)}
+                                className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-galf-yellow"
+                              />
+                              <button
+                                type="submit"
+                                className="bg-galf-yellow text-galf-carbon px-4 py-2 rounded-xl font-black text-xs uppercase hover:brightness-110 transition-all shrink-0"
+                              >
+                                Répondre
+                              </button>
+                            </form>
+                          ) : (
+                            <div className="text-[10px] text-white/40 italic">
+                              * Vous pourrez répondre dès que le technicien aura formulé une analyse personnalisée (environ 4 secondes).
+                            </div>
+                          )}
+
+                          <button
+                            onClick={() => {
+                              playTicketSound('success')
+                              setActiveTicket(null)
+                              setTicketLogs([])
+                            }}
+                            className="text-[9px] font-black uppercase text-red-400 bg-red-400/10 border border-red-400/20 px-2.5 py-1.5 rounded-lg hover:bg-red-400/20 transition-all shrink-0"
+                          >
+                            Annuler / Fermer
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </FadeIn>
+        </div>
+
       </div>
     </div>
   )
 }
+

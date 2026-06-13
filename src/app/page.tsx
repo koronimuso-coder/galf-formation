@@ -1,13 +1,16 @@
 "use client"
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Trophy, Award, MapPin, Star, ChevronRight, Play, Clock, Users, Factory, Settings } from 'lucide-react'
+import { 
+  ArrowRight, Trophy, Award, MapPin, Star, ChevronRight, Play, Clock, 
+  Users, Factory, Settings, ChevronLeft, Pause, Sparkles, Shield, 
+  TrendingUp, CheckCircle2, Calendar, User, Zap, RefreshCw, AlertCircle
+} from 'lucide-react'
 import { FadeIn, AnimatedCounter, MagneticHover, TextReveal } from '@/components/animations/FadeIn'
 import { SplineHero } from '@/components/3d/SplineHero'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { MachineSpecsModal } from '@/components/3d/MachineSpecsModal'
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
 import { getFormationImage } from '@/lib/images'
 
 export default function Home() {
@@ -25,6 +28,145 @@ export default function Home() {
     { name: "Grue Mobile", slug: "grue-mobile", img: "/images/formations/grue-mobile.png", cat: "Levage", desc: "Flexibilité et puissance de levage mobile" },
     { name: "Compacteur", slug: "compacteur", img: "/images/formations/compacteur.png", cat: "Routes", desc: "Finition et densification des sols" },
   ]
+
+  // 1. Operator Testimonials Carousel States
+  const testimonials = [
+    { name: "Kouadio Jean", role: "Opérateur Pelle Hydraulique", company: "SOGEA-SATOM CI", salary: "+60% Salaire", content: "Grâce à GALF, j'ai pu passer de simple aide-ouvrier à conducteur certifié en 3 mois. La pratique sur simulateur 3D et engins réels fait toute la différence.", rating: 5, initial: "K" },
+    { name: "Sylla Mariam", role: "Conductrice Grue Mobile", company: "Port Autonome d'Abidjan", salary: "Intégration Directe", content: "Le centre de formation GALF offre un accompagnement exceptionnel. Les instructeurs sont très attentifs et la grue mobile sur le plateau technique d'Abidjan est de dernière génération.", rating: 5, initial: "S" },
+    { name: "Bamba Drissa", role: "Opérateur Foreuse de Mine", company: "Randgold Resources", salary: "+85% Salaire", content: "La formation Forage Minier à San Pedro est une référence absolue. Dès la fin de mon stage, j'ai signé un CDI pour travailler sur un gisement d'or.", rating: 5, initial: "B" }
+  ]
+  const [activeSlide, setActiveSlide] = useState(0)
+  const [isPlayingTestimonials, setIsPlayingTestimonials] = useState(true)
+
+  // Autoplay Testimonials
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isPlayingTestimonials) {
+      interval = setInterval(() => {
+        setActiveSlide(prev => (prev + 1) % testimonials.length)
+      }, 4500)
+    }
+    return () => clearInterval(interval)
+  }, [isPlayingTestimonials])
+
+  // 2. Career Path Timeline States
+  const [activeTimelineStep, setActiveTimelineStep] = useState(0)
+  const careerSteps = [
+    {
+      title: "Orientation & Inscription",
+      duration: "1 Semaine",
+      badge: "Entrée",
+      reward: "📋 Diagnostic d'Aptitude Métier",
+      desc: "Analyse de vos objectifs, sélection de la spécialité (Terrassement, Levage ou Mine) et validation de l'aptitude physique et de sécurité obligatoire."
+    },
+    {
+      title: "Simulateur 3D Immersif",
+      duration: "2 Semaines",
+      badge: "Virtuel",
+      reward: "🎮 Badge Pilote Virtuel",
+      desc: "Apprentissage des commandes en cabine simulée. Vous effectuez 10 heures d'exercices de précision avant d'approcher un engin de chantier réel."
+    },
+    {
+      title: "Conduite Terrain Intensive",
+      duration: "4 Semaines",
+      badge: "Réel",
+      reward: "🏗️ Brevet Conduite Pratique",
+      desc: "80% de pratique. Manipulation directe sur le plateau technique. Terrassement, levage de charges ou creusement de tranchées en conditions réelles."
+    },
+    {
+      title: "Sécurité & HSE Avancé",
+      duration: "1 Semaine",
+      badge: "Sécurité",
+      reward: "🪖 Certificat de Sécurité Chantier",
+      desc: "Maîtrise des protocoles de balisage, des gestes de guidage de grue et d'extinction d'incendies. La sécurité est notre priorité absolue."
+    },
+    {
+      title: "Examen d'État & Diplôme",
+      duration: "3 Jours",
+      badge: "Attestation",
+      reward: "🎓 Certificat GALF / CACES Agréé",
+      desc: "Évaluation théorique sous forme de QCM et examen pratique chronométré devant un jury d'instructeurs agréés par le Ministère de l'Enseignement Technique."
+    },
+    {
+      title: "Accompagnement B2B",
+      duration: "Suivi continu",
+      badge: "Emploi",
+      reward: "💼 Recommandation Entreprises",
+      desc: "Mise en relation avec notre réseau de plus de 50 entreprises partenaires (BTP, mines, ports). Optimisation de votre CV et préparation aux entretiens."
+    }
+  ]
+
+  // 3. Live Stats Data & Activity Feed
+  const [liveStudents, setLiveStudents] = useState(1534)
+  const [liveEventText, setLiveEventText] = useState("Un nouvel opérateur vient d'être diplômé à Abidjan (Grue)")
+
+  useEffect(() => {
+    // Simulate real-time counter changes
+    const interval = setInterval(() => {
+      setLiveStudents(prev => prev + 1)
+      const events = [
+        "Un nouvel opérateur vient d'être diplômé à Abidjan (Grue à Tour)",
+        "Nouveau partenariat signé avec SMB Côte d'Ivoire !",
+        "Un apprenant vient de valider 100% sur le simulateur Pelle Hydraulique",
+        "Session d'examen pratique ouverte à San Pedro",
+        "Acompte reçu et inscription validée pour un opérateur minier"
+      ]
+      setLiveEventText(events[Math.floor(Math.random() * events.length)])
+    }, 12000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // 4. Center Tour Booking States
+  const [selectedCenter, setSelectedCenter] = useState<'abidjan' | 'sanpedro'>('abidjan')
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  const [visitorName, setVisitorName] = useState('')
+  const [visitorPhone, setVisitorPhone] = useState('')
+  const [bookingConfirmed, setBookingConfirmed] = useState(false)
+  const [bookedPassId, setBookedPassId] = useState('')
+
+  const availableDays = [15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27] // June 2026 days
+  const timeSlots = [
+    { time: "09h00 - 10h30", status: "Disponible" },
+    { time: "11h00 - 12h30", status: "1 place restante" },
+    { time: "14h00 - 15h30", status: "Disponible" },
+    { time: "16h00 - 17h30", status: "Complet" }
+  ]
+
+  // Web Audio for Reservation
+  const playBookingSound = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
+      const now = ctx.currentTime
+      
+      // Triple chord
+      const freqs = [330, 440, 554]
+      freqs.forEach((f, idx) => {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.type = 'triangle'
+        osc.frequency.setValueAtTime(f, now + idx * 0.05)
+        gain.gain.setValueAtTime(0.03, now + idx * 0.05)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.3)
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.start(now + idx * 0.05)
+        osc.stop(now + idx * 0.05 + 0.3)
+      })
+      setTimeout(() => ctx.close(), 500)
+    } catch (e) {}
+  }
+
+  const handleBookingSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!selectedDay || !selectedSlot || !visitorName || !visitorPhone) return
+
+    playBookingSound()
+    setBookedPassId(`GALF-VIS-${Math.floor(1000 + Math.random() * 9000)}`)
+    setBookingConfirmed(true)
+  }
 
   return (
     <div className="flex flex-col">
@@ -96,7 +238,6 @@ export default function Home() {
         <div className="container-galf">
           <div className="text-[10px] uppercase tracking-[0.4em] font-black text-center mb-8 opacity-40" style={{ color: 'var(--galf-text)' }}>Ils nous font confiance</div>
           <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
-             {/* Simple high-end placeholder logos using text/lucide */}
              <div className="flex items-center gap-2 font-black text-xl italic" style={{ color: 'var(--galf-text)' }}>SMB</div>
              <div className="flex items-center gap-2 font-black text-xl italic" style={{ color: 'var(--galf-text)' }}>GESTOCI</div>
              <div className="flex items-center gap-2 font-black text-xl italic" style={{ color: 'var(--galf-text)' }}>BTP-CI</div>
@@ -106,27 +247,90 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ STATS ═══ */}
-      <section className="py-16 relative overflow-hidden" style={{ background: 'var(--galf-bg-alt)', borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
+      {/* ═══════════════════════════════════════════════
+          3. LIVE SVG STATS DASHBOARD (NEW FEATURE 19)
+         ═══════════════════════════════════════════════ */}
+      <section className="py-20 relative overflow-hidden" style={{ background: 'var(--galf-bg-alt)', borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
         <div className="absolute inset-0 bg-diagonal" />
         <div className="container-galf relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { val: 98, suf: '%', label: "Taux de réussite", icon: Trophy },
-              { val: 1500, pre: '+', label: "Opérateurs formés", icon: Users },
-              { val: 19, label: "Parcours certifiants", icon: Award },
-              { val: 50, pre: '+', label: "Entreprises partenaires", icon: Star },
-            ].map((s, i) => (
-              <FadeIn key={i} delay={0.1 * i} className="text-center group">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl mb-4 group-hover:border-galf-yellow/50 transition-colors" style={{ background: 'var(--galf-surface)', border: '1px solid var(--galf-border)' }}>
-                  <s.icon className="w-6 h-6 text-galf-yellow" />
+          
+          {/* Live Activity Feed Ribbon */}
+          <div className="mb-12 bg-black/60 border border-white/5 rounded-2xl py-3 px-6 flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+              <span className="text-[10px] font-black uppercase text-white/50 tracking-wider">Mises à jour en direct :</span>
+            </div>
+            <p className="text-xs text-white/80 font-semibold animate-fadeIn flex-1" key={liveEventText}>
+              {liveEventText}
+            </p>
+            <div className="text-[9px] font-bold text-galf-yellow bg-galf-yellow/10 border border-galf-yellow/20 px-2 py-0.5 rounded uppercase">
+              Chantier-École
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Stat 1: 98% Success */}
+            <FadeIn delay={0.1} className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center relative group">
+              <div className="relative w-24 h-24 mb-4">
+                <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
+                  <path className="text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path className="text-galf-yellow transition-all duration-1000" strokeDasharray="98, 100" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-black text-white">98%</span>
                 </div>
-                <div className="text-4xl md:text-5xl font-black mb-2 text-glow-yellow" style={{ color: 'var(--galf-text)' }}>
-                  <AnimatedCounter target={s.val} suffix={s.suf || ''} prefix={s.pre || ''} />
+              </div>
+              <h3 className="text-sm font-black text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <Trophy className="w-4 h-4 text-galf-yellow" /> Taux de réussite
+              </h3>
+              <p className="text-[11px] text-white/50 leading-relaxed">Sur examen de conduite et théorie réglementaire.</p>
+            </FadeIn>
+
+            {/* Stat 2: 1530+ Certifies */}
+            <FadeIn delay={0.2} className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center relative group">
+              <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-galf-yellow/5 rounded-full border border-galf-yellow/15 group-hover:scale-105 transition-transform">
+                <Users className="w-10 h-10 text-galf-yellow animate-pulse" />
+              </div>
+              <h3 className="text-2xl font-black text-white mb-1">
+                {liveStudents}
+              </h3>
+              <p className="text-xs font-black text-galf-yellow uppercase tracking-widest mb-1 flex items-center gap-1">
+                <Zap className="w-3.5 h-3.5 text-galf-yellow" /> Opérateurs Formés
+              </p>
+              <p className="text-[11px] text-white/50 leading-relaxed">Compteur live actualisé en direct.</p>
+            </FadeIn>
+
+            {/* Stat 3: 19 Parcours */}
+            <FadeIn delay={0.3} className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center relative group">
+              <div className="relative w-24 h-24 mb-4">
+                <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
+                  <path className="text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path className="text-galf-yellow/80" strokeDasharray="75, 100" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-black text-white">19</span>
                 </div>
-                <div className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--galf-text-secondary)' }}>{s.label}</div>
-              </FadeIn>
-            ))}
+              </div>
+              <h3 className="text-sm font-black text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <Award className="w-4 h-4 text-galf-yellow" /> Spécialités
+              </h3>
+              <p className="text-[11px] text-white/50 leading-relaxed">Formations certifiantes reconnues par l'État.</p>
+            </FadeIn>
+
+            {/* Stat 4: 50+ Partners */}
+            <FadeIn delay={0.4} className="glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center relative group">
+              <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-galf-yellow/5 rounded-full border border-galf-yellow/15 group-hover:rotate-12 transition-transform">
+                <TrendingUp className="w-10 h-10 text-galf-yellow" />
+              </div>
+              <h3 className="text-2xl font-black text-white mb-1">50+</h3>
+              <p className="text-xs font-black text-galf-yellow uppercase tracking-widest mb-1 flex items-center gap-1">
+                <Star className="w-3.5 h-3.5 fill-galf-yellow text-galf-yellow" /> Entreprises
+              </p>
+              <p className="text-[11px] text-white/50 leading-relaxed">Partenariats actifs de recrutement.</p>
+            </FadeIn>
           </div>
         </div>
       </section>
@@ -248,46 +452,210 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ TESTIMONIALS ═══ */}
+      {/* ═══════════════════════════════════════════════
+          2. CAREER TIMELINE EXPLORER (NEW FEATURE 18)
+         ═══════════════════════════════════════════════ */}
       <section className="py-32 relative overflow-hidden" style={{ background: 'var(--galf-bg)' }}>
         <div className="container-galf relative z-10">
           <FadeIn>
-            <div className="text-center mb-20">
-              <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Avis certifiés</div>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter" style={{ color: 'var(--galf-text)' }}>
+            <div className="text-center mb-16">
+              <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Parcours d'apprentissage</span>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-white">
+                De l'inscription <span className="text-galf-yellow">à l'emploi</span>
+              </h2>
+              <p className="text-lg max-w-2xl mx-auto text-white/60">
+                Découvrez les étapes clés de votre formation et les compétences certifiées à chaque jalon de votre carrière.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            {/* Steps Navigator */}
+            <div className="lg:col-span-5 space-y-3">
+              {careerSteps.map((step, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveTimelineStep(idx)}
+                  className={`w-full text-left p-5 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
+                    activeTimelineStep === idx 
+                      ? 'bg-galf-yellow/10 border-galf-yellow/40 shadow-lg glow-yellow'
+                      : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-mono font-black text-sm transition-colors ${
+                      activeTimelineStep === idx ? 'bg-galf-yellow text-galf-carbon' : 'bg-white/10 text-white/70'
+                    }`}>
+                      {idx + 1}
+                    </span>
+                    <div>
+                      <h4 className="text-sm font-black text-white">{step.title}</h4>
+                      <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider">{step.duration}</span>
+                    </div>
+                  </div>
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border ${
+                    activeTimelineStep === idx ? 'bg-galf-yellow/20 text-galf-yellow border-galf-yellow/30' : 'bg-white/5 text-white/40 border-white/5'
+                  }`}>
+                    {step.badge}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Step Detail Display Panel */}
+            <div className="lg:col-span-7">
+              <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,176,0,0.03),transparent)]">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[8rem]" />
+                
+                <div>
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase text-galf-yellow tracking-widest mb-4">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Focus Étape {activeTimelineStep + 1} / {careerSteps.length}</span>
+                  </div>
+
+                  <h3 className="text-3xl font-black text-white mb-6 uppercase tracking-tight">
+                    {careerSteps[activeTimelineStep].title}
+                  </h3>
+
+                  <p className="text-sm text-white/70 leading-relaxed font-semibold mb-8">
+                    {careerSteps[activeTimelineStep].desc}
+                  </p>
+                </div>
+
+                <div className="pt-6 border-t border-white/5 flex flex-wrap items-center justify-between gap-6">
+                  <div>
+                    <span className="text-[10px] text-white/40 font-black uppercase tracking-wider block mb-1">Récompense / Jalon débloqué :</span>
+                    <span className="text-sm font-black text-galf-yellow flex items-center gap-2">
+                      {careerSteps[activeTimelineStep].reward}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] text-white/30 font-bold uppercase tracking-wider">Durée :</span>
+                    <span className="text-xs font-black text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                      {careerSteps[activeTimelineStep].duration}
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════
+          1. CAROUSEL OF TESTIMONIALS (NEW FEATURE 17)
+         ═══════════════════════════════════════════════ */}
+      <section className="py-32 relative overflow-hidden bg-diagonal" style={{ background: 'var(--galf-bg-alt)', borderTop: '1px solid var(--galf-border)' }}>
+        <div className="container-galf relative z-10">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Avis certifiés</span>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
                 Ils ont <span className="text-galf-yellow">réussi avec nous</span>
               </h2>
             </div>
           </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { name: "Kouadio Jean", role: "Opérateur Pelle Hydraulique", content: "Grâce à GALF, j'ai pu passer de simple aide-ouvrier à conducteur certifié en 3 mois. La pratique est intense et le matériel est de dernière génération.", rating: 5 },
-              { name: "Sylla Mariam", role: "Superviseur HSE", content: "Le centre de formation GALF est le plus sérieux de la région. L'accent mis sur la sécurité est impressionnant et les formateurs sont de vrais experts.", rating: 5 },
-              { name: "Bamba Drissa", role: "Chef de chantier BTP", content: "Nous recrutons nos opérateurs en priorité chez GALF. On sait qu'ils arrivent sur le chantier en étant immédiatement productifs et respectueux des normes.", rating: 5 },
-            ].map((t, i) => (
-              <FadeIn key={i} delay={0.1 * i}>
-                <div className="glass-card p-8 rounded-2xl relative h-full">
-                  <div className="flex gap-1 mb-6">
-                    {[...Array(t.rating)].map((_, i) => <Star key={i} className="w-4 h-4 text-galf-yellow fill-galf-yellow" />)}
+          <div className="max-w-4xl mx-auto relative">
+            <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5 relative overflow-hidden transition-all duration-500 glow-yellow min-h-[320px] flex flex-col justify-between">
+              
+              <div className="flex items-start justify-between gap-6 mb-8">
+                <div className="flex gap-1.5">
+                  {[...Array(testimonials[activeSlide].rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-galf-yellow fill-galf-yellow" />
+                  ))}
+                </div>
+                
+                {/* Autoplay Play/Pause */}
+                <button
+                  onClick={() => setIsPlayingTestimonials(!isPlayingTestimonials)}
+                  className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all"
+                  title={isPlayingTestimonials ? "Pause Autoplay" : "Démarrer Autoplay"}
+                >
+                  {isPlayingTestimonials ? (
+                    <Pause className="w-4 h-4" />
+                  ) : (
+                    <Play className="w-4 h-4 ml-0.5" />
+                  )}
+                </button>
+              </div>
+
+              {/* Slide text with key triggers transition */}
+              <div className="mb-10 animate-fadeIn" key={activeSlide}>
+                <p className="italic text-base md:text-lg text-white/80 leading-relaxed font-medium">
+                  "{testimonials[activeSlide].content}"
+                </p>
+              </div>
+
+              {/* Avatar and company metadata */}
+              <div className="pt-6 border-t border-white/5 flex flex-wrap items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-galf-yellow text-galf-carbon flex items-center justify-center font-black text-lg">
+                    {testimonials[activeSlide].initial}
                   </div>
-                  <p className="italic mb-8 font-medium leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>"{t.content}"</p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-galf-yellow/20 flex items-center justify-center font-black text-galf-yellow">{t.name[0]}</div>
-                    <div>
-                      <div className="font-black" style={{ color: 'var(--galf-text)' }}>{t.name}</div>
-                      <div className="text-xs font-bold" style={{ color: 'var(--galf-text-muted)' }}>{t.role}</div>
-                    </div>
+                  <div>
+                    <h4 className="font-black text-white">{testimonials[activeSlide].name}</h4>
+                    <span className="text-xs text-white/40 font-bold">{testimonials[activeSlide].role}</span>
                   </div>
                 </div>
-              </FadeIn>
-            ))}
+
+                <div className="flex items-center gap-4">
+                  <span className="text-xs text-white/50 font-bold bg-black/40 border border-white/5 px-3 py-1.5 rounded-lg">
+                    {testimonials[activeSlide].company}
+                  </span>
+                  <span className="text-xs font-black text-galf-yellow bg-galf-yellow/10 border border-galf-yellow/20 px-3 py-1.5 rounded-lg">
+                    {testimonials[activeSlide].salary}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Slider Navigation Arrows */}
+            <div className="flex justify-center gap-4 mt-8">
+              <button
+                onClick={() => {
+                  setActiveSlide(prev => (prev - 1 + testimonials.length) % testimonials.length)
+                  setIsPlayingTestimonials(false)
+                }}
+                className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              
+              <div className="flex items-center gap-2">
+                {testimonials.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setActiveSlide(idx)
+                      setIsPlayingTestimonials(false)
+                    }}
+                    className={`w-2.5 h-2.5 rounded-full transition-all ${
+                      activeSlide === idx ? 'bg-galf-yellow w-8' : 'bg-white/20'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => {
+                  setActiveSlide(prev => (prev + 1) % testimonials.length)
+                  setIsPlayingTestimonials(false)
+                }}
+                className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ═══ FAQ ═══ */}
-      <section className="py-32 relative overflow-hidden" style={{ background: 'var(--galf-bg-alt)', borderTop: '1px solid var(--galf-border)' }}>
+      <section className="py-32 relative overflow-hidden bg-diagonal" style={{ background: 'var(--galf-bg)', borderTop: '1px solid var(--galf-border)' }}>
         <div className="container-galf relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <FadeIn>
@@ -299,7 +667,7 @@ export default function Home() {
                 <p className="max-w-md mb-8" style={{ color: 'var(--galf-text-secondary)' }}>
                   Vous avez des questions sur nos formations, les tarifs ou les certificats ? Retrouvez les réponses ici ou contactez-nous directement.
                 </p>
-                <Link href="/contact" className="inline-flex items-center gap-2 text-galf-yellow font-black uppercase tracking-widest text-sm hover:gap-4 transition-all">
+                <Link href="/faq" className="inline-flex items-center gap-2 text-galf-yellow font-black uppercase tracking-widest text-sm hover:gap-4 transition-all">
                   Consulter le centre d'aide <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -308,10 +676,10 @@ export default function Home() {
             <FadeIn delay={0.2}>
               <div className="space-y-4">
                 {[
-                  { q: "Quelles sont les conditions d'admission ?", a: "Il n'y a pas de prérequis académique strict pour la plupart de nos formations. Cependant, savoir lire et écrire est essentiel pour la partie théorique. Un test d'aptitude médicale peut être demandé pour les engins de levage." },
-                  { q: "Comment se déroule le paiement ?", a: "Nous proposons des facilités de paiement flexibles. Un acompte de 30% est requis à l'inscription, et le solde peut être versé en 2 ou 3 mensualités durant la formation." },
+                  { q: "Quelles sont les conditions d'admission ?", a: "Il n'y a pas de prérequis académique strict pour la plupart de nos formations. Cependant, savoir lire et écrire est essentiel pour la partie théorique. Un test d'aptitude médicale est requis." },
+                  { q: "Comment se déroule le paiement ?", a: "Nous proposons des facilités de paiement flexibles. Un acompte de 30% est requis à l'inscription, et le solde peut être versé en 2 ou 3 mensualités." },
                   { q: "Le certificat GALF est-il reconnu ?", a: "Oui, GALF est un centre agréé par l'État. Nos certificats sont reconnus par les grandes entreprises du BTP et des Mines en Côte d'Ivoire et dans la sous-région." },
-                  { q: "Proposez-vous des stages après la formation ?", a: "Grâce à notre réseau de plus de 50 partenaires, nous facilitons l'insertion de nos apprenants. Les meilleurs noms de chaque promotion sont souvent recommandés directement." },
+                  { q: "Proposez-vous des stages après la formation ?", a: "Grâce à notre réseau de plus de 50 partenaires, nous facilitons l'insertion de nos apprenants. Les meilleurs noms de chaque promotion sont souvent recommandés." },
                 ].map((item, i) => (
                   <div key={i} className="glass-card p-6 rounded-xl hover:border-galf-yellow/30 transition-all cursor-pointer group">
                     <div className="flex items-center justify-between mb-2">
@@ -325,6 +693,277 @@ export default function Home() {
                 ))}
               </div>
             </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════
+          4. PLANIFICATEUR DE VISITE DE CENTRE (FEATURE 20)
+         ═══════════════════════════════════════════════ */}
+      <section className="py-32 relative overflow-hidden" style={{ background: 'var(--galf-bg-alt)', borderTop: '1px solid var(--galf-border)' }}>
+        <div className="container-galf relative z-10">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Réservation guidée</span>
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
+                Planifier une <span className="text-galf-yellow">visite du centre</span>
+              </h2>
+              <p className="text-sm max-w-xl mx-auto text-white/60 mt-3">
+                Venez découvrir nos plateaux techniques de formation, inspecter les engins réels et assister à une démonstration en direct.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="max-w-5xl mx-auto">
+            {bookingConfirmed ? (
+              <FadeIn>
+                <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-galf-yellow/30 bg-galf-yellow/5 text-center max-w-2xl mx-auto relative overflow-hidden glow-yellow">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/10 rounded-bl-[8rem]" />
+                  <CheckCircle2 className="w-16 h-16 text-galf-yellow mx-auto mb-6 animate-bounce" />
+                  
+                  <h3 className="text-2xl font-black text-white uppercase tracking-tight">Visite planifiée avec succès !</h3>
+                  <p className="text-xs text-white/60 mt-2 max-w-md mx-auto">
+                    Votre pass d'accès est généré. Notre équipe commerciale vous contactera pour valider les consignes de sécurité.
+                  </p>
+
+                  {/* Boarding Pass Ticket */}
+                  <div className="my-8 p-6 bg-black/60 rounded-3xl border border-white/10 text-left space-y-4 max-w-md mx-auto relative">
+                    <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                      <div>
+                        <span className="text-[9px] font-black uppercase text-white/40 block">Site choisi :</span>
+                        <span className="text-xs font-black text-white uppercase">
+                          {selectedCenter === 'abidjan' ? "Centre d'Abidjan (Yopougon)" : "Centre de San Pedro"}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[9px] font-black uppercase text-white/40 block">Ticket N° :</span>
+                        <span className="text-xs font-mono font-black text-galf-yellow">{bookedPassId}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-[9px] font-bold text-white/40 block">Visiteur :</span>
+                        <span className="text-xs font-black text-white">{visitorName}</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-bold text-white/40 block">Téléphone :</span>
+                        <span className="text-xs font-black text-white">{visitorPhone}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 pt-2">
+                      <div>
+                        <span className="text-[9px] font-bold text-white/40 block">Date prévue :</span>
+                        <span className="text-xs font-black text-white">{selectedDay} Juin 2026</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-bold text-white/40 block">Créneau horaire :</span>
+                        <span className="text-xs font-black text-galf-yellow">{selectedSlot}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-white/5 flex items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[9px] text-red-400 font-bold block">🛡️ Consignes obligatoires :</span>
+                        <span className="text-[8px] text-white/50 block">• Chaussures fermées / EPI recommandés</span>
+                        <span className="text-[8px] text-white/50 block">• Pièce d'identité requise à l'accueil</span>
+                      </div>
+                      
+                      {/* Mock QR Code */}
+                      <svg viewBox="0 0 50 50" className="w-12 h-12 bg-white p-1 rounded-md shrink-0">
+                        <rect x="2" y="2" width="10" height="10" fill="black" />
+                        <rect x="38" y="2" width="10" height="10" fill="black" />
+                        <rect x="2" y="38" width="10" height="10" fill="black" />
+                        <rect x="18" y="18" width="14" height="14" fill="black" />
+                        <rect x="6" y="22" width="4" height="4" fill="black" />
+                        <rect x="38" y="38" width="6" height="6" fill="black" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setBookingConfirmed(false)
+                      setSelectedDay(null)
+                      setSelectedSlot(null)
+                      setVisitorName('')
+                      setVisitorPhone('')
+                    }}
+                    className="text-xs font-black text-galf-yellow uppercase hover:underline"
+                  >
+                    Planifier une autre visite
+                  </button>
+                </div>
+              </FadeIn>
+            ) : (
+              <div className="grid lg:grid-cols-12 gap-8 items-start">
+                
+                {/* Left Panel: Calendar Grid & Slots */}
+                <div className="lg:col-span-7 glass-card p-6 md:p-8 rounded-[2rem] border border-white/5 space-y-6">
+                  {/* Site Tabs */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedCenter('abidjan')
+                        setSelectedSlot(null)
+                      }}
+                      className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all border ${
+                        selectedCenter === 'abidjan'
+                          ? 'bg-galf-yellow text-galf-carbon border-galf-yellow'
+                          : 'bg-white/5 text-white/70 border-white/5 hover:bg-white/10'
+                      }`}
+                    >
+                      Plateau Abidjan
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedCenter('sanpedro')
+                        setSelectedSlot(null)
+                      }}
+                      className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all border ${
+                        selectedCenter === 'sanpedro'
+                          ? 'bg-galf-yellow text-galf-carbon border-galf-yellow'
+                          : 'bg-white/5 text-white/70 border-white/5 hover:bg-white/10'
+                      }`}
+                    >
+                      Plateau San Pedro
+                    </button>
+                  </div>
+
+                  {/* Calendar Grid */}
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase text-white/50 tracking-wider mb-3">Sélecteur de Date — Juin 2026</h4>
+                    <div className="grid grid-cols-7 gap-2 text-center text-[10px] font-black text-white/40 mb-2">
+                      <span>LU</span><span>MA</span><span>ME</span><span>JE</span><span>VE</span><span>SA</span><span>DI</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-7 gap-1.5">
+                      {/* Blank spaces for calendar layout */}
+                      {[...Array(0)].map((_, i) => <div key={i} />)}
+                      
+                      {[...Array(30)].map((_, i) => {
+                        const dayNum = i + 1
+                        const isAvailable = availableDays.includes(dayNum)
+                        return (
+                          <button
+                            key={i}
+                            disabled={!isAvailable}
+                            type="button"
+                            onClick={() => {
+                              setSelectedDay(dayNum)
+                              setSelectedSlot(null)
+                            }}
+                            className={`aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-bold transition-all relative ${
+                              !isAvailable ? 'text-white/10 bg-transparent cursor-not-allowed' :
+                              selectedDay === dayNum ? 'bg-galf-yellow text-galf-carbon font-black shadow-lg scale-105' :
+                              'bg-white/5 text-white border border-white/5 hover:bg-white/15'
+                            }`}
+                          >
+                            <span>{dayNum}</span>
+                            {isAvailable && selectedDay !== dayNum && (
+                              <span className="w-1 h-1 bg-galf-yellow rounded-full absolute bottom-1.5" />
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Slot selector */}
+                  {selectedDay && (
+                    <div className="space-y-3 animate-fadeIn">
+                      <h4 className="text-[10px] font-black uppercase text-white/50 tracking-wider">Créneaux horaires pour le {selectedDay} Juin :</h4>
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        {timeSlots.map((slot, idx) => {
+                          const isFull = slot.status === "Complet"
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              disabled={isFull}
+                              onClick={() => setSelectedSlot(slot.time)}
+                              className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all ${
+                                isFull ? 'bg-transparent border-white/5 opacity-40 cursor-not-allowed' :
+                                selectedSlot === slot.time ? 'bg-galf-yellow/15 border-galf-yellow text-white glow-yellow' :
+                                'bg-white/5 border-white/5 hover:border-white/20'
+                              }`}
+                            >
+                              <span className="text-xs font-black text-white">{slot.time}</span>
+                              <span className={`text-[9px] font-bold mt-1 ${isFull ? 'text-red-400' : 'text-galf-yellow/70'}`}>
+                                {slot.status}
+                              </span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+
+                {/* Right Panel: Booking Credentials */}
+                <div className="lg:col-span-5">
+                  <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-white/5 h-full flex flex-col justify-between min-h-[300px]">
+                    {!selectedDay || !selectedSlot ? (
+                      <div className="my-auto text-center space-y-3 p-6 text-white/40">
+                        <Calendar className="w-10 h-10 mx-auto opacity-30" />
+                        <h4 className="text-xs font-black uppercase tracking-wider">Formulaire de réservation</h4>
+                        <p className="text-[10px] max-w-xs mx-auto leading-relaxed">
+                          Sélectionnez un jour disponible puis un créneau horaire sur le calendrier pour pouvoir finaliser votre visite guidée.
+                        </p>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleBookingSubmit} className="space-y-4">
+                        <div className="border-b border-white/5 pb-4 mb-4">
+                          <span className="text-[10px] text-white/40 font-bold uppercase block">Visite planifiée le :</span>
+                          <span className="text-sm font-black text-galf-yellow uppercase">
+                            Le {selectedDay} Juin 2026 à {selectedSlot}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                            Nom &amp; Prénom
+                          </label>
+                          <input
+                            required
+                            type="text"
+                            placeholder="Votre nom complet"
+                            value={visitorName}
+                            onChange={(e) => setVisitorName(e.target.value)}
+                            className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                          />
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                            Numéro de téléphone
+                          </label>
+                          <input
+                            required
+                            type="tel"
+                            placeholder="Ex: +225 07 11 82 65 07"
+                            value={visitorPhone}
+                            onChange={(e) => setVisitorPhone(e.target.value)}
+                            className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                          />
+                        </div>
+
+                        <button
+                          type="submit"
+                          className="w-full bg-galf-yellow text-galf-carbon py-3.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-galf-yellow/10 flex items-center justify-center gap-2 mt-4"
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                          Confirmer ma visite
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            )}
           </div>
         </div>
       </section>
