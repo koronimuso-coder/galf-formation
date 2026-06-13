@@ -29,9 +29,9 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
           priority
           unoptimized={headerBg.endsWith('.webp')} // Important for animated webp
         />
-        {/* Overlays for industrial cinematic look */}
-        <div className={`absolute inset-0 z-10 ${centered ? 'bg-black/60' : 'bg-gradient-to-r from-[#0E0E10] via-[#0E0E10]/80 to-transparent'}`} />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0E0E10] to-transparent opacity-80 z-10" />
+        {/* Subtle overlays to keep the image clearly visible while preserving readability */}
+        <div className="absolute inset-0 bg-black/10 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(14,14,16,0.35)] via-transparent to-transparent opacity-60 z-10" />
       </div>
 
       <div className={`container-galf relative z-20 ${centered ? 'text-center flex flex-col items-center' : ''}`}>
@@ -45,9 +45,9 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
             )}
             <TextReveal 
               text={title} 
-              className={`text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 text-white leading-[0.9] ${centered ? 'mx-auto' : ''}`} 
+              className={`text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 text-white leading-[0.9] text-shadow-premium ${centered ? 'mx-auto' : ''}`} 
             />
-            <p className={`text-lg md:text-xl text-white/70 leading-relaxed ${centered ? 'mx-auto' : ''}`}>
+            <p className={`text-lg md:text-xl text-white/90 font-medium leading-relaxed text-shadow-premium ${centered ? 'mx-auto' : ''}`}>
               {subtitle}
             </p>
             {children}
