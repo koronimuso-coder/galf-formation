@@ -165,36 +165,7 @@ export function SplineHero() {
         </div>
       )}
 
-      {/* ── Industrial overlays for text readability ── */}
-      <div
-        className="absolute inset-0 z-[3] pointer-events-none"
-        style={{
-          background: 'linear-gradient(to right, rgba(14,14,16,1) 0%, rgba(14,14,16,0.8) 40%, rgba(14,14,16,0.4) 100%)',
-        }}
-      />
-      <div
-        className="absolute inset-0 z-[3] pointer-events-none"
-        style={{
-          background: 'linear-gradient(to top, #0e0e10 0%, rgba(14,14,16,0.6) 35%, transparent 65%)',
-        }}
-      />
-
-      <div
-        className="absolute inset-0 z-[3] pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle at center, transparent 30%, rgba(14,14,16,0.8) 100%)',
-        }}
-      />
-
-      {/* ── Blur Shield for internal Spline text ── */}
-      <div 
-        className="absolute inset-0 z-[2] pointer-events-none"
-        style={{
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
-          background: 'radial-gradient(circle at 30% 50%, rgba(14,14,16,0.4) 0%, transparent 60%)'
-        }}
-      />
+      {/* ── No overlays so background image is fully visible ── */}
     </div>
   )
 }

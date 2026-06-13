@@ -4,9 +4,17 @@ import Link from 'next/link'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { getFormationImage } from '@/lib/images'
 import { FadeIn } from '@/components/animations/FadeIn'
-import { ArrowLeft, ArrowRight, Clock, MapPin, BarChart3, BookOpen, Target, Briefcase, CheckCircle2, Phone, Shield, Play, AlertCircle } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Clock, MapPin, BarChart3, BookOpen, Target, Briefcase, CheckCircle2, Phone, Shield, Play, AlertCircle, Eye, ShieldAlert, ClipboardCheck, ArrowUpDown } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+const COMPARE_DB: { [key: string]: { name: string, weight: string, power: string, capacity: string, boom: string, caces: string } } = {
+  "pelle-hydraulique": { name: "Pelle Hydraulique", weight: "22 tonnes", power: "165 ch", capacity: "1.2 m³", boom: "8.5 m", caces: "R482 Catégorie B1" },
+  "grue-tour": { name: "Grue à Tour", weight: "12 tonnes (flèche)", power: "75 kW", capacity: "8 tonnes max", boom: "60 m", caces: "R487 Catégorie 1" },
+  "bulldozer": { name: "Bulldozer D6", weight: "20 tonnes", power: "215 ch", capacity: "5.5 m³ (lame)", boom: "N/A", caces: "R482 Catégorie C1" },
+  "chariot-elevateur": { name: "Chariot Élévateur", weight: "4.5 tonnes", power: "45 kW", capacity: "3.5 tonnes", boom: "4.7 m", caces: "R489 Catégorie 3 & 4" },
+  "forage-minier": { name: "Foreuse de Mine", weight: "35 tonnes", power: "320 ch", capacity: "Diamètre 152mm", boom: "12 m", caces: "Spécifique Mine" }
+}
 
 export default function FormationDetail() {
   const params = useParams()
@@ -27,6 +35,49 @@ export default function FormationDetail() {
   const [eligLicense, setEligLicense] = useState(false)
   const [eligAptitude, setEligAptitude] = useState(false)
   const [eligResult, setEligResult] = useState<'idle' | 'success' | 'fail'>('idle')
+
+  // Wave 4 features state
+  const [safetyDistance, setSafetyDistance] = useState(6) // meters
+  const [slopeAngle, setSlopeAngle] = useState(8) // degrees
+  const [checklist, setChecklist] = useState({
+    fluids: false,
+    tires: false,
+    leaks: false,
+    horn: false,
+    epi: false
+  })
+  const [isEngineStarted, setIsEngineStarted] = useState(false)
+  const [compareSlug, setCompareSlug] = useState("grue-tour")
+
+  // Warning siren effect when slope is dangerous (>15 degrees)
+  useEffect(() => {
+    if (slopeAngle <= 15) return
+    
+    const interval = setInterval(() => {
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+        if (!AudioCtx) return
+        const ctx = new AudioCtx()
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        
+        osc.type = 'sawtooth'
+        osc.frequency.setValueAtTime(880, ctx.currentTime)
+        osc.frequency.linearRampToValueAtTime(440, ctx.currentTime + 0.3)
+        
+        gain.gain.setValueAtTime(0.06, ctx.currentTime)
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35)
+        
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.start()
+        osc.stop(ctx.currentTime + 0.35)
+        setTimeout(() => ctx.close(), 400)
+      } catch (e) {}
+    }, 600)
+
+    return () => clearInterval(interval)
+  }, [slopeAngle])
 
   const handlePlaySound = (soundKey: string) => {
     setActiveSound(soundKey)
@@ -449,6 +500,298 @@ export default function FormationDetail() {
                       ❌ CONSEIL : Vous devez valider l'ensemble des critères ci-dessus (18 ans, permis et aptitude médicale) avant inscription.
                     </div>
                   )}
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* ═══════════════════════════════════════════════
+                NEW: TEST DE VISION & DISTANCE DE SÉCURITÉ
+               ═══════════════════════════════════════════════ */}
+            <FadeIn>
+              <div className="glass-card p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <h2 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <Eye className="text-galf-yellow w-5 h-5" /> Estimateur de Distance de Sécurité
+                </h2>
+                <p className="text-xs text-white/60 mb-6 leading-relaxed font-sans">
+                  Modélisez l'éloignement de votre engin par rapport aux obstacles (lignes électriques de 20kV, tranchées) pour tester les distances réglementaires.
+                </p>
+
+                <div className="space-y-6">
+                  {/* Visual SVG representation */}
+                  <div className="relative h-36 bg-black/40 border border-white/5 rounded-2xl overflow-hidden flex items-center justify-between px-8">
+                    {/* Machine representation */}
+                    <div className="flex flex-col items-center">
+                      <div className="text-4xl">🚜</div>
+                      <span className="text-[8px] font-bold text-white/40 uppercase mt-1">Engin</span>
+                    </div>
+
+                    {/* Distance zone indicator line */}
+                    <div className="flex-1 px-4 relative flex flex-col justify-center">
+                      <div className={`h-1.5 rounded-full w-full transition-all duration-300 ${
+                        safetyDistance < 3 ? 'bg-red-500 shadow-[0_0_10px_#ef4444]' :
+                        safetyDistance < 7 ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`} />
+                      <div className="absolute left-1/2 -translate-x-1/2 -top-6 bg-slate-900 border border-white/10 px-2.5 py-0.5 rounded text-[10px] font-mono font-black text-white">
+                        {safetyDistance} mètres
+                      </div>
+                    </div>
+
+                    {/* Hazard representation */}
+                    <div className="flex flex-col items-center text-center">
+                      <div className="text-3xl animate-pulse">⚡</div>
+                      <span className="text-[8px] font-bold text-red-500 uppercase mt-1">Ligne 20kV</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs text-white/70">
+                      <span>Distance de travail</span>
+                      <span className="text-galf-yellow font-black">{safetyDistance} mètres</span>
+                    </div>
+                    <input 
+                      type="range" min="1" max="15" step="0.5" value={safetyDistance}
+                      onChange={(e) => {
+                        setSafetyDistance(parseFloat(e.target.value));
+                        triggerAudioClick();
+                      }}
+                      className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                    />
+                  </div>
+
+                  <div className={`p-4 rounded-xl border text-xs font-bold text-center transition-all ${
+                    safetyDistance < 3 
+                      ? 'bg-red-500/10 border-red-500/30 text-red-400 animate-pulse' 
+                      : safetyDistance < 7 
+                      ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400' 
+                      : 'bg-green-500/10 border-green-500/30 text-green-400'
+                  }`}>
+                    {safetyDistance < 3 && "🚨 ZONE CRITIQUE : Danger immédiat d'arc électrique ou de collision ! Gardez au moins 3m de distance réglementaire."}
+                    {safetyDistance >= 3 && safetyDistance < 7 && "⚠️ ZONE DE VIGILANCE : Distance intermédiaire. Manœuvres à vitesse réduite sous surveillance étroite."}
+                    {safetyDistance >= 7 && "✅ ZONE SÉCURISÉE : Distance de sécurité optimale pour les opérations standard."}
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* ═══════════════════════════════════════════════
+                NEW: SIMULATEUR DE STABILITÉ & INCLINAISON
+               ═══════════════════════════════════════════════ */}
+            <FadeIn>
+              <div className="glass-card p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <h2 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <ShieldAlert className="text-galf-yellow w-5 h-5" /> Stabilisateur &amp; Inclinaison d'Engin
+                </h2>
+                <p className="text-xs text-white/60 mb-6 leading-relaxed font-sans">
+                  Modélisez l'angle de pente du sol (de 0° à 30°). Si la pente dépasse le seuil critique de 15°, l'alarme de basculement retentit automatiquement.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-8 items-center">
+                  {/* SVG Slope Indicator */}
+                  <div className="bg-black/40 border border-white/5 rounded-2xl p-6 flex items-center justify-center h-48 relative overflow-hidden">
+                    <svg viewBox="0 0 100 100" className="w-full h-full max-w-[140px] overflow-visible">
+                      {/* Horizon */}
+                      <line x1="5" y1="80" x2="95" y2="80" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="3 3" />
+                      
+                      {/* Tilted ground */}
+                      <line 
+                        x1="5" y1={80 + Math.sin(slopeAngle * Math.PI / 180) * 40} 
+                        x2="95" y2={80 - Math.sin(slopeAngle * Math.PI / 180) * 40} 
+                        stroke="#FFB000" strokeWidth="2.5" 
+                        className="transition-all duration-300"
+                      />
+
+                      {/* Tilted Machine Silhouette */}
+                      <g 
+                        transform={`translate(50, 65) rotate(${slopeAngle})`} 
+                        className="origin-center transition-all duration-300"
+                      >
+                        {/* Simple machine SVG representation */}
+                        <rect x="-15" y="-12" width="30" height="15" fill="none" stroke="white" strokeWidth="2" rx="2" />
+                        <rect x="-10" y="-22" width="18" height="10" fill="none" stroke="white" strokeWidth="1.5" rx="1" />
+                        <circle cx="-10" cy="8" r="4" fill="none" stroke="white" strokeWidth="1.5" />
+                        <circle cx="10" cy="8" r="4" fill="none" stroke="white" strokeWidth="1.5" />
+                      </g>
+                    </svg>
+
+                    {slopeAngle > 15 && (
+                      <div className="absolute inset-0 bg-red-600/10 border border-red-500/30 flex items-center justify-center animate-pulse z-10 pointer-events-none">
+                        <span className="text-[10px] font-black uppercase text-red-500 tracking-widest px-2.5 py-1 bg-slate-950/90 border border-red-500/20 rounded-lg shadow-2xl">
+                          🚨 Siren Activée
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs text-white/70">
+                        <span>Pente latérale</span>
+                        <span className="text-galf-yellow font-black">{slopeAngle}° Degrés</span>
+                      </div>
+                      <input 
+                        type="range" min="0" max="30" value={slopeAngle}
+                        onChange={(e) => {
+                          setSlopeAngle(parseInt(e.target.value));
+                          triggerAudioClick();
+                        }}
+                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                      />
+                    </div>
+
+                    <div className={`p-4 rounded-xl border text-xs font-bold leading-normal ${
+                      slopeAngle > 15 
+                        ? 'bg-red-500/10 border-red-500/30 text-red-400 animate-pulse' 
+                        : 'bg-white/5 border-transparent text-white/60'
+                    }`}>
+                      {slopeAngle > 15 
+                        ? "🚨 DANGER : Pente supérieure à 15° ! Alarme active. Risque critique de glissement ou de basculement de l'engin."
+                        : "✓ STABILITÉ CONFORME : Inclinaison sous le seuil d'alerte. Veillez à garder les stabilisateurs ancrés."
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* ═══════════════════════════════════════════════
+                NEW: CHECKLIST DIGITALE DE PRISE DE POSTE
+               ═══════════════════════════════════════════════ */}
+            <FadeIn>
+              <div className="glass-card p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <h2 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <ClipboardCheck className="text-galf-yellow w-5 h-5" /> Checklist Digitale de Prise de Poste
+                </h2>
+                <p className="text-xs text-white/60 mb-6 leading-relaxed font-sans">
+                  Validez les 5 points de contrôle obligatoires de sécurité avant de lancer le moteur diesel de votre engin.
+                </p>
+
+                <div className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-3 text-xs">
+                    {[
+                      { key: 'fluids', label: "Vérifier les niveaux de fluides (huile, liquide, carburant)" },
+                      { key: 'tires', label: "Inspecter les chenilles, pneus et vérins stabilisateurs" },
+                      { key: 'leaks', label: "S'assurer de l'absence de fuite hydraulique sous l'engin" },
+                      { key: 'horn', label: "Tester le klaxon et le signal d'alerte de recul sonore" },
+                      { key: 'epi', label: "Porter ses EPI (Gilet jaune, casque de chantier, gants)" }
+                    ].map((item) => (
+                      <label 
+                        key={item.key} 
+                        className={`flex items-start gap-3 p-3.5 bg-black/20 rounded-xl border cursor-pointer hover:bg-black/40 transition-all select-none ${
+                          checklist[item.key as keyof typeof checklist] ? 'border-galf-yellow/40 text-white' : 'border-white/5 text-white/60'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checklist[item.key as keyof typeof checklist]}
+                          onChange={(e) => {
+                            setChecklist(prev => ({ ...prev, [item.key]: e.target.checked }));
+                            triggerAudioClick();
+                          }}
+                          className="rounded border-white/10 bg-black/40 text-galf-yellow w-4 h-4 focus:ring-0 mt-0.5"
+                        />
+                        <span className="font-bold leading-tight font-sans">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  {(() => {
+                    const allChecked = Object.values(checklist).every(v => v === true);
+                    return (
+                      <div className="pt-2">
+                        {isEngineStarted ? (
+                          <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-center text-xs font-bold text-green-400 animate-fadeIn">
+                            🔊 MOTEUR DIESEL DE L'ENGIN EN ROUTE ! Checklist validée, prêt pour les exercices pratiques.
+                          </div>
+                        ) : (
+                          <button
+                            disabled={!allChecked}
+                            onClick={() => {
+                              setIsEngineStarted(true);
+                              handlePlaySound('engine');
+                            }}
+                            className="w-full bg-galf-yellow text-galf-carbon py-3.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-galf-yellow/10"
+                          >
+                            Démarrer le moteur de la machine (Checklist requise)
+                          </button>
+                        )}
+                      </div>
+                    )
+                  })()}
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* ═══════════════════════════════════════════════
+                NEW: COMPARATEUR DE SPÉCIFICATIONS DE MACHINES
+               ═══════════════════════════════════════════════ */}
+            <FadeIn>
+              <div className="glass-card p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+                <h2 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <ArrowUpDown className="text-galf-yellow w-5 h-5" /> Comparateur Spécifications Techniques
+                </h2>
+                <p className="text-xs text-white/60 mb-6 leading-relaxed font-sans">
+                  Comparez les caractéristiques opérationnelles de cet engin avec les autres machines lourdes du parc GALF FORMATION.
+                </p>
+
+                <div className="space-y-6 text-xs">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold uppercase text-white/50 tracking-wider">Engin de comparaison</label>
+                    <select
+                      value={compareSlug}
+                      onChange={(e) => {
+                        setCompareSlug(e.target.value);
+                        triggerAudioClick();
+                      }}
+                      className="w-full sm:w-72 bg-black/30 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-galf-yellow"
+                      style={{ colorScheme: 'dark' }}
+                    >
+                      <option value="pelle-hydraulique">Pelle Hydraulique</option>
+                      <option value="grue-tour">Grue à Tour</option>
+                      <option value="bulldozer">Bulldozer D6</option>
+                      <option value="chariot-elevateur">Chariot Élévateur</option>
+                      <option value="forage-minier">Foreuse de Mine</option>
+                    </select>
+                  </div>
+
+                  {(() => {
+                    const currentSpecs = COMPARE_DB[formation.slug] || COMPARE_DB["pelle-hydraulique"];
+                    const targetSpecs = COMPARE_DB[compareSlug];
+
+                    return (
+                      <div className="grid grid-cols-3 border border-white/5 rounded-2xl overflow-hidden bg-black/20 text-white/80">
+                        {/* Headers */}
+                        <div className="bg-black/40 p-3.5 font-bold border-r border-b border-white/5 uppercase text-white/40 text-[9px] tracking-wider">Critère</div>
+                        <div className="bg-black/40 p-3.5 font-bold border-r border-b border-white/5 uppercase text-galf-yellow text-[9px] tracking-wider">Cet engin ({currentSpecs.name})</div>
+                        <div className="bg-black/40 p-3.5 font-bold border-b border-white/5 uppercase text-white/60 text-[9px] tracking-wider">Engin comparé ({targetSpecs.name})</div>
+
+                        {/* Weight */}
+                        <div className="p-3 border-r border-b border-white/5 font-semibold text-white/50">Poids op.</div>
+                        <div className="p-3 border-r border-b border-white/5 text-white font-bold">{currentSpecs.weight}</div>
+                        <div className="p-3 border-b border-white/5">{targetSpecs.weight}</div>
+
+                        {/* Power */}
+                        <div className="p-3 border-r border-b border-white/5 font-semibold text-white/50">Puissance</div>
+                        <div className="p-3 border-r border-b border-white/5 text-white font-bold">{currentSpecs.power}</div>
+                        <div className="p-3 border-b border-white/5">{targetSpecs.power}</div>
+
+                        {/* Capacity */}
+                        <div className="p-3 border-r border-b border-white/5 font-semibold text-white/50">Capacité</div>
+                        <div className="p-3 border-r border-b border-white/5 text-white font-bold">{currentSpecs.capacity}</div>
+                        <div className="p-3 border-b border-white/5">{targetSpecs.capacity}</div>
+
+                        {/* Boom */}
+                        <div className="p-3 border-r border-b border-white/5 font-semibold text-white/50">Flèche / Bras</div>
+                        <div className="p-3 border-r border-b border-white/5 text-white font-bold">{currentSpecs.boom}</div>
+                        <div className="p-3 border-b border-white/5">{targetSpecs.boom}</div>
+
+                        {/* CACES */}
+                        <div className="p-3 border-r border-white/5 font-semibold text-white/50">Catégorie CACES</div>
+                        <div className="p-3 border-r border-white/5 text-white font-bold">{currentSpecs.caces}</div>
+                        <div className="p-3">{targetSpecs.caces}</div>
+                      </div>
+                    )
+                  })()}
                 </div>
               </div>
             </FadeIn>

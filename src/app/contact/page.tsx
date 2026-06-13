@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { 
   MapPin, Phone, Mail, Send, Clock, MessageCircle, CheckCircle2, 
   AlertCircle, Calendar, LifeBuoy, User, Wrench, Laptop, 
-  CreditCard, Sparkles, RefreshCw, FileText, Check 
+  CreditCard, Sparkles, RefreshCw, FileText, Check, TrendingUp 
 } from 'lucide-react'
 
 // Smart diagnostic tips and technician responses for the simulator
@@ -64,6 +64,13 @@ export default function Contact() {
   const [ticketLogs, setTicketLogs] = useState<Array<{ sender: 'user' | 'tech' | 'system'; text: string; time: string }>>([])
   const [techTyping, setTechTyping] = useState(false)
   const [userTicketMsg, setUserTicketMsg] = useState('')
+
+  // Wave 4 states
+  const [brakingSpeed, setBrakingSpeed] = useState(20)
+  const [brakingSurface, setBrakingSurface] = useState("Sec")
+  const [brakingWeight, setBrakingWeight] = useState("Moyen")
+  const [firstAidStep, setFirstAidStep] = useState(1)
+  const [firstAidChoice, setFirstAidChoice] = useState<string | null>(null)
 
   // Callback countdown timer hook
   useEffect(() => {
@@ -485,6 +492,246 @@ export default function Contact() {
 
               <div className="text-[9px] text-white/30 text-center mt-6">
                 * Ce service est gratuit et réservé aux appels sur le territoire ivoirien.
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            NEW: BRAKING DISTANCE CALCULATOR & FIRST AID SIMULATOR
+           ═══════════════════════════════════════════════ */}
+        <div className="grid md:grid-cols-2 gap-12 mt-16">
+          
+          {/* Braking Distance Calculator */}
+          <FadeIn delay={0.4}>
+            <div className="glass-card p-8 rounded-[2rem] border border-white/5 relative overflow-hidden flex flex-col justify-between h-full min-h-[420px]">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[4rem]" />
+              <div>
+                <h3 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <TrendingUp className="text-galf-yellow w-6 h-6" /> Distance d'Arrêt &amp; Freinage d'Engin
+                </h3>
+                <p className="text-xs text-white/60 mb-6">
+                  Estimez la distance d'arrêt d'une machine lourde en fonction de sa vitesse de roulage, de la masse de l'engin et de l'état d'adhérence du sol.
+                </p>
+
+                <div className="space-y-4 text-xs">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold uppercase text-white/50 tracking-wider">Type de sol</label>
+                      <select 
+                        value={brakingSurface}
+                        onChange={(e) => { setBrakingSurface(e.target.value); playTicketSound('notify'); }}
+                        className="w-full bg-black/30 border border-white/10 rounded-xl p-2.5 text-xs text-white outline-none focus:border-galf-yellow"
+                        style={{ colorScheme: 'dark' }}
+                      >
+                        <option value="Sec">Sol Sec / Béton (Adh. 0.6)</option>
+                        <option value="Humide">Sol Humide / Terre (Adh. 0.3)</option>
+                        <option value="Boueux">Sol Boueux / Argile (Adh. 0.15)</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold uppercase text-white/50 tracking-wider">Masse Engin</label>
+                      <select 
+                        value={brakingWeight}
+                        onChange={(e) => { setBrakingWeight(e.target.value); playTicketSound('notify'); }}
+                        className="w-full bg-black/30 border border-white/10 rounded-xl p-2.5 text-xs text-white outline-none focus:border-galf-yellow"
+                        style={{ colorScheme: 'dark' }}
+                      >
+                        <option value="Léger">Léger (Chariot 4t)</option>
+                        <option value="Moyen">Moyen (Pelle 22t)</option>
+                        <option value="Lourd">Lourd (Tombereau 60t)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs text-white/70">
+                      <span>Vitesse de déplacement</span>
+                      <span className="text-galf-yellow font-black">{brakingSpeed} km/h</span>
+                    </div>
+                    <input 
+                      type="range" min="5" max="40" step="5" value={brakingSpeed}
+                      onChange={(e) => {
+                        setBrakingSpeed(parseInt(e.target.value));
+                        playTicketSound('notify');
+                      }}
+                      className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                    />
+                  </div>
+
+                  {(() => {
+                    const speedMs = brakingSpeed / 3.6;
+                    const reactionDist = Math.round(speedMs * 1.0); // 1s reaction time
+                    
+                    let coef = 0.6;
+                    if (brakingSurface === "Humide") coef = 0.3;
+                    if (brakingSurface === "Boueux") coef = 0.15;
+
+                    let mult = 1.0;
+                    if (brakingWeight === "Moyen") mult = 1.3;
+                    if (brakingWeight === "Lourd") mult = 1.6;
+
+                    const brakingDist = Math.round(((speedMs * speedMs) / (2 * 9.81 * coef)) * mult);
+                    const totalDist = reactionDist + brakingDist;
+
+                    return (
+                      <div className="space-y-3 pt-2">
+                        {/* Interactive SVG Bar */}
+                        <div className="h-10 bg-black/40 border border-white/5 rounded-xl overflow-hidden flex text-[8px] font-bold text-center text-slate-950">
+                          <div 
+                            className="bg-yellow-500 flex items-center justify-center transition-all duration-300"
+                            style={{ width: `${Math.max(10, (reactionDist / totalDist) * 100)}%` }}
+                          >
+                            <span className="truncate px-1">Réaction : {reactionDist}m</span>
+                          </div>
+                          <div 
+                            className="bg-red-500 flex items-center justify-center transition-all duration-300 text-white"
+                            style={{ width: `${Math.max(10, (brakingDist / totalDist) * 100)}%` }}
+                          >
+                            <span className="truncate px-1">Freinage : {brakingDist}m</span>
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-white/5 border border-white/5 rounded-xl space-y-1.5 leading-normal">
+                          <div className="flex justify-between text-white/50 text-[10px]">
+                            <span>Distance de réaction (1s) :</span>
+                            <span className="text-white font-mono">{reactionDist} m</span>
+                          </div>
+                          <div className="flex justify-between text-white/50 text-[10px]">
+                            <span>Distance de freinage mécanique :</span>
+                            <span className="text-white font-mono">{brakingDist} m</span>
+                          </div>
+                          <div className="flex justify-between text-xs font-black pt-1 border-t border-white/5 text-white">
+                            <span>Distance totale d'arrêt :</span>
+                            <span className="text-galf-yellow font-mono">{totalDist} mètres</span>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })()}
+                </div>
+              </div>
+
+              <div className="text-[9px] text-white/30 text-center mt-4 shrink-0">
+                * Calculs théoriques basés sur le modèle physique standard de décélération d'engins mobiles.
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* First Aid Simulator */}
+          <FadeIn delay={0.5}>
+            <div className="glass-card p-8 rounded-[2rem] border border-white/5 relative overflow-hidden flex flex-col justify-between h-full min-h-[420px]">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[4rem]" />
+              <div>
+                <h3 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <AlertCircle className="text-galf-yellow w-6 h-6" /> Scénarios de Premiers Secours
+                </h3>
+                <p className="text-xs text-white/60 mb-6">
+                  Testez vos réactions en cas d'accident sur un chantier BTP ou d'exploitation minière pour garantir la sécurité des personnes.
+                </p>
+
+                {firstAidStep === 1 ? (
+                  <div className="space-y-4 animate-fadeIn">
+                    <div className="bg-black/20 p-4 border border-white/5 rounded-2xl">
+                      <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest">Situation 1 : Risque Électrique</span>
+                      <p className="text-xs text-white/80 font-bold leading-relaxed mt-1 font-sans">
+                        Un ouvrier gît inerte au sol à côté d'une pelle dont la flèche touche un câble de 20kV. Que faites-vous ?
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      {[
+                        { id: '1A', label: "A. Saisir l'ouvrier par les mains pour le tirer hors de la zone.", correct: false, desc: "❌ ERREUR : Risque immédiat d'électrisation par conduction de courant du sol ou de l'ouvrier." },
+                        { id: '1B', label: "B. Faire disjoncter la ligne ou appeler l'opérateur réseau avant d'approcher.", correct: true, desc: "✅ EXCELLENT : La sécurité du sauveteur est la priorité. Ne jamais approcher d'une source active." },
+                        { id: '1C', label: "C. Remplir un seau d'eau et le verser sur l'ouvrier pour le réveiller.", correct: false, desc: "❌ DANGER EXTRÊME : L'eau conduit l'électricité, augmentant dramatiquement le risque de décès." }
+                      ].map(choice => (
+                        <button
+                          key={choice.id}
+                          onClick={() => { setFirstAidChoice(choice.id); playTicketSound('success'); }}
+                          disabled={firstAidChoice !== null}
+                          className={`w-full text-left p-3 rounded-xl border text-xs font-bold transition-all ${
+                            firstAidChoice === choice.id
+                              ? choice.correct 
+                                ? 'bg-green-500/10 border-green-500/40 text-green-400' 
+                                : 'bg-red-500/10 border-red-500/40 text-red-400'
+                              : 'bg-black/30 border-white/5 text-white/80 hover:bg-white/5'
+                          }`}
+                        >
+                          {choice.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {firstAidChoice && (
+                      <div className="space-y-3 animate-fadeIn">
+                        <p className="text-[10px] text-white/70 leading-relaxed font-sans p-3.5 bg-black/40 rounded-xl border border-white/5">
+                          {firstAidChoice === '1A' && "❌ ERREUR : Risque immédiat d'électrisation par conduction de courant du sol ou de l'ouvrier."}
+                          {firstAidChoice === '1B' && "✅ EXCELLENT : La sécurité du sauveteur est la priorité. Ne jamais approcher d'une source active."}
+                          {firstAidChoice === '1C' && "❌ DANGER EXTRÊME : L'eau conduit l'électricité, augmentant dramatiquement le risque de décès."}
+                        </p>
+                        <button
+                          onClick={() => { setFirstAidStep(2); setFirstAidChoice(null); playTicketSound('notify'); }}
+                          className="w-full bg-galf-yellow text-galf-carbon py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110"
+                        >
+                          Scénario suivant →
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-4 animate-fadeIn">
+                    <div className="bg-black/20 p-4 border border-white/5 rounded-2xl">
+                      <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest">Situation 2 : Hémorragie Externe</span>
+                      <p className="text-xs text-white/80 font-bold leading-relaxed mt-1 font-sans">
+                        Un mécanicien s'est coupé au bras sur un carter d'engin et présente un saignement abondant en jet.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      {[
+                        { id: '2A', label: "A. Poser un garrot directement autour du cou de la victime.", correct: false, desc: "❌ CRITIQUE : Le garrot cervical bloque l'irrigation du cerveau, ce qui est fatal immédiat !" },
+                        { id: '2B', label: "B. Allonger l'opérateur, appuyer sur la plaie avec un tissu propre et surélever le bras.", correct: true, desc: "✅ CORRECT : Compression directe et élévation pour réduire la pression et stopper le flux." },
+                        { id: '2C', label: "C. Appliquer de la terre grasse du chantier pour boucher la plaie ouverte.", correct: false, desc: "❌ INFECTION : Introduire de la terre souillée expose la victime au tétanos et à de graves infections." }
+                      ].map(choice => (
+                        <button
+                          key={choice.id}
+                          onClick={() => { setFirstAidChoice(choice.id); playTicketSound('success'); }}
+                          disabled={firstAidChoice !== null}
+                          className={`w-full text-left p-3 rounded-xl border text-xs font-bold transition-all ${
+                            firstAidChoice === choice.id
+                              ? choice.correct 
+                                ? 'bg-green-500/10 border-green-500/40 text-green-400' 
+                                : 'bg-red-500/10 border-red-500/40 text-red-400'
+                              : 'bg-black/30 border-white/5 text-white/80 hover:bg-white/5'
+                          }`}
+                        >
+                          {choice.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {firstAidChoice && (
+                      <div className="space-y-3 animate-fadeIn">
+                        <p className="text-[10px] text-white/70 leading-relaxed font-sans p-3.5 bg-black/40 rounded-xl border border-white/5">
+                          {firstAidChoice === '2A' && "❌ CRITIQUE : Le garrot cervical bloque l'irrigation du cerveau, ce qui est fatal immédiat !"}
+                          {firstAidChoice === '2B' && "✅ CORRECT : Compression directe et élévation pour réduire la pression et stopper le flux."}
+                          {firstAidChoice === '2C' && "❌ INFECTION : Introduire de la terre souillée expose la victime au tétanos et à de graves infections."}
+                        </p>
+                        <button
+                          onClick={() => { setFirstAidStep(1); setFirstAidChoice(null); playTicketSound('notify'); }}
+                          className="w-full bg-galf-yellow text-galf-carbon py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110"
+                        >
+                          Recommencer la simulation ↺
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="text-[9px] text-white/30 text-center mt-4 shrink-0">
+                * Les gestes de premiers secours sauvent des vies. Ces réponses simulent les directives SST officielles.
               </div>
             </div>
           </FadeIn>

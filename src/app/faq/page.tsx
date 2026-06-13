@@ -10,6 +10,22 @@ interface Message {
   text: string
 }
 
+const GLOSSARY_DB = [
+  { term: "CACES", definition: "Certificat d'Aptitude à la Conduite En Sécurité. Attestation réglementaire obligatoire pour piloter les engins de chantier en Côte d'Ivoire." },
+  { term: "Élingue", definition: "Accessoire de levage souple (câble métallique, chaîne ou sangle synthétique) servant à lier et suspendre la charge au crochet de levage." },
+  { term: "Godet", definition: "Benne amovible équipant les pelles ou chargeuses pour prélever, creuser, soulever et charger des matériaux en vrac." },
+  { term: "Stabilisateurs", definition: "Poutres d'appui hydrauliques latérales s'ancrant fermement au sol pour stabiliser l'engin (grue, nacelle) et éviter tout basculement latéral." },
+  { term: "HSE / SST", definition: "Hygiène, Sécurité, Environnement / Sauveteur Secouriste du Travail. Cadre réglementaire de prévention des risques et d'intervention d'urgence." },
+  { term: "Tombereau", definition: "Camion benne géant à châssis articulé ou rigide conçu pour transporter des charges lourdes de roche ou de terre en mine ou carrière." }
+]
+
+const SIGNALS_DB = [
+  { id: "lever", label: "Lever la Charge", description: "Bras tendu verticalement, index pointé vers le haut effectuant de petits cercles horizontaux. Indique au grutier de remonter la moufle.", icon: "👆" },
+  { id: "descendre", label: "Descendre la Charge", description: "Bras tendu vers le bas, index pointé vers le sol effectuant de petits cercles horizontaux. Indique au grutier d'abaisser le crochet.", icon: "👇" },
+  { id: "arret", label: "Arrêt d'Urgence", description: "Les deux bras tendus horizontalement de chaque côté du corps, agités de haut en bas rapidement. Consigne absolue d'arrêt immédiat des manœuvres.", icon: "🙅" },
+  { id: "godet", label: "Fermer le Godet", description: "Les deux poings serrés l'un face à l'autre à hauteur de poitrine. Indique au conducteur de pelle de refermer le godet d'excavation.", icon: "✊" }
+]
+
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
   
@@ -19,6 +35,10 @@ export default function FAQ() {
   // Search and Autocomplete states
   const [searchQuery, setSearchQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
+
+  // Wave 4 glossary & signals state
+  const [glossarySearch, setGlossarySearch] = useState("")
+  const [selectedSignal, setSelectedSignal] = useState<string | null>(null)
 
   // Load votes from localStorage
   useEffect(() => {
@@ -302,6 +322,117 @@ export default function FAQ() {
             </FadeIn>
           )}
         </div>
+
+        {/* ═══════════════════════════════════════════════
+            NEW: GLOSSAIRE INTERACTIF DES TERMES BTP & MINES
+           ═══════════════════════════════════════════════ */}
+        <FadeIn>
+          <div className="glass-card p-8 rounded-[2rem] border border-white/5 shadow-2xl mb-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
+            <h3 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+              <Search className="text-galf-yellow w-5 h-5" /> Glossaire Interactif BTP &amp; Mines
+            </h3>
+            <p className="text-xs text-white/60 mb-6 max-w-xl">
+              Tapez un terme ou un acronyme technique (CACES, Élingue, Godet...) pour obtenir sa définition réglementaire conforme aux standards industriels.
+            </p>
+
+            <div className="space-y-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Rechercher une définition dans le glossaire..."
+                  value={glossarySearch}
+                  onChange={(e) => setGlossarySearch(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-galf-yellow"
+                />
+                {glossarySearch && (
+                  <button 
+                    onClick={() => setGlossarySearch("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                {GLOSSARY_DB
+                  .filter(g => 
+                    g.term.toLowerCase().includes(glossarySearch.toLowerCase()) || 
+                    g.definition.toLowerCase().includes(glossarySearch.toLowerCase())
+                  )
+                  .map((item, idx) => (
+                    <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-galf-yellow/30 transition-all space-y-1">
+                      <span className="text-xs font-black text-galf-yellow uppercase tracking-wider">{item.term}</span>
+                      <p className="text-[11px] text-white/70 leading-relaxed font-sans">{item.definition}</p>
+                    </div>
+                  ))}
+                {GLOSSARY_DB.filter(g => 
+                  g.term.toLowerCase().includes(glossarySearch.toLowerCase()) || 
+                  g.definition.toLowerCase().includes(glossarySearch.toLowerCase())
+                ).length === 0 && (
+                  <div className="col-span-2 text-center text-xs text-white/40 italic py-4">
+                    Aucune définition correspondante dans le lexique.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* ═══════════════════════════════════════════════
+            NEW: VISUALISEUR INTERACTIF DE SIGNAUX DE MAIN (GRUTIER)
+           ═══════════════════════════════════════════════ */}
+        <FadeIn>
+          <div className="glass-card p-8 rounded-[2rem] border border-white/5 shadow-2xl mb-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
+            <h3 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+              <Bot className="text-galf-yellow w-5 h-5" /> Code des Signaux de Main de Grutier
+            </h3>
+            <p className="text-xs text-white/60 mb-6 max-w-xl">
+              Cliquez sur les gestes conventionnels de guidage ci-dessous pour découvrir la signification officielle et sécuriser le plateau technique.
+            </p>
+
+            <div className="grid sm:grid-cols-4 gap-4">
+              {SIGNALS_DB.map((signal) => {
+                const isSelected = selectedSignal === signal.id
+                return (
+                  <button
+                    key={signal.id}
+                    onClick={() => {
+                      setSelectedSignal(isSelected ? null : signal.id)
+                      triggerAudioClick()
+                    }}
+                    className={`p-4 rounded-2xl border transition-all text-left flex flex-col justify-between h-32 relative overflow-hidden ${
+                      isSelected 
+                        ? 'bg-galf-yellow/15 border-galf-yellow text-galf-yellow shadow-[0_0_15px_rgba(255,176,0,0.15)] scale-[0.98]' 
+                        : 'bg-black/30 border-white/5 text-white hover:border-white/20'
+                    }`}
+                  >
+                    <span className="text-2xl">{signal.icon}</span>
+                    <div>
+                      <div className="text-xs font-black truncate">{signal.label}</div>
+                      <div className="text-[9px] opacity-50 mt-0.5 uppercase tracking-widest font-sans">
+                        {isSelected ? "Sélectionné" : "Cliquer pour voir"}
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+
+            {selectedSignal && (
+              <div className="mt-4 p-4 bg-galf-yellow/10 border border-galf-yellow/20 rounded-2xl animate-fadeIn text-xs leading-relaxed font-sans">
+                <span className="text-galf-yellow font-black uppercase tracking-wider block mb-1">
+                  {SIGNALS_DB.find(s => s.id === selectedSignal)?.label}
+                </span>
+                <p className="text-white/80">
+                  {SIGNALS_DB.find(s => s.id === selectedSignal)?.description}
+                </p>
+              </div>
+            )}
+          </div>
+        </FadeIn>
 
         <FadeIn>
           <div className="glass-card p-8 rounded-xl text-center border-galf-border">

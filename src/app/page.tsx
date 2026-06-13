@@ -133,6 +133,136 @@ export default function Home() {
     { time: "16h00 - 17h30", status: "Complet" }
   ]
 
+  // ── Wave 5: Homepage Interactive Feature States ──
+  const [recomStep, setRecomStep] = useState(0)
+  const [recomAnswers, setRecomAnswers] = useState({ env: '', style: '', interest: '' })
+  
+  const [estPrice, setEstPrice] = useState(650000)
+  const [estAcompte, setEstAcompte] = useState(30)
+  const [estMonths, setEstMonths] = useState(3)
+
+  const [hoveredSalaryIdx, setHoveredSalaryIdx] = useState<number | null>(null)
+
+  const [quizIndex, setQuizIndex] = useState(0)
+  const [quizScore, setQuizScore] = useState(0)
+  const [quizSelected, setQuizSelected] = useState<number | null>(null)
+  const [quizDone, setQuizDone] = useState(false)
+
+  const playQuizSound = (type: 'correct' | 'wrong' | 'click') => {
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioContextClass) return
+      const ctx = new AudioContextClass()
+      const now = ctx.currentTime
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+
+      if (type === 'correct') {
+        osc.type = 'triangle'
+        osc.frequency.setValueAtTime(523.25, now)
+        osc.frequency.setValueAtTime(659.25, now + 0.1)
+        gain.gain.setValueAtTime(0.04, now)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25)
+        osc.start(now)
+        osc.stop(now + 0.25)
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth'
+        osc.frequency.setValueAtTime(150, now)
+        gain.gain.setValueAtTime(0.04, now)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3)
+        osc.start(now)
+        osc.stop(now + 0.3)
+      } else {
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(400, now)
+        gain.gain.setValueAtTime(0.015, now)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05)
+        osc.start(now)
+        osc.stop(now + 0.05)
+      }
+      setTimeout(() => ctx.close(), 400)
+    } catch (e) {}
+  }
+
+  const handleRecomAnswer = (key: 'env' | 'style' | 'interest', value: string) => {
+    playQuizSound('click')
+    setRecomAnswers(prev => ({ ...prev, [key]: value }))
+    setRecomStep(prev => prev + 1)
+  }
+
+  const getRecomResult = () => {
+    const { env, style } = recomAnswers
+    if (env === 'mines') {
+      return {
+        name: "Conducteur d'Engins Miniers",
+        desc: "Foreuses de mines et Tombereaux rigides géants. Vous êtes taillé pour la puissance extrême et les carrières à ciel ouvert.",
+        slug: "forage-minier",
+        caces: "Catégorie E",
+        price: 850000
+      }
+    }
+    if (style === 'heights' || env === 'levage') {
+      return {
+        name: "Opérateur de Levage (Grutier)",
+        desc: "Grues à tour et Grues mobiles. Pour ceux qui aiment la hauteur, la précision millimétrique et la coordination visuelle.",
+        slug: "grue-tour",
+        caces: "CACES R487 / R483",
+        price: 750000
+      }
+    }
+    if (style === 'precision') {
+      return {
+        name: "Conducteur de Chariot Élévateur",
+        desc: "Chariots élévateurs et manutention en entrepôt. Idéal pour ceux qui préfèrent le travail indoor, la logistique et la gestion de stocks.",
+        slug: "chariot-elevateur",
+        caces: "CACES R489 (Catégories 3 & 5)",
+        price: 350000
+      }
+    }
+    return {
+      name: "Opérateur Pelle Hydraulique & Bulldozer",
+      desc: "Terrassement et travaux routiers. Le cœur battant des chantiers de construction urbains et ruraux.",
+      slug: "pelle-hydraulique",
+      caces: "CACES R482 Catégorie B1",
+      price: 650000
+    }
+  }
+
+  const quizQuestions = [
+    {
+      q: "Quel est le premier réflexe de sécurité avant de monter en cabine ?",
+      options: [
+        "Faire le tour de l'engin pour vérifier l'absence d'obstacles (VGP visuelle)",
+        "Démarrer le moteur directement pour faire chauffer l'huile",
+        "Klaxonner deux fois sans regarder autour"
+      ],
+      correct: 0,
+      tip: "Le tour de sécurité (walk-around) permet de détecter des fuites ou des obstacles au sol."
+    },
+    {
+      q: "Dans quelle condition la stabilité d'un engin lourd est-elle compromise ?",
+      options: [
+        "Sur un sol plat stabilisé",
+        "Sur une pente supérieure à 15% (ou 15 degrés)",
+        "Lorsque le godet est posé à terre"
+      ],
+      correct: 1,
+      tip: "Une inclinaison excessive modifie le centre de gravité et risque de renverser la machine."
+    },
+    {
+      q: "Que signifie le fait de croiser les deux bras au-dessus de la tête ?",
+      options: [
+        "Lever la grue au maximum",
+        "Arrêt d'urgence immédiat !",
+        "Faire tourner le moteur au ralenti"
+      ],
+      correct: 1,
+      tip: "Les bras croisés au-dessus de la tête est le signal international d'arrêt d'urgence."
+    }
+  ]
+
   // Web Audio for Reservation
   const playBookingSound = () => {
     try {
@@ -964,6 +1094,404 @@ export default function Home() {
 
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════
+          ORIENTATIONS & FINANCEMENT INTERACTIF (FEATURES 81-84)
+         ═══════════════════════════════════════════════ */}
+      <section className="py-32 relative overflow-hidden" style={{ background: 'var(--galf-bg-alt)', borderTop: '1px solid var(--galf-border)' }}>
+        <div className="container-galf relative z-10">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Conseils et simulations</span>
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
+                Espace <span className="text-galf-yellow">Carrière &amp; Financement</span>
+              </h2>
+              <p className="text-sm max-w-xl mx-auto text-white/60 mt-3">
+                Trouvez la formation idéale, estimez vos mensualités de paiement et évaluez vos réflexes de sécurité en quelques clics.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid lg:grid-cols-2 gap-12 items-stretch">
+            
+            {/* COLUMN 1: Orientation CACES & Salaires */}
+            <div className="space-y-8 flex flex-col justify-between">
+              
+              {/* Feature 81: Career Path Recommender */}
+              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 relative overflow-hidden flex-1">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-galf-yellow/5 rounded-bl-[4rem]" />
+                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-galf-yellow animate-spin-slow" /> Recommandateur de Spécialité CACES
+                </h3>
+                <p className="text-xs text-white/50 mb-6">
+                  Découvrez en 3 questions quel engin lourd correspond à votre tempérament de conducteur.
+                </p>
+
+                {recomStep === 0 && (
+                  <div className="space-y-4 py-4 text-center">
+                    <p className="text-xs text-white/80">
+                      Prêt à faire le test ? Il vous prendra moins d'une minute et ciblera vos aptitudes naturelles.
+                    </p>
+                    <button
+                      onClick={() => { playQuizSound('click'); setRecomStep(1); }}
+                      className="bg-galf-yellow text-galf-carbon text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl hover:brightness-110 transition-all shadow-md"
+                    >
+                      Démarrer le questionnaire
+                    </button>
+                  </div>
+                )}
+
+                {recomStep === 1 && (
+                  <div className="space-y-4 animate-fadeIn">
+                    <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest block">Question 1/2 : Quel environnement de travail préférez-vous ?</span>
+                    <div className="grid grid-cols-1 gap-2">
+                      <button 
+                        onClick={() => handleRecomAnswer('env', 'mines')}
+                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                      >
+                        🌋 Grand air, sites d'extraction massifs et mines
+                      </button>
+                      <button 
+                        onClick={() => handleRecomAnswer('env', 'levage')}
+                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                      >
+                        🏗️ Chantiers urbains, immeubles en hauteur et levage
+                      </button>
+                      <button 
+                        onClick={() => handleRecomAnswer('env', 'terrain')}
+                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                      >
+                        🚜 Terrassement, routes et nivellement de sols
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {recomStep === 2 && (
+                  <div className="space-y-4 animate-fadeIn">
+                    <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest block">Question 2/2 : Qu'est-ce qui vous caractérise le plus ?</span>
+                    <div className="grid grid-cols-1 gap-2">
+                      <button 
+                        onClick={() => handleRecomAnswer('style', 'heights')}
+                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                      >
+                        🚁 Je n'ai pas le vertige, j'aime avoir une vue d'ensemble surélevée
+                      </button>
+                      <button 
+                        onClick={() => handleRecomAnswer('style', 'power')}
+                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                      >
+                        💪 La force pure de poussée et le déplacement de tonnes de roche
+                      </button>
+                      <button 
+                        onClick={() => handleRecomAnswer('style', 'precision')}
+                        className="w-full text-left p-3 rounded-xl bg-black/40 border border-white/10 hover:border-galf-yellow text-xs font-bold text-white transition-all"
+                      >
+                        📦 L'adresse millimétrique en intérieur et le chargement rapide
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {recomStep === 3 && (
+                  <div className="space-y-4 animate-fadeIn p-4 bg-galf-yellow/5 border border-galf-yellow/20 rounded-2xl">
+                    <span className="text-[9px] font-black uppercase text-galf-yellow tracking-widest block">Notre Recommandation :</span>
+                    <h4 className="text-lg font-black text-white uppercase">{getRecomResult().name}</h4>
+                    <p className="text-xs text-white/70 leading-relaxed">{getRecomResult().desc}</p>
+                    
+                    <div className="flex justify-between items-center pt-3 border-t border-white/5">
+                      <div>
+                        <span className="text-[8px] text-white/40 block">Certification Cible :</span>
+                        <span className="text-xs font-black text-white">{getRecomResult().caces}</span>
+                      </div>
+                      <div>
+                        <span className="text-[8px] text-white/40 block">Tarif estimé :</span>
+                        <span className="text-xs font-black text-galf-yellow">{getRecomResult().price.toLocaleString('fr-FR')} F CFA</span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <button
+                        onClick={() => { playQuizSound('click'); setRecomStep(0); }}
+                        className="flex-1 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase py-2.5 rounded-xl hover:bg-white/10"
+                      >
+                        Recommencer
+                      </button>
+                      <button
+                        onClick={() => {
+                          playQuizSound('correct')
+                          setEstPrice(getRecomResult().price)
+                          const el = document.getElementById('tuition-estimator')
+                          if (el) el.scrollIntoView({ behavior: 'smooth' })
+                        }}
+                        className="flex-1 bg-galf-yellow text-galf-carbon text-[10px] font-black uppercase py-2.5 rounded-xl hover:brightness-110"
+                      >
+                        Simuler le financement
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Feature 83: Interactive Industry Salary Chart */}
+              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 relative overflow-hidden">
+                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-galf-yellow" /> Salaires Moyens de l'Industrie en Côte d'Ivoire
+                </h3>
+                <p className="text-xs text-white/50 mb-6">
+                  Salaire mensuel indicatif constaté d'un conducteur certifié (survolez les barres pour voir les détails).
+                </p>
+
+                {/* SVG Bar Chart */}
+                <div className="relative pt-4 pb-2">
+                  <svg viewBox="0 0 400 130" className="w-full h-auto">
+                    {[
+                      { label: "Chariot (R489)", value: 320000, color: "#9ca3af" },
+                      { label: "Pelle (R482)", value: 480000, color: "#fbbf24" },
+                      { label: "Grue (R487)", value: 650000, color: "#f59e0b" },
+                      { label: "Mines (Forage)", value: 850000, color: "#ffb000" }
+                    ].map((item, idx) => {
+                      const maxVal = 900000
+                      const barWidth = (item.value / maxVal) * 260
+                      const yPos = 10 + idx * 30
+                      return (
+                        <g 
+                          key={idx}
+                          className="cursor-pointer"
+                          onMouseEnter={() => setHoveredSalaryIdx(idx)}
+                          onMouseLeave={() => setHoveredSalaryIdx(null)}
+                        >
+                          <text x="5" y={yPos + 15} fill="#ffffff" fontSize="10" fontWeight="bold">{item.label}</text>
+                          {/* Background bar */}
+                          <rect x="110" y={yPos + 5} width="260" height="12" rx="4" fill="rgba(255,255,255,0.05)" />
+                          {/* Value bar */}
+                          <rect 
+                            x="110" 
+                            y={yPos + 5} 
+                            width={barWidth} 
+                            height="12" 
+                            rx="4" 
+                            fill={item.color} 
+                            opacity={hoveredSalaryIdx === idx ? 1 : 0.8}
+                            className="transition-all duration-300"
+                          />
+                          <text 
+                            x={115 + barWidth} 
+                            y={yPos + 14} 
+                            fill={hoveredSalaryIdx === idx ? "#ffb000" : "#a1a1aa"} 
+                            fontSize="8" 
+                            fontWeight="black"
+                          >
+                            {item.value.toLocaleString('fr-FR')} F
+                          </text>
+                        </g>
+                      )
+                    })}
+                  </svg>
+                </div>
+              </div>
+
+            </div>
+
+            {/* COLUMN 2: Tuition Estimator & Safety Quiz */}
+            <div id="tuition-estimator" className="space-y-8 flex flex-col justify-between">
+              
+              {/* Feature 82: Dynamic Tuition Installment Estimator */}
+              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 relative overflow-hidden flex-1">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-galf-yellow/5 rounded-bl-[4rem]" />
+                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-galf-yellow" /> Simulateur de Financement &amp; Mensualités
+                </h3>
+                <p className="text-xs text-white/50 mb-6">
+                  Sélectionnez le prix théorique de votre formation et configurez l'acompte pour calculer le montant restant.
+                </p>
+
+                <div className="space-y-5 text-xs">
+                  {/* Target Price selector */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-white/60 font-bold">Prix de la formation ciblé :</span>
+                      <span className="font-black text-white">{estPrice.toLocaleString('fr-FR')} CFA</span>
+                    </div>
+                    <select
+                      value={estPrice}
+                      onChange={(e) => { playQuizSound('click'); setEstPrice(Number(e.target.value)); }}
+                      className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                    >
+                      <option value={350000}>Chariot Élévateur (Manutention) - 350 000 F</option>
+                      <option value={650000}>Pelle Hydraulique (Terrassement) - 650 000 F</option>
+                      <option value={750000}>Grue à Tour / Mobile (Levage) - 750 000 F</option>
+                      <option value={850000}>Foreuse de Mine (Mines) - 850 000 F</option>
+                    </select>
+                  </div>
+
+                  {/* Acompte Slider */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-white/60 font-bold">Acompte à l'inscription :</span>
+                      <span className="font-black text-galf-yellow">{estAcompte}% ({(estPrice * estAcompte / 100).toLocaleString('fr-FR')} F)</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="30" 
+                      max="100" 
+                      step="5"
+                      value={estAcompte}
+                      onChange={(e) => { playQuizSound('click'); setEstAcompte(Number(e.target.value)); }}
+                      className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                    />
+                  </div>
+
+                  {/* Installments selector */}
+                  {estAcompte < 100 && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-white/60 font-bold">Étalement du solde restant :</span>
+                        <span className="font-black text-white">{estMonths} mensualités</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[2, 3, 4].map((m) => (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={() => { playQuizSound('click'); setEstMonths(m); }}
+                            className={`py-2 rounded-lg text-xs font-black border transition-all ${
+                              estMonths === m 
+                                ? 'bg-galf-yellow/15 border-galf-yellow text-white' 
+                                : 'bg-transparent border-white/5 hover:border-white/10 text-white/70'
+                            }`}
+                          >
+                            {m} Mois
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Financial Summary */}
+                  <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-2">
+                    <div className="flex justify-between items-center text-[10px] text-white/50 uppercase font-black">
+                      <span>Dépôt initial requis</span>
+                      <span>Mensualité estimative</span>
+                    </div>
+                    <div className="flex justify-between items-center font-black">
+                      <span className="text-sm text-white">
+                        {Math.round(estPrice * estAcompte / 100).toLocaleString('fr-FR')} F
+                      </span>
+                      <span className="text-sm text-galf-yellow">
+                        {estAcompte === 100 
+                          ? "Aucune" 
+                          : `${Math.round((estPrice - (estPrice * estAcompte / 100)) / estMonths).toLocaleString('fr-FR')} F / mois`
+                        }
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feature 84: Express Safety Aptitude Quiz */}
+              <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-white/5 relative overflow-hidden">
+                <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-galf-yellow" /> Mini-Quiz d'Aptitude Sécurité Chantier
+                </h3>
+                <p className="text-xs text-white/50 mb-6">
+                  Testez vos connaissances en sécurité de conduite avant de monter en cabine réelle.
+                </p>
+
+                {!quizDone ? (
+                  <div className="space-y-4 animate-fadeIn">
+                    <span className="text-[10px] text-galf-yellow font-black uppercase tracking-widest block">
+                      Question {quizIndex + 1} / {quizQuestions.length}
+                    </span>
+                    <h4 className="text-xs font-black text-white leading-snug">
+                      {quizQuestions[quizIndex].q}
+                    </h4>
+
+                    <div className="space-y-2">
+                      {quizQuestions[quizIndex].options.map((opt, oIdx) => {
+                        const isSelected = quizSelected === oIdx
+                        return (
+                          <button
+                            key={oIdx}
+                            type="button"
+                            onClick={() => {
+                              if (quizSelected !== null) return
+                              setQuizSelected(oIdx)
+                              const isCorrect = oIdx === quizQuestions[quizIndex].correct
+                              playQuizSound(isCorrect ? 'correct' : 'wrong')
+                              if (isCorrect) setQuizScore(prev => prev + 1)
+                            }}
+                            className={`w-full text-left p-3 rounded-xl border text-xs transition-all ${
+                              quizSelected !== null && oIdx === quizQuestions[quizIndex].correct
+                                ? 'bg-green-500/10 border-green-500 text-white font-black'
+                                : quizSelected === oIdx
+                                ? 'bg-red-500/10 border-red-500 text-white font-black'
+                                : 'bg-black/30 border-white/10 hover:border-galf-yellow text-white/80'
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        )
+                      })}
+                    </div>
+
+                    {quizSelected !== null && (
+                      <div className="p-3 bg-white/5 border border-white/5 rounded-xl space-y-2 animate-fadeIn">
+                        <p className="text-[10px] text-white/70 leading-relaxed italic">
+                          {quizQuestions[quizIndex].tip}
+                        </p>
+                        <button
+                          onClick={() => {
+                            playQuizSound('click')
+                            setQuizSelected(null)
+                            if (quizIndex < quizQuestions.length - 1) {
+                              setQuizIndex(prev => prev + 1)
+                            } else {
+                              setQuizDone(true)
+                            }
+                          }}
+                          className="bg-galf-yellow text-galf-carbon text-[9px] font-black uppercase px-4 py-2 rounded-lg hover:brightness-110 ml-auto block"
+                        >
+                          {quizIndex === quizQuestions.length - 1 ? "Voir les résultats" : "Question Suivante →"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 space-y-4 animate-fadeIn">
+                    <div className="w-16 h-16 rounded-full bg-galf-yellow/10 flex items-center justify-center mx-auto text-galf-yellow">
+                      <Trophy className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-black text-white">Score : {quizScore} / {quizQuestions.length}</h4>
+                      <p className="text-xs text-white/50 max-w-xs mx-auto mt-1">
+                        {quizScore === quizQuestions.length 
+                          ? "Parfait ! Vos réflexes de sécurité sont excellents. Vous êtes prêt pour la cabine."
+                          : "Certains concepts doivent être révisés. La formation GALF met l'accent sur ces aspects HSE."
+                        }
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        playQuizSound('click')
+                        setQuizIndex(0)
+                        setQuizScore(0)
+                        setQuizSelected(null)
+                        setQuizDone(false)
+                      }}
+                      className="bg-white/5 border border-white/10 text-white text-[9px] font-black uppercase px-6 py-2.5 rounded-xl hover:bg-white/10"
+                    >
+                      Recommencer le test
+                    </button>
+                  </div>
+                )}
+              </div>
+
+            </div>
+
           </div>
         </div>
       </section>

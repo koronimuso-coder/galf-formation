@@ -1,8 +1,8 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FadeIn } from '@/components/animations/FadeIn'
 import { GALF_FORMATIONS } from '@/lib/data'
-import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck, Info } from 'lucide-react'
+import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck, Info, Sparkles, Smile, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/layout/PageHeader'
 
@@ -12,6 +12,31 @@ export default function Inscription() {
   const [paymentMethod, setPaymentMethod] = useState('')
   const [acompte, setAcompte] = useState(30)
   
+  // ── Wave 5: Enrollment Interactive Feature States ──
+  const [promoCode, setPromoCode] = useState('')
+  const [discountPercent, setDiscountPercent] = useState(0)
+  const [promoError, setPromoError] = useState('')
+  const [promoApplied, setPromoApplied] = useState(false)
+
+  // Auto-saver notice
+  const [draftRestored, setDraftRestored] = useState(false)
+
+  // Document validation
+  const [cniFile, setCniFile] = useState<{ name: string; size: string; valid: boolean } | null>(null)
+  const [certifFile, setCertifFile] = useState<{ name: string; size: string; valid: boolean } | null>(null)
+
+  // Motivation test
+  const [showMotivationTest, setShowMotivationTest] = useState(false)
+  const [motivationScore, setMotivationScore] = useState(0)
+  const [motivationQIdx, setMotivationQIdx] = useState(0)
+  const [motivationDone, setMotivationDone] = useState(false)
+  
+  const motivationQuestions = [
+    { q: "Pourquoi souhaitez-vous intégrer GALF ?", opts: [{ text: "Pour la stabilité de l'emploi dans les mines/BTP", pts: 3 }, { text: "Par curiosité", pts: 1 }] },
+    { q: "Quelle importance donnez-vous aux règles HSE ?", opts: [{ text: "Une importance vitale absolue", pts: 3 }, { text: "Ce sont juste des contraintes", pts: 0 }] },
+    { q: "Êtes-vous disponible pour 4 semaines intensives ?", opts: [{ text: "Oui, totalement disponible", pts: 3 }, { text: "Seulement à temps partiel", pts: 1 }] }
+  ]
+
   const totalSteps = 5
   const steps = [
     { label: "Formation", icon: Book },
@@ -21,8 +46,103 @@ export default function Inscription() {
     { label: "Confirmation", icon: CheckCircle2 },
   ]
 
+  // Auto-saver: Restore draft on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('galf_enrollment_draft')
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (parsed.selectedFormation) setSelectedFormation(parsed.selectedFormation)
+        if (parsed.acompte) setAcompte(parsed.acompte)
+        if (parsed.paymentMethod) setPaymentMethod(parsed.paymentMethod)
+        if (parsed.step) setStep(parsed.step)
+        setDraftRestored(true)
+      } catch (e) {}
+    }
+  }, [])
+
+  // Clear draft on confirmation step
+  useEffect(() => {
+    if (step === 5) {
+      localStorage.removeItem('galf_enrollment_draft')
+    }
+  }, [step])
+
+  // Auto-saver: Save draft when changing inputs
+  const saveDraft = (nextStep: number) => {
+    localStorage.setItem('galf_enrollment_draft', JSON.stringify({
+      selectedFormation,
+      acompte,
+      paymentMethod,
+      step: nextStep
+    }))
+  }
+
+  const playPromoSound = (type: 'success' | 'fail' | 'click') => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
+      const now = ctx.currentTime
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+
+      if (type === 'success') {
+        osc.type = 'triangle'
+        osc.frequency.setValueAtTime(523.25, now)
+        osc.frequency.setValueAtTime(659.25, now + 0.1)
+        gain.gain.setValueAtTime(0.04, now)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25)
+        osc.start(now)
+        osc.stop(now + 0.25)
+      } else if (type === 'fail') {
+        osc.type = 'sawtooth'
+        osc.frequency.setValueAtTime(150, now)
+        gain.gain.setValueAtTime(0.04, now)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3)
+        osc.start(now)
+        osc.stop(now + 0.3)
+      } else {
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(400, now)
+        gain.gain.setValueAtTime(0.015, now)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05)
+        osc.start(now)
+        osc.stop(now + 0.05)
+      }
+      setTimeout(() => ctx.close(), 400)
+    } catch (e) {}
+  }
+
+  const applyPromoCode = () => {
+    const code = promoCode.toUpperCase().trim()
+    if (code === 'GALF2026') {
+      setDiscountPercent(10)
+      setPromoApplied(true)
+      setPromoError('')
+      playPromoSound('success')
+    } else if (code === 'CACES15') {
+      setDiscountPercent(15)
+      setPromoApplied(true)
+      setPromoError('')
+      playPromoSound('success')
+    } else if (code === 'MOTIVATION5') {
+      setDiscountPercent(5)
+      setPromoApplied(true)
+      setPromoError('')
+      playPromoSound('success')
+    } else {
+      setPromoError('Code promotionnel invalide')
+      playPromoSound('fail')
+    }
+  }
+
   const formation = GALF_FORMATIONS.find(f => f.id === selectedFormation)
-  const price = formation ? (formation.pricePromo || formation.price) : 0
+  const basePrice = formation ? (formation.pricePromo || formation.price) : 0
+  const discountAmount = (basePrice * discountPercent) / 100
+  const price = basePrice - discountAmount
   const totalAcompte = (price * acompte) / 100
 
   const paymentMethods = [
@@ -43,6 +163,30 @@ export default function Inscription() {
       />
 
       <div className="container-galf relative z-10 mt-12">
+
+        {/* Feature 97: Draft Restored Alert Banner */}
+        {draftRestored && (
+          <FadeIn>
+            <div className="max-w-3xl mx-auto mb-8 p-4 rounded-xl flex items-center justify-between border border-green-500/30 bg-green-500/5 backdrop-blur-md text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-green-500">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider">Brouillon restauré !</h4>
+                  <p className="text-[10px] text-white/60">Nous avons récupéré vos informations de session précédente pour vous faire gagner du temps.</p>
+                </div>
+              </div>
+              <button 
+                type="button"
+                onClick={() => { playPromoSound('click'); setDraftRestored(false); }}
+                className="text-[10px] font-black uppercase text-galf-yellow hover:underline px-3 py-1.5"
+              >
+                Ignorer
+              </button>
+            </div>
+          </FadeIn>
+        )}
 
         {/* Steps Progress */}
         <FadeIn delay={0.1}>
@@ -98,7 +242,7 @@ export default function Inscription() {
           {step === 2 && (
             <FadeIn>
               <div className="glass-card p-8 rounded-2xl">
-                <h2 className="text-xl font-black mb-8" style={{ color: 'var(--galf-text)' }}>2. Vos coordonnées</h2>
+                <h2 className="text-xl font-black mb-8" style={{ color: 'var(--galf-text)' }}>2. Vos coordonnées &amp; Justificatifs</h2>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Nom complet</label>
@@ -113,6 +257,125 @@ export default function Inscription() {
                     <input type="email" className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" placeholder="jean@mail.com" />
                   </div>
                 </div>
+
+                {/* Feature 98: Document Validator Simulator */}
+                <div className="grid md:grid-cols-2 gap-6 mt-6 border-t border-white/5 pt-6 text-left">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">CNI ou Passeport (PDF / JPG, Max 5 Mo)</label>
+                    <div className="p-4 rounded-xl border border-dashed border-white/15 bg-black/20 text-center relative hover:border-galf-yellow transition-all">
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            const isValid = file.size <= 5 * 1024 * 1024 && (file.type === 'application/pdf' || file.type === 'image/jpeg' || file.type === 'image/jpg')
+                            setCniFile({ name: file.name, size: `${Math.round(file.size / 1024 / 1024 * 10) / 10} Mo`, valid: isValid })
+                            playPromoSound(isValid ? 'success' : 'fail')
+                          }
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      {cniFile ? (
+                        <div className="text-xs">
+                          <span className={cniFile.valid ? "text-green-400 font-bold" : "text-red-400 font-bold"}>
+                            {cniFile.valid ? "✅ Fichier conforme" : "❌ Fichier invalide"}
+                          </span>
+                          <p className="text-[10px] opacity-60 truncate mt-1">{cniFile.name} ({cniFile.size})</p>
+                        </div>
+                      ) : (
+                        <span className="text-[10px] opacity-40">Déposer ou cliquer pour ajouter la CNI</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Certificat Médical (PDF / JPG, Max 5 Mo)</label>
+                    <div className="p-4 rounded-xl border border-dashed border-white/15 bg-black/20 text-center relative hover:border-galf-yellow transition-all">
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            const isValid = file.size <= 5 * 1024 * 1024 && (file.type === 'application/pdf' || file.type === 'image/jpeg' || file.type === 'image/jpg')
+                            setCertifFile({ name: file.name, size: `${Math.round(file.size / 1024 / 1024 * 10) / 10} Mo`, valid: isValid })
+                            playPromoSound(isValid ? 'success' : 'fail')
+                          }
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      {certifFile ? (
+                        <div className="text-xs">
+                          <span className={certifFile.valid ? "text-green-400 font-bold" : "text-red-400 font-bold"}>
+                            {certifFile.valid ? "✅ Fichier conforme" : "❌ Fichier invalide"}
+                          </span>
+                          <p className="text-[10px] opacity-60 truncate mt-1">{certifFile.name} ({certifFile.size})</p>
+                        </div>
+                      ) : (
+                        <span className="text-[10px] opacity-40">Déposer ou cliquer pour ajouter le certificat</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Feature 99: Motivation Test */}
+                <div className="mt-8 border-t border-white/5 pt-6 text-left">
+                  <h3 className="text-xs font-black uppercase text-galf-yellow tracking-widest mb-3 flex items-center gap-1.5">
+                    <Smile className="w-4 h-4" /> Optionnel : Test de Motivation d'Opérateur
+                  </h3>
+                  <p className="text-[11px] text-white/50 mb-4">
+                    Évaluez votre profil et débloquez une réduction immédiate de 5% si vous obtenez un score de motivation optimal.
+                  </p>
+
+                  {!showMotivationTest && !motivationDone ? (
+                    <button
+                      type="button"
+                      onClick={() => { playPromoSound('click'); setShowMotivationTest(true); }}
+                      className="bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase py-2.5 px-4 rounded-xl hover:bg-white/10"
+                    >
+                      Lancer le test de motivation
+                    </button>
+                  ) : showMotivationTest && !motivationDone ? (
+                    <div className="p-4 rounded-2xl bg-black/40 border border-white/5 space-y-3">
+                      <span className="text-[9px] font-black text-galf-yellow uppercase">Question {motivationQIdx + 1} / {motivationQuestions.length}</span>
+                      <h4 className="text-xs font-black text-white">{motivationQuestions[motivationQIdx].q}</h4>
+                      <div className="flex flex-col gap-2">
+                        {motivationQuestions[motivationQIdx].opts.map((opt, oIdx) => (
+                          <button
+                            key={oIdx}
+                            type="button"
+                            onClick={() => {
+                              playPromoSound('click')
+                              setMotivationScore(prev => prev + opt.pts)
+                              if (motivationQIdx < motivationQuestions.length - 1) {
+                                setMotivationQIdx(prev => prev + 1)
+                              } else {
+                                setMotivationDone(true)
+                                setShowMotivationTest(false)
+                                playPromoSound('success')
+                              }
+                            }}
+                            className="w-full text-left p-2.5 rounded-lg bg-black/40 border border-white/5 hover:border-galf-yellow text-xs text-white/80 transition-all animate-fadeIn"
+                          >
+                            {opt.text}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-2xl bg-green-500/5 border border-green-500/20 text-center space-y-2">
+                      <h4 className="text-xs font-black text-white">Test terminé avec succès !</h4>
+                      <p className="text-[10px] text-white/70">
+                        {motivationScore >= 8 
+                          ? "🌟 Félicitations ! Votre profil démontre une motivation exceptionnelle. Utilisez le code promo suivant à l'étape de paiement : MOTIVATION5" 
+                          : "Merci d'avoir complété le test ! Votre dossier sera analysé en priorité par nos recruteurs."
+                        }
+                      </p>
+                    </div>
+                  )}
+                </div>
+
               </div>
             </FadeIn>
           )}
@@ -138,16 +401,73 @@ export default function Inscription() {
                   </div>
                 </div>
 
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-4 block">Moyen de paiement</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {paymentMethods.map(pm => (
-                    <button key={pm.id} onClick={() => setPaymentMethod(pm.id)}
-                      className={`p-4 rounded-xl flex items-center gap-3 transition-all border ${paymentMethod === pm.id ? 'border-galf-yellow bg-galf-yellow/10' : 'bg-galf-bg border-galf-border opacity-60 hover:opacity-100'}`}>
-                      <span className="text-xl">{pm.logo}</span>
-                      <span className="font-black text-xs">{pm.label}</span>
-                    </button>
-                  ))}
+                <div className="mb-8">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-4 block">Moyen de paiement</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {paymentMethods.map(pm => (
+                      <button key={pm.id} onClick={() => setPaymentMethod(pm.id)}
+                        className={`p-4 rounded-xl flex items-center gap-3 transition-all border ${paymentMethod === pm.id ? 'border-galf-yellow bg-galf-yellow/10' : 'bg-galf-bg border-galf-border opacity-60 hover:opacity-100'}`}>
+                        <span className="text-xl">{pm.logo}</span>
+                        <span className="font-black text-xs">{pm.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Feature 100: Promo Code Calculator */}
+                <div className="border-t border-white/5 pt-6 text-left">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-2 block">Code Promotionnel (Optionnel)</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => {
+                        setPromoCode(e.target.value)
+                        setPromoError('')
+                      }}
+                      placeholder="Ex: GALF2026, MOTIVATION5"
+                      className="flex-1 bg-galf-bg border border-galf-border rounded-xl p-3 focus:border-galf-yellow outline-none text-xs transition-all uppercase"
+                      disabled={promoApplied}
+                    />
+                    <button
+                      type="button"
+                      onClick={applyPromoCode}
+                      className={`px-6 rounded-xl font-black text-xs uppercase transition-all ${
+                        promoApplied 
+                          ? 'bg-green-500 text-white cursor-default' 
+                          : 'bg-galf-yellow text-galf-carbon hover:brightness-110'
+                      }`}
+                      disabled={promoApplied}
+                    >
+                      {promoApplied ? 'Appliqué' : 'Valider'}
+                    </button>
+                  </div>
+                  {promoError && (
+                    <p className="text-red-400 text-[10px] mt-2 font-bold">{promoError}</p>
+                  )}
+                  {promoApplied && (
+                    <div className="mt-3 p-3 rounded-xl bg-green-500/5 border border-green-500/20 text-left space-y-1.5 animate-fadeIn">
+                      <p className="text-green-400 text-[10px] font-bold">
+                        🎉 Réduction de {discountPercent}% appliquée avec succès !
+                      </p>
+                      <div className="text-[10px] text-white/50 space-y-0.5">
+                        <div className="flex justify-between">
+                          <span>Tarif d'origine :</span>
+                          <span className="line-through">{basePrice.toLocaleString('fr-FR')} F</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Remise ({discountPercent}%) :</span>
+                          <span>-{discountAmount.toLocaleString('fr-FR')} F</span>
+                        </div>
+                        <div className="flex justify-between font-bold text-white border-t border-white/5 pt-1 mt-1">
+                          <span>Nouveau tarif :</span>
+                          <span className="text-galf-yellow">{price.toLocaleString('fr-FR')} F CFA</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
               </div>
             </FadeIn>
           )}
@@ -223,12 +543,28 @@ export default function Inscription() {
 
           {step < totalSteps && (
             <FadeIn delay={0.2} className="flex justify-between mt-10">
-               <button onClick={() => setStep(step - 1)} disabled={step === 1}
-                 className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold opacity-60 hover:opacity-100 disabled:opacity-0 transition-all">
+               <button 
+                 onClick={() => {
+                   playPromoSound('click');
+                   const nextStep = step - 1;
+                   setStep(nextStep);
+                   saveDraft(nextStep);
+                 }} 
+                 disabled={step === 1}
+                 className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold opacity-60 hover:opacity-100 disabled:opacity-0 transition-all"
+               >
                  <ArrowLeft className="w-4 h-4" /> Retour
                </button>
-               <button onClick={() => setStep(step + 1)} disabled={(step === 1 && !selectedFormation) || (step === 3 && !paymentMethod)}
-                 className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-xl font-black hover:brightness-110 transition-all flex items-center gap-3 shadow-xl disabled:opacity-50">
+               <button 
+                 onClick={() => {
+                   playPromoSound('click');
+                   const nextStep = step + 1;
+                   setStep(nextStep);
+                   saveDraft(nextStep);
+                 }} 
+                 disabled={(step === 1 && !selectedFormation) || (step === 3 && !paymentMethod)}
+                 className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-xl font-black hover:brightness-110 transition-all flex items-center gap-3 shadow-xl disabled:opacity-50"
+               >
                  {step === 4 ? "Confirmer l'inscription" : "Étape suivante"} <ArrowRight className="w-4 h-4" />
                </button>
             </FadeIn>

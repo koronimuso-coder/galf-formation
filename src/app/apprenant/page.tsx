@@ -122,6 +122,197 @@ export default function ApprenantDashboard() {
   const [equippedEpi, setEquippedEpi] = useState<string[]>([])
   const [epiCompleted, setEpiCompleted] = useState(false)
 
+  // QCM CACES states
+  const [cacesQuizStep, setCacesQuizStep] = useState(0)
+  const [cacesSelectedOption, setCacesSelectedOption] = useState<number | null>(null)
+  const [cacesFeedback, setCacesFeedback] = useState<'correct' | 'wrong' | null>(null)
+  const [cacesScore, setCacesScore] = useState(0)
+  const [cacesCompleted, setCacesCompleted] = useState(false)
+
+  // Carbon calculator states
+  const [ecoSpeed, setEcoSpeed] = useState(15)
+  const [ecoIdle, setEcoIdle] = useState(20)
+
+  // Audio warning states
+  const [activeSiren, setActiveSiren] = useState<'recul' | 'evac' | 'surcharge' | 'rumble' | null>(null)
+  const sirenAudioRef = useRef<AudioContext | null>(null)
+  const sirenNodeRef = useRef<any>(null)
+
+  const cacesQuestions = [
+    {
+      q: "Dans quel cas est-il obligatoire de porter un gilet de haute visibilité ?",
+      options: [
+        "Uniquement la nuit sur le chantier",
+        "En permanence dès que vous pénétrez sur le plateau technique ou le chantier",
+        "Seulement si l'instructeur le demande expressément"
+      ],
+      correct: 1,
+      explain: "Le gilet réfléchissant permet d'être vu par les autres conducteurs d'engins lourds à tout moment, de jour comme de nuit. C'est un EPI indispensable."
+    },
+    {
+      q: "Quel est le risque principal lié à une inclinaison de machine supérieure aux limites constructeur (généralement 15°) ?",
+      options: [
+        "Le renversement de l'engin (perte de stabilité)",
+        "Une surchauffe rapide de l'huile hydraulique",
+        "Une augmentation injustifiée des émissions de CO2"
+      ],
+      correct: 0,
+      explain: "Une pente trop forte déplace le centre de gravité hors de la surface d'appui, provoquant le basculement direct de l'engin avec risque d'écrasement."
+    },
+    {
+      q: "Que signifie un signal de main circulaire du chef de chantier avec le bras tendu vers le haut ?",
+      options: [
+        "Arrêt d'urgence immédiat",
+        "Lever la charge ou l'équipement",
+        "Faire pivoter l'équipement vers la gauche"
+      ],
+      correct: 1,
+      explain: "Le bras levé avec l'index pointant vers le haut dessinant des cercles indique au grutier de lever la charge."
+    },
+    {
+      q: "Quel organe de l'engin est le plus sollicité pour réduire la consommation (éco-conduite) ?",
+      options: [
+        "Les chenilles de roulement",
+        "Le régime moteur (réduire le régime lors des phases de veille/ralenti)",
+        "Les flexibles hydrauliques principaux"
+      ],
+      correct: 1,
+      explain: "Éviter de faire tourner le moteur à haut régime inutilement et couper le contact lors d'un arrêt prolongé (anti-idle) réduit le carburant de 15%."
+    },
+    {
+      q: "Que devez-vous faire immédiatement en cas de déclenchement de l'alarme surcharge d'une grue ?",
+      options: [
+        "Continuer le levage en accélérant la rotation pour finir vite",
+        "Déposer immédiatement la charge ou la ramener vers le mât pour réduire la portée",
+        "Éteindre l'alarme sonore dans la cabine pour ne pas être déconcentré"
+      ],
+      correct: 1,
+      explain: "La surcharge menace l'équilibre structurel de la grue. Déposer la charge ou réduire le rayon d'action permet de repasser sous le seuil critique de rupture."
+    }
+  ]
+
+  const handleCacesOptionSelect = (idx: number) => {
+    if (cacesFeedback !== null) return
+    setCacesSelectedOption(idx)
+    const isCorrect = idx === cacesQuestions[cacesQuizStep].correct
+    if (isCorrect) {
+      setCacesFeedback('correct')
+      setCacesScore(prev => prev + 1)
+      triggerAudioAlert(880, 0.15)
+    } else {
+      setCacesFeedback('wrong')
+      triggerAudioAlert(220, 0.3)
+    }
+  }
+
+  const handleCacesNextQuestion = () => {
+    setCacesSelectedOption(null)
+    setCacesFeedback(null)
+    if (cacesQuizStep < cacesQuestions.length - 1) {
+      setCacesQuizStep(prev => prev + 1)
+    } else {
+      setCacesCompleted(true)
+    }
+  }
+
+  const handleResetCacesQuiz = () => {
+    setCacesQuizStep(0)
+    setCacesSelectedOption(null)
+    setCacesFeedback(null)
+    setCacesScore(0)
+    setCacesCompleted(false)
+  }
+
+  const handleStopSiren = () => {
+    if (sirenNodeRef.current) {
+      try {
+        sirenNodeRef.current.stop()
+      } catch (e) {}
+      sirenNodeRef.current = null
+    }
+    setActiveSiren(null)
+  }
+
+  const handlePlaySiren = (type: 'recul' | 'evac' | 'surcharge' | 'rumble') => {
+    handleStopSiren()
+    setActiveSiren(type)
+
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
+      sirenAudioRef.current = ctx
+
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      sirenNodeRef.current = osc
+
+      if (type === 'recul') {
+        osc.type = 'square'
+        osc.frequency.setValueAtTime(1000, ctx.currentTime)
+        gain.gain.setValueAtTime(0.04, ctx.currentTime)
+        
+        let isBeeping = true
+        const interval = setInterval(() => {
+          if (!sirenNodeRef.current) {
+            clearInterval(interval)
+            return
+          }
+          isBeeping = !isBeeping
+          gain.gain.setValueAtTime(isBeeping ? 0.04 : 0.001, ctx.currentTime)
+        }, 300)
+
+      } else if (type === 'evac') {
+        osc.type = 'sawtooth'
+        osc.frequency.setValueAtTime(400, ctx.currentTime)
+        gain.gain.setValueAtTime(0.03, ctx.currentTime)
+        
+        let count = 0
+        const interval = setInterval(() => {
+          if (!sirenNodeRef.current) {
+            clearInterval(interval)
+            return
+          }
+          count++
+          const freq = 400 + Math.sin(count * 0.25) * 150
+          osc.frequency.setValueAtTime(freq, ctx.currentTime)
+        }, 60)
+
+      } else if (type === 'surcharge') {
+        osc.type = 'sine'
+        osc.frequency.setValueAtTime(2000, ctx.currentTime)
+        gain.gain.setValueAtTime(0.06, ctx.currentTime)
+        
+        let isBeeping = true
+        const interval = setInterval(() => {
+          if (!sirenNodeRef.current) {
+            clearInterval(interval)
+            return
+          }
+          isBeeping = !isBeeping
+          gain.gain.setValueAtTime(isBeeping ? 0.06 : 0.001, ctx.currentTime)
+        }, 120)
+
+      } else {
+        osc.type = 'sawtooth'
+        osc.frequency.setValueAtTime(50, ctx.currentTime)
+        gain.gain.setValueAtTime(0.08, ctx.currentTime)
+      }
+
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start()
+    } catch(e) {}
+  }
+
+  useEffect(() => {
+    return () => {
+      if (sirenNodeRef.current) {
+        try { sirenNodeRef.current.stop() } catch(e) {}
+      }
+    }
+  }, [])
+
   const quizQuestions = [
     {
       q: "Quelle est la distance minimale de sécurité à respecter par rapport aux lignes électriques aériennes de moyenne tension ?",
@@ -1297,8 +1488,274 @@ export default function ApprenantDashboard() {
                 </div>
               </FadeIn>
             </div>
+
+          {/* ═══════════════════════════════════════════════
+              WAVE 4 APPRENANT FEATURES: QCM CACES, PORTFOLIO, ECO-DRIVE, ALARMS
+             ═══════════════════════════════════════════════ */}
+          <div className="grid lg:grid-cols-12 gap-8 mt-12 pt-12 border-t border-galf-border">
+            
+            {/* 1. QCM CODE CACES WIDGET (5 columns) */}
+            <div className="lg:col-span-5 glass-card p-6 rounded-[2rem] border-galf-border flex flex-col justify-between min-h-[380px] relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,rgba(255,176,0,0.03),transparent)]">
+              {cacesCompleted && cacesScore === 5 && <ConfettiEffect />}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[4rem]" />
+              
+              <div>
+                <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                    <ShieldAlert className="w-3.5 h-3.5" /> Préparateur de Code CACES
+                  </span>
+                  <span className="text-[9px] font-mono text-white/40">5 Questions HSE</span>
+                </div>
+
+                {!cacesCompleted ? (
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center text-[10px] text-white/50 font-bold uppercase tracking-wider">
+                      <span>Progression Test</span>
+                      <span>Question {cacesQuizStep + 1} / {cacesQuestions.length}</span>
+                    </div>
+
+                    <h4 className="text-sm font-black text-white leading-snug min-h-[48px]">
+                      {cacesQuestions[cacesQuizStep].q}
+                    </h4>
+
+                    <div className="space-y-2.5">
+                      {cacesQuestions[cacesQuizStep].options.map((opt, idx) => {
+                        const isSelected = cacesSelectedOption === idx
+                        const isCorrect = idx === cacesQuestions[cacesQuizStep].correct
+                        let btnStyle = "border-white/5 bg-black/30 hover:border-galf-yellow/40 text-white/70 hover:text-white"
+                        
+                        if (cacesFeedback !== null) {
+                          if (isSelected) {
+                            btnStyle = cacesFeedback === 'correct'
+                              ? "bg-green-500/20 border-green-500 text-green-400 font-bold"
+                              : "bg-red-500/20 border-red-500 text-red-400 font-bold"
+                          } else if (isCorrect) {
+                            btnStyle = "bg-green-500/10 border-green-500/30 text-green-400"
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={idx}
+                            disabled={cacesFeedback !== null}
+                            onClick={() => handleCacesOptionSelect(idx)}
+                            className="w-full text-left p-3.5 rounded-xl text-xs border transition-all flex items-center justify-between cursor-pointer border-white/5 bg-black/30 hover:border-galf-yellow/40 text-white/70 hover:text-white"
+                            style={{ colorScheme: 'dark' }}
+                          >
+                            <span className="flex-1 pr-4">{opt}</span>
+                            {cacesFeedback !== null && isCorrect && <span className="text-green-400 font-bold shrink-0">✓</span>}
+                          </button>
+                        )
+                      })}
+                    </div>
+
+                    {cacesFeedback !== null && (
+                      <div className={`p-3.5 rounded-xl border text-[10px] leading-relaxed transition-all ${
+                        cacesFeedback === 'correct' 
+                          ? 'bg-green-500/10 border-green-500/20 text-green-300' 
+                          : 'bg-red-500/10 border-red-500/20 text-red-300'
+                      }`}>
+                        <span className="font-black block uppercase mb-1">
+                          {cacesFeedback === 'correct' ? "✓ Excellente réponse !" : "✗ Réponse incorrecte"}
+                        </span>
+                        {cacesQuestions[cacesQuizStep].explain}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 space-y-4">
+                    <Award className="w-16 h-16 text-galf-yellow mx-auto animate-bounce" />
+                    <h4 className="text-xl font-black text-white uppercase tracking-tight">Test CACES Terminé !</h4>
+                    <p className="text-xs text-white/60 max-w-xs mx-auto leading-relaxed">
+                      Score : <strong className="text-galf-yellow text-sm">{cacesScore} / {cacesQuestions.length}</strong> ({Math.round((cacesScore / cacesQuestions.length) * 100)}% de réussite).
+                      {cacesScore === 5 
+                        ? " Félicitations ! Score parfait. Vous maîtrisez les fondamentaux du code de conduite." 
+                        : " Quelques règles méritent d'être relues avant le passage de l'examen réel."}
+                    </p>
+                    <button
+                      onClick={handleResetCacesQuiz}
+                      className="px-6 py-2.5 bg-galf-yellow text-galf-carbon text-xs font-black uppercase tracking-wider rounded-xl hover:brightness-110 transition-all cursor-pointer"
+                    >
+                      Recommencer
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {!cacesCompleted && cacesFeedback !== null && (
+                <button
+                  onClick={handleCacesNextQuestion}
+                  className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all mt-4 cursor-pointer"
+                >
+                  {cacesQuizStep === cacesQuestions.length - 1 ? "Voir les résultats" : "Question suivante →"}
+                </button>
+              )}
+            </div>
+
+            {/* 2. PORTFOLIO & ECO-DRIVING (7 columns) */}
+            <div className="lg:col-span-7 space-y-8">
+              
+              {/* Feature 6: Operator Machine Portfolio */}
+              <div className="glass-card p-6 rounded-[2rem] border-galf-border">
+                <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5" /> Mon Portfolio d'Engins Conduit
+                  </span>
+                  <span className="text-[9px] font-mono text-white/40">Heures de vol</span>
+                </div>
+
+                <div className="grid sm:grid-cols-3 gap-4">
+                  {[
+                    { name: "Pelle Hydraulique", hours: "45 heures", level: "Expert", progress: 90, icon: "🏗️", unlocked: true },
+                    { name: "Grue à Tour", hours: "32 heures", level: "Avancé", progress: 65, icon: "🏗️", unlocked: true },
+                    { name: "Bulldozer D6", hours: "10 heures", level: "Débutant", progress: 20, icon: "🚜", unlocked: false }
+                  ].map((mach, idx) => (
+                    <div key={idx} className={`p-4 rounded-xl border flex flex-col justify-between min-h-[140px] ${
+                      mach.unlocked 
+                        ? 'bg-black/30 border-white/10 hover:border-galf-yellow/30' 
+                        : 'bg-black/60 border-white/5 opacity-40'
+                    }`}>
+                      <div>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-2xl">{mach.icon}</span>
+                          <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded ${
+                            mach.unlocked ? 'bg-green-500/10 text-green-400' : 'bg-white/5 text-white/40'
+                          }`}>
+                            {mach.unlocked ? "Validé" : "En cours"}
+                          </span>
+                        </div>
+                        <h4 className="text-xs font-black text-white">{mach.name}</h4>
+                        <span className="text-[9px] text-white/50 font-bold block mt-0.5">{mach.hours} conduites</span>
+                      </div>
+
+                      <div className="mt-3">
+                        <div className="flex justify-between text-[8px] font-bold text-white/40 mb-1">
+                          <span>Maîtrise : {mach.level}</span>
+                          <span>{mach.progress}%</span>
+                        </div>
+                        <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                          <div className="bg-galf-yellow h-full transition-all" style={{ width: `${mach.progress}%` }} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Eco-Conduite & Alerte Sonore side-by-side grid */}
+              <div className="grid md:grid-cols-2 gap-8">
+                
+                {/* Feature 7: Eco-Conduite carbon calculator */}
+                <div className="glass-card p-6 rounded-[2rem] border-galf-border flex flex-col justify-between min-h-[240px]">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                        <TrendingUp className="w-3.5 h-3.5" /> Bilan Carbone Éco-Conduite
+                      </span>
+                      <span className="text-[9px] font-mono text-white/40">Émissions</span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex justify-between text-[9px] font-bold text-white/50">
+                          <span>Vitesse de déplacement</span>
+                          <span>{ecoSpeed} km/h</span>
+                        </div>
+                        <input
+                          type="range" min="5" max="30" value={ecoSpeed}
+                          onChange={(e) => setEcoSpeed(Number(e.target.value))}
+                          className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <div className="flex justify-between text-[9px] font-bold text-white/50">
+                          <span>Temps de veille moteur</span>
+                          <span>{ecoIdle} min/h</span>
+                        </div>
+                        <input
+                          type="range" min="5" max="45" value={ecoIdle}
+                          onChange={(e) => setEcoIdle(Number(e.target.value))}
+                          className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between bg-black/20 p-3.5 rounded-xl border border-white/5">
+                    <div className="text-left">
+                      <span className="text-[8px] font-black text-white/40 uppercase block">CO2 Économisé</span>
+                      <span className="text-sm font-black text-green-400">
+                        {((30 - ecoSpeed) * 1.5 + (45 - ecoIdle) * 2.2).toFixed(0)} kg / mois
+                      </span>
+                    </div>
+
+                    <span className="text-[9px] font-black text-galf-yellow bg-galf-yellow/10 border border-galf-yellow/20 px-2 py-1 rounded uppercase">
+                      {ecoIdle <= 15 ? "🌱 Éco-Expert" : "⚠️ Ralenti Élevé"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Feature 8: Safety Sound Alerts reader */}
+                <div className="glass-card p-6 rounded-[2rem] border-galf-border flex flex-col justify-between min-h-[240px]">
+                  <div>
+                    <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-galf-yellow flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5" /> Alarmes Sécurité Chantier
+                      </span>
+                      <span className="text-[9px] font-mono text-white/40">Web Audio API</span>
+                    </div>
+
+                    <p className="text-[9px] text-white/50 mb-3 leading-relaxed font-sans">
+                      Écoutez les signaux d'urgence sonores pour apprendre à les identifier en cabine réelle.
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { key: 'recul', label: "🚨 Bip de Recul" },
+                        { key: 'evac', label: "📢 Évacuation" },
+                        { key: 'surcharge', label: "⚠️ Surcharge" },
+                        { key: 'rumble', label: "🚜 Régime Moteur" }
+                      ].map((siren) => {
+                        const isActive = activeSiren === siren.key
+                        return (
+                          <button
+                            key={siren.key}
+                            type="button"
+                            onClick={() => {
+                              if (isActive) handleStopSiren()
+                              else handlePlaySiren(siren.key as any)
+                            }}
+                            className={`p-2 rounded-lg text-[10px] font-bold border transition-all text-left truncate cursor-pointer ${
+                              isActive
+                                ? 'bg-red-500/20 border-red-500 text-red-400 animate-pulse font-black'
+                                : 'bg-black/30 border-white/5 text-white/70 hover:border-white/20'
+                            }`}
+                          >
+                            {siren.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {activeSiren && (
+                    <button
+                      onClick={handleStopSiren}
+                      className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                      Couper le son d'alarme
+                    </button>
+                  )}
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
-        ) : (
+        </div>
+      ) : (
           /* CERTIFICATIONS TAB */
           <div className="max-w-5xl mx-auto">
              <FadeIn>

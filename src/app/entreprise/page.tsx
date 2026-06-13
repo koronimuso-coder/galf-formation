@@ -1,10 +1,36 @@
 "use client"
 import { FadeIn } from '@/components/animations/FadeIn'
-import { Briefcase, Users, FileText, Send, TrendingUp, CheckCircle2, Shield, ArrowRight, Star, Calculator, Download, Calendar } from 'lucide-react'
+import { 
+  Briefcase, Users, FileText, Send, TrendingUp, CheckCircle2, Shield, 
+  ArrowRight, Star, Calculator, Download, Calendar, Search, Upload, 
+  FileSpreadsheet, AlertTriangle, Check, MapPin, ShieldAlert
+} from 'lucide-react'
 import { useState } from 'react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { jsPDF } from 'jspdf'
+import Link from 'next/link'
+
+// Graduate database for Recruiting Express matching
+const GRADUATES_DB = [
+  { id: 1, machine: "Pelle Hydraulique", exp: "Expert", name: "Opérateur GP-902", score: "19.2/20", city: "Abidjan", skills: "Terrassement complexe, talutage précis, sécurité HSE", status: "Disponible" },
+  { id: 2, machine: "Pelle Hydraulique", exp: "Confirmé", name: "Opérateur GP-405", score: "17.5/20", city: "San Pedro", skills: "Excavation de tranchées, nivellement", status: "Disponible" },
+  { id: 3, machine: "Pelle Hydraulique", exp: "Débutant", name: "Opérateur GP-102", score: "15.0/20", city: "Abidjan", skills: "Manœuvres de base, chargement de camions", status: "Disponible" },
+  { id: 4, machine: "Grue à Tour", exp: "Expert", name: "Opérateur GT-801", score: "18.8/20", city: "Abidjan", skills: "Grue de grande hauteur, élingage complexe, vents forts", status: "Disponible" },
+  { id: 5, machine: "Grue à Tour", exp: "Confirmé", name: "Opérateur GT-330", score: "16.9/20", city: "San Pedro", skills: "Levage standard, contrôle des charges", status: "Disponible" },
+  { id: 6, machine: "Bulldozer D6", exp: "Expert", name: "Opérateur BD-702", score: "19.5/20", city: "San Pedro", skills: "Terrassement de masse, ouverture de pistes minières", status: "Disponible" },
+  { id: 7, machine: "Bulldozer D6", exp: "Confirmé", name: "Opérateur BD-224", score: "17.0/20", city: "Abidjan", skills: "Régalage de matériaux, pousse standard", status: "Disponible" },
+  { id: 8, machine: "Chariot Élévateur", exp: "Confirmé", name: "Opérateur CE-509", score: "16.8/20", city: "Yamoussoukro", skills: "Gerbage grande hauteur, chargement racks", status: "Disponible" },
+]
+
+// Mock operators data for fleet validation
+const MOCK_FLEET_COMPLIANCE = [
+  { name: "Kouamé N'guessan", machine: "Pelle Hydraulique", certificate: "CACES-R482-A", status: "Valide", date: "2029-04-12" },
+  { name: "Diarra Moussa", machine: "Grue à Tour", certificate: "CACES-R483-B", status: "Attention", date: "2026-07-15" },
+  { name: "Koné Fatou", machine: "Bulldozer D6", certificate: "CACES-R482-C", status: "Valide", date: "2028-11-20" },
+  { name: "Koffi Gnamien", machine: "Chariot Élévateur", certificate: "Expiré ou inexistant", status: "Expiré", date: "Expiré" },
+  { name: "Sidiki Diallo", machine: "Grue Mobile", certificate: "CACES-R483-C", status: "Valide", date: "2030-01-10" }
+]
 
 export default function EntreprisePortal() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -21,9 +47,31 @@ export default function EntreprisePortal() {
   const [optEnglish, setOptEnglish] = useState(false)
   const [optAudit, setOptAudit] = useState(false)
 
-  // ROI Calculator states
+  // ROI Calculator states (Extended for Wave 4)
   const [fleetSize, setFleetSize] = useState(10)
   const [incidentsCount, setIncidentsCount] = useState(5)
+  const [fuelPerDay, setFuelPerDay] = useState(80) // Liters per day per machine
+  const [maintPerYear, setMaintPerYear] = useState(1200000) // FCFA per machine per year
+
+  // Matching Recrutement Express states
+  const [recruitMachine, setRecruitMachine] = useState("Pelle Hydraulique")
+  const [recruitExp, setRecruitExp] = useState("Expert")
+  const [recruitCity, setRecruitCity] = useState("Abidjan")
+  const [isSearchingRecruit, setIsSearchingRecruit] = useState(false)
+  const [searchedRecruits, setSearchedRecruits] = useState<typeof GRADUATES_DB | null>(null)
+  const [recruitContactMessage, setRecruitContactMessage] = useState("")
+
+  // Fleet Checker CSV states
+  const [uploadedFleet, setUploadedFleet] = useState<typeof MOCK_FLEET_COMPLIANCE | null>(null)
+  const [isUploadingFleet, setIsUploadingFleet] = useState(false)
+
+  // Site Safety Audit Booking states
+  const [auditLocation, setAuditLocation] = useState("")
+  const [auditType, setAuditType] = useState("Chantier BTP")
+  const [auditDate, setAuditDate] = useState("2026-06-25")
+  const [auditPhone, setAuditPhone] = useState("")
+  const [auditScheduled, setAuditScheduled] = useState(false)
+  const [auditId, setAuditId] = useState("")
 
   // Fleet Optimizer states
   const [fleetPelles, setFleetPelles] = useState(5)
@@ -486,7 +534,7 @@ export default function EntreprisePortal() {
               ) : (
                 <div className="space-y-6 animate-fadeIn">
                   <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.15em] mb-4">
-                    Simulateur de Rentabilité HSE (B2B)
+                    Simulateur de ROI de Formation (Maintenance & Carburant)
                   </div>
 
                   <div className="space-y-4">
@@ -513,35 +561,76 @@ export default function EntreprisePortal() {
                         className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
                       />
                     </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[11px] font-bold uppercase text-white/70">
+                        <span>Consommation de carburant par machine / jour</span>
+                        <span className="text-galf-yellow font-black">{fuelPerDay} Litres</span>
+                      </div>
+                      <input 
+                        type="range" min="20" max="250" step="5" value={fuelPerDay}
+                        onChange={(e) => setFuelPerDay(parseInt(e.target.value))}
+                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[11px] font-bold uppercase text-white/70">
+                        <span>Budget Maintenance annuel moyen / machine</span>
+                        <span className="text-galf-yellow font-black">{(maintPerYear).toLocaleString('fr-FR')} F</span>
+                      </div>
+                      <input 
+                        type="range" min="300000" max="3000000" step="100000" value={maintPerYear}
+                        onChange={(e) => setMaintPerYear(parseInt(e.target.value))}
+                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-galf-yellow"
+                      />
+                    </div>
                   </div>
 
                   {(() => {
+                    // Cost calculations
                     const costPerIncident = 1500000 
                     const costTrainingPerOp = 350000 
-                    const initialLoss = incidentsCount * costPerIncident
-                    const postTrainingLoss = initialLoss * 0.25 
-                    const savings = initialLoss - postTrainingLoss
+                    
+                    // Fuel: 300 operating days per year, 850 FCFA per liter of diesel
+                    const dieselPrice = 850
+                    const annualFuelCost = fleetSize * fuelPerDay * 300 * dieselPrice
+                    const fuelSavings = Math.round(annualFuelCost * 0.15) // Eco-driving saves 15%
+
+                    // Maintenance: 30% reduction in wear and tear
+                    const totalMaintCost = fleetSize * maintPerYear
+                    const maintSavings = Math.round(totalMaintCost * 0.30)
+
+                    // Accidents: 75% reduction
+                    const initialAccidentLoss = incidentsCount * costPerIncident
+                    const accidentSavings = Math.round(initialAccidentLoss * 0.75)
+
+                    const totalSavings = fuelSavings + maintSavings + accidentSavings
                     const trainingCost = fleetSize * costTrainingPerOp
-                    const netRoi = savings - trainingCost
-                    const returnRatio = trainingCost > 0 ? (savings / trainingCost).toFixed(1) : '0'
+                    const netRoi = totalSavings - trainingCost
+                    const returnRatio = trainingCost > 0 ? (totalSavings / trainingCost).toFixed(1) : '0'
 
                     return (
                       <div className="space-y-3">
                         <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-2 text-xs leading-relaxed">
                           <div className="flex justify-between text-white/50">
-                            <span>Coût annuel des pannes/accidents :</span>
-                            <span className="font-mono text-white">{initialLoss.toLocaleString('fr-FR')} F</span>
+                            <span>Économie Carburant estimée (Éco-conduite -15%) :</span>
+                            <span className="font-mono text-green-400">+{fuelSavings.toLocaleString('fr-FR')} F</span>
                           </div>
                           <div className="flex justify-between text-white/50">
-                            <span>Réduction des pannes post-formation (75%) :</span>
-                            <span className="font-mono text-green-400">-{savings.toLocaleString('fr-FR')} F</span>
+                            <span>Économie Maintenance (Usure évitée -30%) :</span>
+                            <span className="font-mono text-green-400">+{maintSavings.toLocaleString('fr-FR')} F</span>
                           </div>
                           <div className="flex justify-between text-white/50">
-                            <span>Coût d'investissement formation GALF :</span>
+                            <span>Sinistralité Évitée (Accidents -75%) :</span>
+                            <span className="font-mono text-green-400">+{accidentSavings.toLocaleString('fr-FR')} F</span>
+                          </div>
+                          <div className="flex justify-between text-white/50 pt-1 border-t border-white/5">
+                            <span>Investissement Formation GALF ({fleetSize} op.) :</span>
                             <span className="font-mono text-red-400">-{trainingCost.toLocaleString('fr-FR')} F</span>
                           </div>
                           <div className="flex justify-between text-xs font-black pt-2 border-t border-white/5 text-white">
-                            <span>Bénéfice Net Première Année :</span>
+                            <span>Bénéfice Net Global (An 1) :</span>
                             <span className={netRoi >= 0 ? 'text-green-400 font-mono' : 'text-red-400 font-mono'}>
                               {netRoi.toLocaleString('fr-FR')} F CFA
                             </span>
@@ -550,7 +639,7 @@ export default function EntreprisePortal() {
 
                         {netRoi > 0 ? (
                           <div className="p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-center text-xs font-bold text-green-400 animate-pulse">
-                            🎉 Rentabilité de {returnRatio}x l'investissement dès la 1ère année !
+                            🎉 Rentabilité nette de {returnRatio}x l'investissement formation !
                           </div>
                         ) : (
                           <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 text-center text-xs font-bold text-white/60">
@@ -770,81 +859,381 @@ export default function EntreprisePortal() {
           </div>
         </FadeIn>
 
-        {/* Recruitment Teaser */}
+        {/* ═══════════════════════════════════════════════
+            NEW: MATCHING RECRUTEMENT EXPRESS
+           ═══════════════════════════════════════════════ */}
         <FadeIn delay={0.4}>
-          <div className="p-12 rounded-[2.5rem] relative overflow-hidden glass-card border-galf-yellow/20 border-galf-border">
+          <div className="p-12 rounded-[2.5rem] relative overflow-hidden glass-card border-galf-yellow/20 border-galf-border mb-16">
              <div className="absolute top-0 right-0 w-[40%] h-full bg-galf-yellow/5 skew-x-12 translate-x-32" />
-             <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div>
+             <div className="grid lg:grid-cols-12 gap-12 items-center relative z-10">
+                <div className="lg:col-span-5">
                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-galf-yellow/10 border border-galf-yellow/30 rounded-full text-galf-yellow text-[10px] font-black uppercase tracking-widest mb-6">
-                      <Star className="w-3 h-3 fill-current" /> Sourcing de Talents
+                      <Star className="w-3 h-3 fill-current" /> Recrutement Express
                    </div>
-                   <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tighter" style={{ color: 'var(--galf-text)' }}>
-                      Recrutez l'élite du <span className="text-galf-yellow">BTP ivoirien</span>
+                   <h2 className="text-3xl md:text-4xl font-black mb-6 tracking-tighter text-white">
+                      Trouvez le candidat <span className="text-galf-yellow">idéal</span>
                    </h2>
-                   <p className="text-lg leading-relaxed mb-8" style={{ color: 'var(--galf-text-secondary)' }}>
-                      Accédez à notre base de données d'apprenants certifiés. Filtrez par engin, niveau d'expérience et disponibilité pour vos chantiers stratégiques.
+                   <p className="text-xs text-white/60 mb-6 leading-relaxed">
+                      Filtrez notre base de données de diplômés certifiés par type d'engin, niveau d'expérience et région pour obtenir instantanément des profils qualifiés anonymisés.
                    </p>
-                   <ul className="space-y-4 mb-10">
-                      {[ 
-                        "Vérification instantanée des certificats GALF", 
-                        "Accès aux notes de conduite technique (Théorie & Pratique)", 
-                        "Contact direct avec les meilleurs profils de chaque promo"
-                      ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-3 font-bold text-sm" style={{ color: 'var(--galf-text)' }}>
-                           <CheckCircle2 className="w-5 h-5 text-galf-yellow" /> {item}
-                        </li>
-                      ))}
-                   </ul>
-                   <Link href="/entreprise/recrutement" className="bg-slate-900 dark:bg-white text-white dark:text-galf-carbon hover:bg-galf-yellow dark:hover:bg-galf-yellow px-12 py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shrink-0">
-                      Accéder au Hub Recruteur <ArrowRight className="w-5 h-5" />
-                   </Link>
+                   
+                   <div className="space-y-4">
+                     <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-1">
+                         <label className="text-[10px] font-bold uppercase text-white/50 tracking-wider">Engin Ciblé</label>
+                         <select 
+                           value={recruitMachine} 
+                           onChange={(e) => setRecruitMachine(e.target.value)}
+                           className="w-full bg-black/40 border border-white/10 rounded-xl p-2.5 text-xs text-white outline-none focus:border-galf-yellow"
+                           style={{ colorScheme: 'dark' }}
+                         >
+                           <option>Pelle Hydraulique</option>
+                           <option>Grue à Tour</option>
+                           <option>Bulldozer D6</option>
+                           <option>Chariot Élévateur</option>
+                         </select>
+                       </div>
+                       <div className="space-y-1">
+                         <label className="text-[10px] font-bold uppercase text-white/50 tracking-wider">Expérience</label>
+                         <select 
+                           value={recruitExp} 
+                           onChange={(e) => setRecruitExp(e.target.value)}
+                           className="w-full bg-black/40 border border-white/10 rounded-xl p-2.5 text-xs text-white outline-none focus:border-galf-yellow"
+                           style={{ colorScheme: 'dark' }}
+                         >
+                           <option>Expert</option>
+                           <option>Confirmé</option>
+                           <option>Débutant</option>
+                         </select>
+                       </div>
+                     </div>
+                     
+                     <div className="space-y-1">
+                       <label className="text-[10px] font-bold uppercase text-white/50 tracking-wider">Lieu d'Affectation</label>
+                       <select 
+                         value={recruitCity} 
+                         onChange={(e) => setRecruitCity(e.target.value)}
+                         className="w-full bg-black/40 border border-white/10 rounded-xl p-2.5 text-xs text-white outline-none focus:border-galf-yellow"
+                         style={{ colorScheme: 'dark' }}
+                       >
+                         <option>Abidjan</option>
+                         <option>San Pedro</option>
+                         <option>Yamoussoukro</option>
+                       </select>
+                     </div>
+
+                     <button
+                       onClick={() => {
+                         setIsSearchingRecruit(true);
+                         setSearchedRecruits(null);
+                         setTimeout(() => {
+                           const res = GRADUATES_DB.filter(g => 
+                             g.machine === recruitMachine && 
+                             g.exp === recruitExp && 
+                             g.city === recruitCity
+                           );
+                           setSearchedRecruits(res);
+                           setIsSearchingRecruit(false);
+                         }, 800);
+                       }}
+                       className="w-full bg-galf-yellow text-galf-carbon py-3.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                     >
+                       <Search className="w-4 h-4" /> Rechercher les profils dispo.
+                     </button>
+                   </div>
                 </div>
 
-                <div className="relative group">
-                   <div className="glass-card p-6 rounded-2xl border-white/5 shadow-2xl scale-95 group-hover:scale-100 transition-transform duration-700 bg-galf-carbon/80 backdrop-blur-md">
-                      <div className="flex items-center justify-between mb-8">
-                         <div className="text-xs font-black uppercase tracking-widest text-galf-text-muted">Candidats certifiés dispo.</div>
-                         <div className="flex -space-x-3">
-                            {[1, 2, 3, 4].map(i => (
-                               <div key={i} className="w-8 h-8 rounded-full bg-galf-yellow/20 border-2" style={{ borderColor: 'var(--galf-border)' }} />
-                            ))}
-                         </div>
-                      </div>
-                      <div className="space-y-4">
-                         {[
-                           { name: "Yao Anderson", job: "Opérateur Pelle", score: "18.5/20", tag: "Expert" },
-                           { name: "Diarra Moussa", job: "Grutier à Tour", score: "17.0/20", tag: "Confirmé" },
-                           { name: "Koné Fatou", job: "Conductrice Bulldozer", score: "19.0/20", tag: "Major Promo" },
-                         ].map((c, i) => (
-                           <div key={i} className="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 border border-white/5 transition-colors">
-                              <div className="flex items-center gap-4">
-                                 <div className="w-10 h-10 rounded-lg bg-galf-yellow flex items-center justify-center font-black text-galf-carbon">{c.name[0]}</div>
-                                 <div>
-                                    <div className="text-sm font-black text-white">{c.name}</div>
-                                    <div className="text-[10px] font-bold text-galf-yellow uppercase">{c.job}</div>
-                                 </div>
-                              </div>
-                              <div className="text-right">
-                                 <div className="text-xs font-black text-white">{c.score}</div>
-                                 <span className="text-[8px] font-black uppercase bg-white/10 px-2 py-0.5 rounded text-white/60">{c.tag}</span>
-                              </div>
+                <div className="lg:col-span-7">
+                   <div className="glass-card p-6 rounded-2xl border-white/5 shadow-2xl scale-95 hover:scale-100 transition-transform duration-500 bg-galf-carbon/80 backdrop-blur-md min-h-[280px] flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-6 pb-2 border-b border-white/5">
+                           <div className="text-xs font-black uppercase tracking-widest text-galf-text-muted">Profils correspondants</div>
+                           <div className="text-[9px] font-bold text-galf-yellow px-2 py-0.5 bg-galf-yellow/10 rounded border border-galf-yellow/20">
+                             Simulateur Live
                            </div>
-                         ))}
+                        </div>
+
+                        {isSearchingRecruit ? (
+                          <div className="py-16 text-center space-y-3">
+                            <Upload className="w-8 h-8 text-galf-yellow animate-spin mx-auto" />
+                            <span className="text-xs text-white/50 block font-sans">Indexation de la base de données apprenants...</span>
+                          </div>
+                        ) : searchedRecruits === null ? (
+                          <div className="py-12 text-center text-white/40 space-y-2">
+                            <Users className="w-10 h-10 mx-auto opacity-35" />
+                            <div className="text-xs font-bold font-sans">Prêt à rechercher</div>
+                            <p className="text-[10px] text-white/30 max-w-xs mx-auto leading-relaxed">
+                              Sélectionnez vos critères à gauche et cliquez sur Rechercher pour simuler le sourcing d'opérateurs certifiés.
+                            </p>
+                          </div>
+                        ) : searchedRecruits.length === 0 ? (
+                          <div className="py-12 text-center text-white/40 space-y-2">
+                            <AlertTriangle className="w-10 h-10 mx-auto text-galf-yellow opacity-75" />
+                            <div className="text-xs font-bold font-sans text-white">Aucun profil exact disponible</div>
+                            <p className="text-[10px] text-white/30 max-w-xs mx-auto leading-relaxed">
+                              Il n'y a pas de diplômé "{recruitExp}" pour "{recruitMachine}" disponible immédiatement à "{recruitCity}". Modifiez vos critères de recherche.
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                             {searchedRecruits.map((c) => (
+                               <div key={c.id} className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                                 <div>
+                                   <div className="flex items-center gap-2">
+                                     <span className="font-black text-white">{c.name}</span>
+                                     <span className="text-[8px] font-black uppercase bg-galf-yellow/20 text-galf-yellow px-1.5 py-0.5 rounded">{c.exp}</span>
+                                     <span className="text-[8px] font-black uppercase bg-white/10 text-white/60 px-1.5 py-0.5 rounded">{c.city}</span>
+                                   </div>
+                                   <div className="text-[10px] text-white/50 mt-1 font-sans">
+                                     Points forts : <strong>{c.skills}</strong>
+                                   </div>
+                                 </div>
+                                 <div className="flex items-center gap-3 shrink-0">
+                                   <div className="text-right">
+                                     <div className="font-mono font-black text-galf-yellow text-sm">{c.score}</div>
+                                     <div className="text-[8px] text-white/40 font-bold uppercase">Moyenne Examen</div>
+                                   </div>
+                                   <button 
+                                     onClick={() => setRecruitContactMessage(`Demande d'entretien initiée pour le profil anonyme ${c.name} (${c.machine}). Nos conseillers B2B vont vous recontacter par téléphone.`)}
+                                     className="bg-galf-yellow hover:brightness-110 text-galf-carbon px-3 py-2 rounded-lg font-black text-[10px] uppercase transition-all"
+                                   >
+                                     Recruter
+                                   </button>
+                                 </div>
+                               </div>
+                             ))}
+                          </div>
+                        )}
                       </div>
-                      <div className="mt-6 pt-6 border-t border-white/5 text-center">
-                         <span className="text-[10px] font-bold text-galf-text-muted uppercase tracking-[0.2em]">+ 128 autres candidats disponibles</span>
+
+                      {recruitContactMessage && (
+                        <div className="mt-4 p-3 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl text-[10px] font-bold leading-relaxed animate-fadeIn flex items-center justify-between gap-2">
+                          <span>{recruitContactMessage}</span>
+                          <button onClick={() => setRecruitContactMessage("")} className="text-white hover:text-galf-yellow">✕</button>
+                        </div>
+                      )}
+
+                      <div className="mt-6 pt-4 border-t border-white/5 text-center shrink-0">
+                         <span className="text-[9px] font-bold text-galf-text-muted uppercase tracking-[0.2em]">+ 128 autres opérateurs certifiés recensés en base active</span>
                       </div>
-                   </div>
-                   <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-galf-yellow rounded-full flex items-center justify-center shadow-2xl animate-bounce">
-                      <TrendingUp className="w-10 h-10 text-galf-carbon" />
                    </div>
                 </div>
              </div>
           </div>
         </FadeIn>
+
+        {/* ═══════════════════════════════════════════════
+            NEW: CSV FLEET COMPLIANCE CHECKER & SAFETY AUDIT PLANNER
+           ═══════════════════════════════════════════════ */}
+        <div className="grid md:grid-cols-2 gap-12 mb-16">
+          
+          {/* Fleet compliance checker */}
+          <FadeIn delay={0.45}>
+            <div className="glass-card p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden flex flex-col justify-between h-full min-h-[420px]">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[4rem]" />
+              <div>
+                <h3 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <FileSpreadsheet className="text-galf-yellow w-6 h-6" /> Vérificateur de Flotte (CACES)
+                </h3>
+                <p className="text-xs text-white/60 mb-6">
+                  Importez la liste de vos conducteurs pour en analyser instantanément l'état de conformité réglementaire.
+                </p>
+
+                {uploadedFleet ? (
+                  <div className="space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between p-3.5 bg-galf-yellow/10 border border-galf-yellow/20 rounded-2xl text-xs">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5 text-galf-yellow shrink-0" />
+                        <div>
+                          <span className="text-white font-bold block">Analyse complétée</span>
+                          <span className="text-[10px] text-white/50">Fichier : fleet_operators.csv (5 lignes)</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-lg font-black text-galf-yellow">60%</span>
+                        <span className="text-[9px] text-white/40 block font-bold uppercase">Conformité</span>
+                      </div>
+                    </div>
+
+                    <div className="max-h-48 overflow-y-auto custom-scrollbar border border-white/5 rounded-xl text-[10px]">
+                      <table className="w-full text-left text-white/80 border-collapse">
+                        <thead>
+                          <tr className="bg-black/40 text-[9px] font-black uppercase text-white/40 border-b border-white/5">
+                            <th className="p-2">Conducteur</th>
+                            <th className="p-2">Engin</th>
+                            <th className="p-2">Statut</th>
+                            <th className="p-2 text-right">Expiration</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {uploadedFleet.map((op, idx) => (
+                            <tr key={idx} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                              <td className="p-2 font-bold text-white">{op.name}</td>
+                              <td className="p-2">{op.machine}</td>
+                              <td className="p-2">
+                                <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${
+                                  op.status === 'Valide' ? 'bg-green-500/20 text-green-400' :
+                                  op.status === 'Attention' ? 'bg-orange-500/20 text-orange-400' :
+                                  'bg-red-500/20 text-red-400'
+                                }`}>
+                                  {op.status}
+                                </span>
+                              </td>
+                              <td className="p-2 text-right font-mono">{op.date}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-white/10 rounded-2xl p-8 text-center my-4 space-y-4 hover:border-galf-yellow/40 transition-colors">
+                    <Upload className="w-10 h-10 text-white/20 mx-auto animate-pulse" />
+                    <div>
+                      <span className="text-xs font-bold text-white block">Glissez-déposez le fichier CSV de vos employés</span>
+                      <span className="text-[10px] text-white/40 mt-1 block">Format requis : nom, prenom, categorie, date_caces</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setIsUploadingFleet(true);
+                        setTimeout(() => {
+                          setUploadedFleet(MOCK_FLEET_COMPLIANCE);
+                          setIsUploadingFleet(false);
+                        }, 1000);
+                      }}
+                      disabled={isUploadingFleet}
+                      className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-black uppercase tracking-wider text-white rounded-xl transition-all disabled:opacity-50"
+                    >
+                      {isUploadingFleet ? "Analyse en cours..." : "Simuler l'importation de fichier CSV"}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] text-white/50">
+                <span>Besoin de recycler vos CACES arrivés à échéance ?</span>
+                {uploadedFleet && (
+                  <button 
+                    onClick={() => {
+                      setUploadedFleet(null);
+                    }} 
+                    className="text-red-400 font-bold uppercase hover:underline"
+                  >
+                    Réinitialiser
+                  </button>
+                )}
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Site Safety Audit Booking */}
+          <FadeIn delay={0.5}>
+            <div className="glass-card p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden flex flex-col justify-between h-full min-h-[420px]">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[4rem]" />
+              <div>
+                <h3 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+                  <ShieldAlert className="text-galf-yellow w-6 h-6" /> Planificateur d'Audit de Sécurité sur site
+                </h3>
+                <p className="text-xs text-white/60 mb-6">
+                  Réservez une visite d'audit et diagnostic HSE de votre parc de machines et chantiers de construction par nos ingénieurs pédagogiques.
+                </p>
+
+                {auditScheduled ? (
+                  <div className="bg-galf-yellow/15 border border-galf-yellow/30 rounded-2xl p-6 text-center my-4 animate-fadeIn">
+                    <Check className="w-12 h-12 text-galf-yellow mx-auto mb-3 animate-bounce" />
+                    <div className="text-xs font-black text-white uppercase tracking-wider">Demande d'Audit enregistrée !</div>
+                    <div className="text-[9px] font-black text-galf-yellow bg-galf-yellow/10 px-2.5 py-0.5 rounded border border-galf-yellow/20 inline-block my-2">
+                      ID : {auditId}
+                    </div>
+                    <p className="text-[10px] text-white/60 mt-1 max-w-xs mx-auto leading-relaxed">
+                      Notre équipe HSE va prendre contact au <strong>{auditPhone}</strong> sous 24h pour valider l'accès de sécurité à votre chantier à la date du <strong>{auditDate}</strong>.
+                    </p>
+                    <button 
+                      onClick={() => setAuditScheduled(false)} 
+                      className="mt-4 text-[9px] font-black uppercase text-red-400 bg-red-400/10 border border-red-400/20 px-2.5 py-1 rounded hover:bg-red-400/20 transition-all"
+                    >
+                      Planifier une autre visite
+                    </button>
+                  </div>
+                ) : (
+                  <form 
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if(!auditLocation || !auditPhone) return;
+                      setAuditId(`GALF-AUDIT-${Math.floor(1000 + Math.random() * 9000)}`);
+                      setAuditScheduled(true);
+                    }} 
+                    className="space-y-3.5"
+                  >
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-bold uppercase text-white/50 tracking-wider">Lieu / Adresse du Chantier</label>
+                      <input 
+                        required
+                        type="text"
+                        placeholder="Ex: Yopougon Zone Industrielle, Lot 4"
+                        value={auditLocation}
+                        onChange={(e) => setAuditLocation(e.target.value)}
+                        className="w-full bg-black/30 border border-white/10 rounded-xl p-2.5 text-xs text-white outline-none focus:border-galf-yellow"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[9px] font-bold uppercase text-white/50 tracking-wider">Type d'Activité</label>
+                        <select 
+                          value={auditType}
+                          onChange={(e) => setAuditType(e.target.value)}
+                          className="w-full bg-black/30 border border-white/10 rounded-xl p-2.5 text-xs text-white outline-none focus:border-galf-yellow"
+                          style={{ colorScheme: 'dark' }}
+                        >
+                          <option>Chantier BTP</option>
+                          <option>Exploitation Minière</option>
+                          <option>Carrière / Concassage</option>
+                          <option>Entrepôt / Logistique</option>
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[9px] font-bold uppercase text-white/50 tracking-wider">Date Souhaitée</label>
+                        <input 
+                          required
+                          type="date"
+                          value={auditDate}
+                          onChange={(e) => setAuditDate(e.target.value)}
+                          className="w-full bg-black/30 border border-white/10 rounded-xl p-2 text-xs text-white outline-none focus:border-galf-yellow"
+                          style={{ colorScheme: 'dark' }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-bold uppercase text-white/50 tracking-wider">Téléphone du Responsable Site</label>
+                      <input 
+                        required
+                        type="tel"
+                        placeholder="Ex: +225 07 11 82 65 07"
+                        value={auditPhone}
+                        onChange={(e) => setAuditPhone(e.target.value)}
+                        className="w-full bg-black/30 border border-white/10 rounded-xl p-2.5 text-xs text-white outline-none focus:border-galf-yellow"
+                      />
+                    </div>
+
+                    <button 
+                      type="submit"
+                      className="w-full bg-galf-yellow text-galf-carbon py-3.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-galf-yellow/10"
+                    >
+                      Réserver le Diagnostic HSE
+                    </button>
+                  </form>
+                )}
+              </div>
+
+              <div className="text-[9px] text-white/30 text-center mt-4 shrink-0">
+                * Les audits permettent de cartographier les risques d'accidents liés aux engins lourds.
+              </div>
+            </div>
+          </FadeIn>
+        </div>
       </div>
     </div>
   )
 }
-import Link from 'next/link'
