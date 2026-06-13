@@ -110,7 +110,7 @@ export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, m
               
               <button
                 onClick={onClose}
-                className="w-10 h-10 rounded-full bg-white/5 hover:bg-galf-yellow hover:text-galf-carbon transition-all flex items-center justify-center border border-white/10"
+                className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 text-[var(--galf-text)] hover:bg-galf-yellow hover:text-galf-carbon transition-all flex items-center justify-center border border-black/10 dark:border-white/10"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -161,10 +161,10 @@ export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, m
                           className="p-6 bg-galf-yellow/5 border border-galf-yellow/10 rounded-2xl group hover:border-galf-yellow/40 transition-all"
                         >
                           <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 rounded-xl bg-galf-yellow/10 flex items-center justify-center text-galf-yellow group-hover:scale-110 transition-transform">
+                            <div className="w-10 h-10 rounded-xl bg-galf-yellow/10 flex items-center justify-center text-amber-700 dark:text-galf-yellow group-hover:scale-110 transition-transform">
                               <Icon className="w-5 h-5" />
                             </div>
-                            <span className="text-[10px] uppercase font-bold tracking-widest text-galf-yellow/60">{labels[key] || key}</span>
+                            <span className="text-[10px] uppercase font-bold tracking-widest text-amber-800 dark:text-galf-yellow/60">{labels[key] || key}</span>
                           </div>
                           <StatCounter value={value as string} />
                         </motion.div>
@@ -207,9 +207,9 @@ export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, m
               <div className="flex-1 p-6 md:p-10 overflow-y-auto custom-scrollbar flex flex-col" style={{ background: 'var(--galf-bg)' }}>
                 <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.4em]">ATELIER PRATIQUE DE CONDUITE</span>
+                    <span className="text-xs text-amber-700 dark:text-galf-yellow font-bold uppercase tracking-[0.4em]">ATELIER PRATIQUE DE CONDUITE</span>
                     <h2 className="text-3xl font-black tracking-tighter mt-1" style={{ color: 'var(--galf-text)' }}>
-                      Console Virtuelle : <span className="text-galf-yellow font-serif">{machineName}</span>
+                      Console Virtuelle : <span className="text-amber-700 dark:text-galf-yellow font-serif">{machineName}</span>
                     </h2>
                   </div>
                   <button
