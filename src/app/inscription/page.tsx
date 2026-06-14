@@ -1,8 +1,10 @@
 "use client"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
 import { FadeIn } from '@/components/animations/FadeIn'
 import { GALF_FORMATIONS } from '@/lib/data'
-import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck, Info, Sparkles, Smile, Shield } from 'lucide-react'
+import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck, Info, Sparkles, Smile, Shield, Download } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/layout/PageHeader'
 
@@ -11,6 +13,14 @@ export default function Inscription() {
   const [selectedFormation, setSelectedFormation] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('')
   const [acompte, setAcompte] = useState(30)
+  
+  const [fullName, setFullName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [receiptId, setReceiptId] = useState('')
+  const [registrationDate, setRegistrationDate] = useState('')
+  const [isDownloadingReceipt, setIsDownloadingReceipt] = useState(false)
+  const receiptRef = useRef<HTMLDivElement>(null)
   
   // ── Wave 5: Enrollment Interactive Feature States ──
   const [promoCode, setPromoCode] = useState('')
@@ -46,7 +56,7 @@ export default function Inscription() {
     { label: "Confirmation", icon: CheckCircle2 },
   ]
 
-  // Auto-saver: Restore draft on mount
+    // Auto-saver: Restore draft on mount
   useEffect(() => {
     const saved = localStorage.getItem('galf_enrollment_draft')
     if (saved) {
@@ -55,27 +65,65 @@ export default function Inscription() {
         if (parsed.selectedFormation) setSelectedFormation(parsed.selectedFormation)
         if (parsed.acompte) setAcompte(parsed.acompte)
         if (parsed.paymentMethod) setPaymentMethod(parsed.paymentMethod)
+        if (parsed.fullName) setFullName(parsed.fullName)
+        if (parsed.phone) setPhone(parsed.phone)
+        if (parsed.email) setEmail(parsed.email)
         if (parsed.step) setStep(parsed.step)
         setDraftRestored(true)
       } catch (e) {}
     }
   }, [])
 
-  // Clear draft on confirmation step
+  // Clear draft & set receipt info on confirmation step
   useEffect(() => {
     if (step === 5) {
       localStorage.removeItem('galf_enrollment_draft')
+      const date = new Date()
+      const formattedDate = date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+      setRegistrationDate(formattedDate)
+      
+      const randNum = Math.floor(1000 + Math.random() * 9000)
+      const codeSuffix = selectedFormation ? selectedFormation.toUpperCase().slice(0, 5) : 'GEN'
+      setReceiptId(`GALF-${codeSuffix}-${randNum}`)
     }
-  }, [step])
+  }, [step, selectedFormation])
 
   // Auto-saver: Save draft when changing inputs
-  const saveDraft = (nextStep: number) => {
+  const saveDraft = (nextStep: number, currentFullName = fullName, currentPhone = phone, currentEmail = email) => {
     localStorage.setItem('galf_enrollment_draft', JSON.stringify({
       selectedFormation,
       acompte,
       paymentMethod,
+      fullName: currentFullName,
+      phone: currentPhone,
+      email: currentEmail,
       step: nextStep
     }))
+  }
+
+  const handleDownloadReceiptPDF = async () => {
+    if (!receiptRef.current) return;
+    setIsDownloadingReceipt(true);
+    try {
+      const canvas = await html2canvas(receiptRef.current, { 
+        scale: 3, 
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      const formattedName = fullName.trim().toUpperCase().replace(/\s+/g, '-');
+      pdf.save(`Reçu-GALF-${formattedName || 'Preinscription'}.pdf`);
+    } catch (err) {
+      console.error('Failed to generate Receipt PDF', err);
+    } finally {
+      setIsDownloadingReceipt(false);
+    }
   }
 
   const playPromoSound = (type: 'success' | 'fail' | 'click') => {
@@ -509,34 +557,151 @@ export default function Inscription() {
             </FadeIn>
           )}
 
-          {step === 5 && (
+                    {step === 5 && (
             <FadeIn>
-              <div className="glass-card p-12 rounded-2xl text-center shadow-2xl border-2 border-green-500/30">
-                <div className="w-24 h-24 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-8 animate-bounce">
-                  <CheckCircle2 className="w-12 h-12 text-green-500" />
+              <div className="glass-card p-8 md:p-12 rounded-2xl text-center shadow-2xl border-2 border-green-500/30">
+                <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-6 animate-pulse">
+                  <CheckCircle2 className="w-10 h-10 text-green-500" />
                 </div>
-                <h2 className="text-3xl font-black mb-4">Dossier transmis !</h2>
-                <p className="text-sm mb-6 opacity-70 max-w-md mx-auto">
-                  Votre pré-inscription est enregistrée. Pour valider définitivement votre place, veuillez procéder au paiement de votre acompte de <span className="font-bold text-galf-yellow">{totalAcompte.toLocaleString('fr-FR')} F</span> via l'un des moyens ci-dessous :
+                <h2 className="text-2xl font-black mb-3">Dossier de pré-inscription transmis !</h2>
+                <p className="text-xs mb-6 opacity-70 max-w-md mx-auto">
+                  Votre pré-inscription est enregistrée avec succès. Pour valider définitivement votre place, veuillez procéder au paiement de votre acompte de <span className="font-bold text-galf-yellow">{totalAcompte.toLocaleString('fr-FR')} F CFA</span>.
                 </p>
 
-                <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10 max-w-2xl mx-auto">
-                  <a href="https://pay.wave.com/m/M_ci_1b4IJS09Q_cJ/c/ci/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-[#1DB9D4] text-white px-6 py-4 rounded-xl font-black hover:brightness-110 transition-all flex-1">
-                    <span className="text-xl">🌊</span> Payer via Wave
-                  </a>
-                  <a href="tel:+2250708736871" className="flex flex-col items-center justify-center gap-1 bg-[#FF7900] text-white px-6 py-3 rounded-xl font-black hover:brightness-110 transition-all flex-1">
-                    <span className="flex items-center gap-2"><span className="text-xl">🍊</span> Orange Money</span>
-                    <span className="text-xs font-normal">+225 07 08 73 68 71</span>
-                  </a>
-                  <a href="tel:+2250556966492" className="flex flex-col items-center justify-center gap-1 bg-[#FFCC00] text-black px-6 py-3 rounded-xl font-black hover:brightness-110 transition-all flex-1">
-                    <span className="flex items-center gap-2"><span className="text-xl">💸</span> MTN MoMo</span>
-                    <span className="text-xs font-normal">+225 05 56 96 64 92</span>
-                  </a>
+                {/* Official Receipt Card (Light Theme for Printing) */}
+                <div className="my-8 max-w-xl mx-auto text-left bg-white text-[#1a1a1a] rounded-3xl p-6 md:p-8 border border-slate-200 shadow-2xl relative overflow-hidden font-sans" ref={receiptRef}>
+                  {/* Watermark/Grid decoration */}
+                  <div className="absolute inset-0 opacity-[0.015] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '15px 15px' }} />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-slate-100 rounded-bl-[5rem] -z-0" />
+                  
+                  {/* Decorative Borders */}
+                  <div className="absolute inset-4 border border-slate-100 pointer-events-none rounded-2xl" />
+                  
+                  <div className="relative z-10">
+                    {/* Header */}
+                    <div className="flex justify-between items-start border-b border-slate-100 pb-4 mb-4">
+                      <div>
+                        <div className="text-galf-yellow font-black text-lg tracking-wider font-sans uppercase">GALF FORMATION</div>
+                        <div className="text-[8px] uppercase tracking-widest text-slate-400 font-bold">Chantier-École d'Excellence</div>
+                        <div className="text-[7px] text-slate-400 mt-0.5">Abidjan, Côte d'Ivoire · Contact: +225 07 08 73 68 71</div>
+                      </div>
+                      <div className="text-right">
+                        <span className="inline-block px-2.5 py-0.5 rounded-full text-[8px] font-black tracking-widest uppercase bg-green-100 text-green-700 border border-green-200">
+                          Pré-inscrit
+                        </span>
+                        <div className="text-[9px] font-mono text-slate-500 mt-1.5 font-bold">{receiptId}</div>
+                      </div>
+                    </div>
+
+                    <h3 className="text-center text-sm font-black uppercase tracking-wider text-slate-800 mb-4">Fiche de Pré-inscription Officielle</h3>
+
+                    {/* Content Columns */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-[10px]">
+                      <div className="space-y-1.5">
+                        <h4 className="text-[8px] uppercase tracking-widest text-slate-400 font-black">Informations Candidat</h4>
+                        <div className="bg-slate-50 p-3 rounded-xl space-y-1 border border-slate-100">
+                          <div><span className="font-medium text-slate-500">Nom :</span> <strong className="text-slate-800 uppercase">{fullName || 'Non renseigné'}</strong></div>
+                          <div><span className="font-medium text-slate-500">WhatsApp :</span> <strong className="text-slate-800">{phone || 'Non renseigné'}</strong></div>
+                          <div><span className="font-medium text-slate-500">Email :</span> <strong className="text-slate-800">{email || 'Non renseigné'}</strong></div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <h4 className="text-[8px] uppercase tracking-widest text-slate-400 font-black">Détails Formation</h4>
+                        <div className="bg-slate-50 p-3 rounded-xl space-y-1 border border-slate-100">
+                          <div><span className="font-medium text-slate-500">Intitulé :</span> <strong className="text-slate-800">{formation?.name}</strong></div>
+                          <div><span className="font-medium text-slate-500">Catégorie :</span> <strong className="text-slate-800">{formation?.category}</strong></div>
+                          <div><span className="font-medium text-slate-500">Date :</span> <strong className="text-slate-800">{registrationDate}</strong></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Financial Summary */}
+                    <div className="bg-slate-900 text-white rounded-xl p-4 mb-6">
+                      <h4 className="text-[8px] uppercase tracking-widest text-slate-400 font-black mb-3">Résumé Financier</h4>
+                      <div className="space-y-1.5 text-[10px]">
+                        <div className="flex justify-between text-slate-300">
+                          <span>Prix de base de la formation :</span>
+                          <span>{basePrice.toLocaleString('fr-FR')} F CFA</span>
+                        </div>
+                        {discountPercent > 0 && (
+                          <div className="flex justify-between text-green-400">
+                            <span>Remise appliquée ({discountPercent}%) :</span>
+                            <span>-{discountAmount.toLocaleString('fr-FR')} F CFA</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between font-bold pt-1.5 border-t border-slate-800">
+                          <span>Total de la formation :</span>
+                          <span className="text-galf-yellow">{price.toLocaleString('fr-FR')} F CFA</span>
+                        </div>
+                        <div className="flex justify-between font-black pt-1.5 border-t border-dashed border-slate-800">
+                          <span>Acompte dû ({acompte}%) :</span>
+                          <span className="text-green-400">{totalAcompte.toLocaleString('fr-FR')} F CFA</span>
+                        </div>
+                        <div className="flex justify-between text-slate-400 text-[8px] pt-1">
+                          <span>Solde restant à régler au démarrage :</span>
+                          <span>{(price - totalAcompte).toLocaleString('fr-FR')} F CFA</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer / QR Validation */}
+                    <div className="flex justify-between items-center pt-4 border-t border-slate-100 gap-4">
+                      <div>
+                        <div className="text-[9px] font-bold text-slate-800">Méthode choisie : <span className="uppercase text-galf-yellow font-black">{paymentMethod || 'Non spécifié'}</span></div>
+                        <p className="text-[8px] text-slate-400 mt-1 leading-relaxed">
+                          Ce reçu fait office de preuve de pré-enregistrement sous réserve de la validation du paiement de l'acompte dans un délai de 48 heures.
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-12 h-12 bg-white border border-slate-200 p-1 rounded-lg flex items-center justify-center">
+                          {/* Structured Grid QR Code Mock */}
+                          <div className="w-full h-full opacity-80 flex flex-wrap gap-[1px]">
+                            {Array.from({length: 49}).map((_, i) => (
+                              <div key={i} className={`w-[13%] h-[13%] ${((i * 7 + 13) % 5 === 0 || (i % 3 === 0 && i % 2 === 0)) ? 'bg-slate-900' : 'bg-transparent'}`} />
+                            ))}
+                          </div>
+                        </div>
+                        <div className="text-[7px] text-slate-400 leading-tight">
+                          <span className="font-bold text-slate-600 block">Vérifié par GALF</span>
+                          ID: {receiptId}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Link href="/apprenant" className="bg-galf-surface border border-galf-border text-galf-text px-10 py-5 rounded-xl font-black hover:border-galf-yellow/30 flex items-center justify-center gap-2 transition-all">
-                    Aller à mon espace <ArrowRight className="w-5 h-5" />
+                <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6 max-w-xl mx-auto">
+                  <button 
+                    onClick={handleDownloadReceiptPDF}
+                    disabled={isDownloadingReceipt}
+                    className="flex-1 bg-galf-yellow text-galf-carbon px-6 py-4 rounded-xl font-black text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-xl disabled:opacity-50"
+                  >
+                    <Download className="w-4 h-4" /> 
+                    {isDownloadingReceipt ? "Génération PDF..." : "Télécharger mon Reçu Officiel (PDF)"}
+                  </button>
+                </div>
+
+                <div className="border-t border-white/5 pt-6 mb-6">
+                  <p className="text-[11px] opacity-75 mb-4 font-bold">Sélectionnez votre moyen de paiement pour régler l'acompte :</p>
+                  <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8 max-w-xl mx-auto">
+                    <a href="https://pay.wave.com/m/M_ci_1b4IJS09Q_cJ/c/ci/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-[#1DB9D4] text-white px-6 py-3.5 rounded-xl font-black text-xs hover:brightness-110 transition-all flex-1">
+                      <span className="text-lg">🌊</span> Payer via Wave
+                    </a>
+                    <a href="tel:+2250708736871" className="flex flex-col items-center justify-center gap-0.5 bg-[#FF7900] text-white px-6 py-3 rounded-xl font-black text-xs hover:brightness-110 transition-all flex-1">
+                      <span className="flex items-center gap-1.5"><span className="text-lg">🍊</span> Orange Money</span>
+                      <span className="text-[9px] font-normal">+225 07 08 73 68 71</span>
+                    </a>
+                    <a href="tel:+2250556966492" className="flex flex-col items-center justify-center gap-0.5 bg-[#FFCC00] text-black px-6 py-3 rounded-xl font-black text-xs hover:brightness-110 transition-all flex-1">
+                      <span className="flex items-center gap-1.5"><span className="text-lg">💸</span> MTN MoMo</span>
+                      <span className="text-[9px] font-normal">+225 05 56 96 64 92</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex justify-center">
+                  <Link href="/apprenant" className="bg-galf-surface border border-galf-border text-galf-text px-8 py-4 rounded-xl font-black text-xs uppercase tracking-wider hover:border-galf-yellow/30 flex items-center justify-center gap-2 transition-all">
+                    Accéder à mon espace apprenant <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
@@ -564,7 +729,7 @@ export default function Inscription() {
                    setStep(nextStep);
                    saveDraft(nextStep);
                  }} 
-                 disabled={(step === 1 && !selectedFormation) || (step === 3 && !paymentMethod)}
+                 disabled={(step === 1 && !selectedFormation) || (step === 2 && (!fullName.trim() || !phone.trim() || !email.trim())) || (step === 3 && !paymentMethod)}
                  className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-xl font-black hover:brightness-110 transition-all flex items-center gap-3 shadow-xl disabled:opacity-50"
                >
                  {step === 4 ? "Confirmer l'inscription" : "Étape suivante"} <ArrowRight className="w-4 h-4" />

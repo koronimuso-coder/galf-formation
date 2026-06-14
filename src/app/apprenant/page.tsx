@@ -513,6 +513,73 @@ export default function ApprenantDashboard() {
   const [isWaiverSigned, setIsWaiverSigned] = useState(false)
   const [waiverChecked, setWaiverChecked] = useState(false)
   const [signatureName, setSignatureName] = useState("")
+  const [signatureImg, setSignatureImg] = useState<string | null>(null)
+  const signatureCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [isDrawing, setIsDrawing] = useState(false)
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = signatureCanvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    ctx.strokeStyle = '#1e293b'
+    ctx.lineWidth = 2.5
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+
+    const rect = canvas.getBoundingClientRect()
+    let clientX = 0
+    let clientY = 0
+
+    if ('touches' in e) {
+      clientX = e.touches[0].clientX
+      clientY = e.touches[0].clientY
+    } else {
+      clientX = e.clientX
+      clientY = e.clientY
+    }
+
+    ctx.beginPath()
+    ctx.moveTo(clientX - rect.left, clientY - rect.top)
+    setIsDrawing(true)
+  }
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return
+    const canvas = signatureCanvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const rect = canvas.getBoundingClientRect()
+    let clientX = 0
+    let clientY = 0
+
+    if ('touches' in e) {
+      clientX = e.touches[0].clientX
+      clientY = e.touches[0].clientY
+    } else {
+      clientX = e.clientX
+      clientY = e.clientY
+    }
+
+    ctx.lineTo(clientX - rect.left, clientY - rect.top)
+    ctx.stroke()
+  }
+
+  const stopDrawing = () => {
+    setIsDrawing(false)
+  }
+
+  const clearSignature = () => {
+    const canvas = signatureCanvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    setSignatureImg(null)
+  }
 
   // --- FEATURE 6: EPI Speed Trial States ---
   const [speedGameActive, setSpeedGameActive] = useState(false)
@@ -1789,17 +1856,47 @@ export default function ApprenantDashboard() {
                         <span>J'accepte sans réserve les termes du règlement de sécurité GALF.</span>
                       </label>
 
-                      <div className="flex flex-col gap-1.5 max-w-md mb-4">
-                        <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
-                          Signature manuscrite (Entrez votre Nom complet)
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Ex: JEAN KOUADIO"
-                          value={signatureName}
-                          onChange={(e) => setSignatureName(e.target.value)}
-                          className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-galf-yellow font-mono"
-                        />
+                      <div className="flex flex-col gap-4 max-w-md mb-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                            Nom Complet pour le Certificat
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Ex: JEAN KOUADIO"
+                            value={signatureName}
+                            onChange={(e) => setSignatureName(e.target.value)}
+                            className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-galf-yellow font-mono"
+                          />
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-black uppercase text-white/50 tracking-wider">
+                            Signature Manuscrite (Dessinez dans le cadre ci-dessous)
+                          </label>
+                          <div className="relative border border-white/10 rounded-xl overflow-hidden bg-white">
+                            <canvas
+                              ref={signatureCanvasRef}
+                              width={400}
+                              height={150}
+                              onMouseDown={startDrawing}
+                              onMouseMove={draw}
+                              onMouseUp={stopDrawing}
+                              onMouseLeave={stopDrawing}
+                              onTouchStart={startDrawing}
+                              onTouchMove={draw}
+                              onTouchEnd={stopDrawing}
+                              className="w-full h-[150px] cursor-crosshair touch-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={clearSignature}
+                              className="absolute top-2 right-2 px-2.5 py-1 rounded bg-red-600 text-white text-[9px] font-black uppercase tracking-wider transition-all"
+                            >
+                              Effacer
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
                       <button
@@ -1811,6 +1908,11 @@ export default function ApprenantDashboard() {
                           if (!signatureName.trim()) {
                             alert("Veuillez saisir votre nom pour signer numériquement.")
                             return
+                          }
+                          const canvas = signatureCanvasRef.current
+                          if (canvas) {
+                            setSignatureImg(canvas.toDataURL())
+                            setUserName(signatureName.trim().toUpperCase())
                           }
                           triggerAudioAlert(880, 0.25)
                           setIsWaiverSigned(true)
@@ -1884,9 +1986,13 @@ export default function ApprenantDashboard() {
                            <div className="text-center md:text-left order-2 md:order-1">
                              <div className="font-black text-2xl font-sans text-galf-carbon">GALF Formation CI</div>
                              <div className="text-sm uppercase font-bold tracking-widest text-galf-yellow mb-4">Le comité pédagogique</div>
-                             <div className="w-48 h-20 bg-galf-yellow/5 rounded-xl border border-dashed border-galf-yellow/20 flex items-center justify-center">
-                                <span className="text-galf-yellow/40 italic font-bold">Signature Digitale</span>
-                             </div>
+                             <div className="w-48 h-20 bg-galf-yellow/5 rounded-xl border border-dashed border-galf-yellow/20 flex items-center justify-center overflow-hidden">
+                                 {signatureImg ? (
+                                   <img src={signatureImg} alt="Signature Digitale" className="max-w-full max-h-full object-contain" />
+                                 ) : (
+                                   <span className="text-galf-yellow/40 italic font-bold">Signature Digitale</span>
+                                 )}
+                              </div>
                            </div>
 
                            <div className="order-1 md:order-2">

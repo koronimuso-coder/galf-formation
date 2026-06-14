@@ -77,18 +77,14 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
   const [bladeTilt, setBladeTilt] = useState(0) // rotation of blade
   const [driveSpeed, setDriveSpeed] = useState(0) // speed of tracks (0 - 100)
 
-  useEffect(() => {
-    if (missionCompleted) {
-      const timeTaken = 45 - timeRemaining
-      const newRecord = { name: "Vous (Opérateur)", time: timeTaken, date: "Aujourd'hui" }
-      setLeaderboard(old => {
-        if (old.some(x => x.name === "Vous (Opérateur)" && x.time === timeTaken)) return old
-        const updated = [...old, newRecord].sort((a, b) => a.time - b.time).slice(0, 5)
-        localStorage.setItem(`galf_leaderboard_${machineSlug}`, JSON.stringify(updated))
-        return updated
-      })
-    }
-  }, [missionCompleted, machineSlug, timeRemaining])
+  // New Premium States
+  const [keyboardActive, setKeyboardActive] = useState(false)
+  const [oilTemp, setOilTemp] = useState(45)
+  const [fuelLevel, setFuelLevel] = useState(100)
+  const [windSpeed, setWindSpeed] = useState(15)
+  const [isVaneMode, setIsVaneMode] = useState(false)
+  const [showNamePrompt, setShowNamePrompt] = useState(false)
+  const [operatorInitials, setOperatorInitials] = useState('')
 
   // Web Audio Synth references
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -125,6 +121,268 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
   const isBulldozer = machineSlug === 'bulldozer' || machineSlug === 'chargeuse'
   
   const canStart = epiChecked && hornTested && zoneClear
+
+  // Helper for independent click / alert sound feedback
+  const triggerAudioAlert = (freq = 600, duration = 0.1) => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(freq, ctx.currentTime)
+      gain.gain.setValueAtTime(0.02, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start()
+      osc.stop(ctx.currentTime + duration)
+      setTimeout(() => ctx.close(), 500)
+    } catch (e) {}
+  }
+
+  // Dynamic wind speed based on weather selection
+  useEffect(() => {
+    if (weather === 'rain') {
+      setWindSpeed(80) // Storm wind speed
+    } else if (weather === 'night') {
+      setWindSpeed(25)
+    } else {
+      setWindSpeed(15)
+    }
+  }, [weather])
+
+  // Align Jib with wind if Girouette mode is active (for Grue)
+  useEffect(() => {
+    if (isVaneMode && isGrue) {
+      gsap.to(gJibRef.current, {
+        rotation: 25,
+        transformOrigin: "60px 30px",
+        duration: 2.0,
+        ease: "power1.out"
+      })
+      setJibRotation(25)
+    }
+  }, [isVaneMode, isGrue])
+
+  // Continuous physics engine tick: fuel discharge and oil temperature checks
+  useEffect(() => {
+    if (!engineStarted) {
+      const coolInterval = setInterval(() => {
+        setOilTemp(prev => Math.max(45, prev - 0.5))
+      }, 1000)
+      return () => clearInterval(coolInterval)
+    }
+
+    const interval = setInterval(() => {
+      // 1. Consume Fuel
+      setFuelLevel(prev => {
+        let consumption = 0.02
+        if (isPelle && (boomAngle !== 12 || armAngle !== -35 || bucketAngle !== 15)) {
+          consumption = 0.08
+        } else if (isGrue && (trolleyPos !== 110 || cableLength !== 90 || jibRotation !== 0)) {
+          consumption = 0.08
+        } else if (isBulldozer && driveSpeed > 0) {
+          consumption = 0.05 + (driveSpeed / 100) * 0.15
+        }
+        if (isOverloaded) consumption += 0.1
+
+        const next = prev - consumption
+        if (next <= 0) {
+          setEngineStarted(false)
+          triggerAudioAlert(180, 1.2)
+          return 0
+        }
+        return next
+      })
+
+      // 2. Oil Temp check
+      setOilTemp(prev => {
+        let next = prev + 0.02
+        if (isOverloaded) next += 0.35
+        
+        if (next >= 105) {
+          setEngineStarted(false)
+          triggerAudioAlert(150, 1.5)
+          alert("🚨 ARRET THERMIQUE AUTOMATIQUE : Température hydraulique critique (>105°C) !")
+          return 105
+        }
+        return next
+      })
+    }, 200)
+
+    return () => clearInterval(interval)
+  }, [engineStarted, isOverloaded, isPelle, isGrue, isBulldozer, boomAngle, armAngle, bucketAngle, trolleyPos, cableLength, jibRotation, driveSpeed])
+
+  // Wind safety alarm and structural load warning
+  useEffect(() => {
+    if (!isGrue || !engineStarted) return
+
+    if (windSpeed > 72 && !isVaneMode) {
+      const alarmInterval = setInterval(() => {
+        triggerAudioAlert(1400, 0.25)
+      }, 500)
+
+      let warningTimer: NodeJS.Timeout
+      if (trolleyPos !== 110 || cableLength !== 90 || jibRotation !== 0) {
+        warningTimer = setTimeout(() => {
+          setCollisionTriggered(true)
+          triggerAudioAlert(100, 1.5)
+        }, 3000)
+      }
+
+      return () => {
+        clearInterval(alarmInterval)
+        if (warningTimer) clearTimeout(warningTimer)
+      }
+    }
+  }, [isGrue, engineStarted, windSpeed, isVaneMode, trolleyPos, cableLength, jibRotation])
+
+  // Keyboard controls keydown/keyup event listener
+  useEffect(() => {
+    if (!engineStarted || !keyboardActive || isVaneMode || oilTemp > 105 || fuelLevel <= 0) return
+
+    const activeKeys: Record<string, boolean> = {}
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      activeKeys[e.key.toLowerCase()] = true
+      if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase())) {
+        e.preventDefault()
+      }
+    }
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      activeKeys[e.key.toLowerCase()] = false
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+
+    const interval = setInterval(() => {
+      let isMoving = false
+
+      if (isPelle) {
+        if (activeKeys['w'] || activeKeys['z']) {
+          setBoomAngle(prev => Math.min(45, prev + 1))
+          isMoving = true
+        }
+        if (activeKeys['s']) {
+          setBoomAngle(prev => Math.max(-10, prev - 1))
+          isMoving = true
+        }
+        if (activeKeys['a'] || activeKeys['q']) {
+          setCabRotation(prev => Math.max(-80, prev - 2))
+          isMoving = true
+        }
+        if (activeKeys['d']) {
+          setCabRotation(prev => Math.min(80, prev + 2))
+          isMoving = true
+        }
+        if (activeKeys['arrowup']) {
+          setArmAngle(prev => Math.min(15, prev + 1))
+          isMoving = true
+        }
+        if (activeKeys['arrowdown']) {
+          setArmAngle(prev => Math.max(-65, prev - 1))
+          isMoving = true
+        }
+        if (activeKeys['arrowleft']) {
+          setBucketAngle(prev => Math.max(-45, prev - 1))
+          isMoving = true
+        }
+        if (activeKeys['arrowright']) {
+          setBucketAngle(prev => Math.min(55, prev + 1))
+          isMoving = true
+        }
+      } else if (isGrue) {
+        if (activeKeys['w'] || activeKeys['z']) {
+          setCableLength(prev => Math.max(40, prev - 1.5))
+          isMoving = true
+        }
+        if (activeKeys['s']) {
+          setCableLength(prev => Math.min(155, prev + 1.5))
+          isMoving = true
+        }
+        if (activeKeys['a'] || activeKeys['q']) {
+          setJibRotation(prev => Math.max(-25, prev - 0.5))
+          isMoving = true
+        }
+        if (activeKeys['d']) {
+          setJibRotation(prev => Math.min(25, prev + 0.5))
+          isMoving = true
+        }
+        if (activeKeys['arrowup']) {
+          setTrolleyPos(prev => Math.min(175, prev + 1.5))
+          isMoving = true
+        }
+        if (activeKeys['arrowdown']) {
+          setTrolleyPos(prev => Math.max(65, prev - 1.5))
+          isMoving = true
+        }
+      } else if (isBulldozer) {
+        if (activeKeys['w'] || activeKeys['z']) {
+          setBladeHeight(prev => Math.min(15, prev + 0.5))
+          isMoving = true
+        }
+        if (activeKeys['s']) {
+          setBladeHeight(prev => Math.max(-12, prev - 0.5))
+          isMoving = true
+        }
+        if (activeKeys['a'] || activeKeys['q']) {
+          setBladeTilt(prev => Math.max(-15, prev - 1))
+          isMoving = true
+        }
+        if (activeKeys['d']) {
+          setBladeTilt(prev => Math.min(15, prev + 1))
+          isMoving = true
+        }
+        if (activeKeys['arrowup']) {
+          setDriveSpeed(prev => Math.min(100, prev + 2))
+          isMoving = true
+        }
+        if (activeKeys['arrowdown']) {
+          setDriveSpeed(prev => Math.max(0, prev - 2))
+          isMoving = true
+        }
+      }
+
+      if (isMoving) {
+        setOilTemp(prev => Math.min(120, prev + (isOverloaded ? 0.8 : 0.2)))
+      } else {
+        setOilTemp(prev => Math.max(45, prev - 0.08))
+      }
+    }, 40)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+      clearInterval(interval)
+    }
+  }, [engineStarted, keyboardActive, isPelle, isGrue, isBulldozer, isOverloaded, isVaneMode, oilTemp, fuelLevel])
+
+  const completeMission = () => {
+    setMissionCompleted(true)
+    triggerAudioAlert(523.25, 0.2)
+    setTimeout(() => triggerAudioAlert(659.25, 0.2), 120)
+    setTimeout(() => triggerAudioAlert(783.99, 0.35), 240)
+    setShowNamePrompt(true)
+  }
+
+  const handleSaveScore = (e: React.FormEvent) => {
+    e.preventDefault()
+    const name = operatorInitials.trim().toUpperCase() || "OPR"
+    const timeTaken = 45 - timeRemaining
+    const newRecord = { name: `${name} (Opérateur)`, time: timeTaken, date: "Aujourd'hui" }
+    
+    setLeaderboard(old => {
+      const filtered = old.filter(x => x.name !== "Vous (Opérateur)")
+      const updated = [...filtered, newRecord].sort((a, b) => a.time - b.time).slice(0, 5)
+      localStorage.setItem(`galf_leaderboard_${machineSlug}`, JSON.stringify(updated))
+      return updated
+    })
+    setShowNamePrompt(false)
+  }
 
   // ----------------------------------------------------
   // RAIN ANIMATION (CANVAS OVERLAY)
@@ -562,8 +820,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
         if (inTarget) {
           setMissionProgress(prev => {
             if (prev >= 100) {
-              setMissionCompleted(true)
-              triggerSuccessChime()
+              completeMission()
               return 100
             }
             return prev + 1.5
@@ -631,8 +888,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
         if (inTarget) {
           setMissionProgress(prev => {
             if (prev >= 100) {
-              setMissionCompleted(true)
-              triggerSuccessChime()
+              completeMission()
               return 100
             }
             return prev + 2.0
@@ -690,8 +946,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
         if (scraping) {
           setMissionProgress(prev => {
             if (prev >= 100) {
-              setMissionCompleted(true)
-              triggerSuccessChime()
+              completeMission()
               return 100
             }
             return prev + 1.2
@@ -856,20 +1111,42 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
               <p className="text-white/60 text-xs max-w-sm leading-relaxed mb-6">
                 Excellent travail d'opération technique. Vous avez accompli le défi dans le respect strict des normes de sécurité de GALF FORMATION.
               </p>
-              <div className="flex gap-4">
-                <button 
-                  onClick={resetMission}
-                  className="bg-white/10 text-white hover:bg-white/20 px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all"
-                >
-                  Fermer
-                </button>
-                <button 
-                  onClick={startMission}
-                  className="bg-galf-yellow text-galf-carbon px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all"
-                >
-                  Refaire la mission
-                </button>
-              </div>
+              
+              {showNamePrompt ? (
+                <form onSubmit={handleSaveScore} className="bg-white/5 border border-white/10 p-5 rounded-2xl max-w-xs w-full mb-6 space-y-4">
+                  <span className="text-[10px] text-galf-yellow font-black uppercase tracking-wider block">Entrez vos initiales (ex: NYA)</span>
+                  <input
+                    type="text"
+                    maxLength={3}
+                    required
+                    value={operatorInitials}
+                    onChange={(e) => setOperatorInitials(e.target.value.slice(0, 3))}
+                    className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-center text-lg font-black uppercase text-white outline-none focus:border-galf-yellow font-mono"
+                    placeholder="AAA"
+                  />
+                  <button
+                    type="submit"
+                    className="w-full bg-galf-yellow text-galf-carbon py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all"
+                  >
+                    Enregistrer le Record
+                  </button>
+                </form>
+              ) : (
+                <div className="flex gap-4">
+                  <button 
+                    onClick={resetMission}
+                    className="bg-white/10 text-white hover:bg-white/20 px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all"
+                  >
+                    Fermer
+                  </button>
+                  <button 
+                    onClick={startMission}
+                    className="bg-galf-yellow text-galf-carbon px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all"
+                  >
+                    Refaire la mission
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
@@ -1044,47 +1321,139 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
         </div>
 
         {/* ----------------- Cockpit HUD Gauges ----------------- */}
-        <div className="grid grid-cols-3 gap-4">
-          {/* RPM Gauge */}
-          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex flex-col justify-center text-center relative overflow-hidden group">
-            <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5">Régime Moteur</span>
-            <div className="text-2xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
-              <span>{rpm}</span>
-              <span className="text-[10px] text-galf-yellow font-black">RPM</span>
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-3 gap-4">
+            {/* RPM Gauge */}
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex flex-col justify-center text-center relative overflow-hidden group">
+              <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5">Régime Moteur</span>
+              <div className="text-2xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
+                <span>{rpm}</span>
+                <span className="text-[10px] text-galf-yellow font-black">RPM</span>
+              </div>
+              <div className="h-1 bg-white/10 rounded-full mt-3 overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-green-500 via-galf-yellow to-red-500 transition-all duration-300"
+                  style={{ width: `${Math.min(100, (rpm / 2200) * 100)}%` }}
+                />
+              </div>
             </div>
-            <div className="h-1 bg-white/10 rounded-full mt-3 overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-green-500 via-galf-yellow to-red-500 transition-all duration-300"
-                style={{ width: `${Math.min(100, (rpm / 2200) * 100)}%` }}
-              />
+
+            {/* Hydraulic Pressure Gauge */}
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex flex-col justify-center text-center relative overflow-hidden group">
+              <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5">Pression Hyd.</span>
+              <div className="text-2xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
+                <span>{pressure}</span>
+                <span className="text-[10px] text-galf-yellow font-black">BAR</span>
+              </div>
+              <div className="h-1 bg-white/10 rounded-full mt-3 overflow-hidden">
+                <div 
+                  className="h-full bg-galf-yellow transition-all duration-100"
+                  style={{ width: `${Math.min(100, (pressure / 250) * 100)}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Load safety indicator */}
+            <div className={`p-5 rounded-2xl border transition-colors flex flex-col justify-center text-center relative overflow-hidden group ${
+              isOverloaded ? 'bg-red-500/10 border-red-500/30 text-red-500' : 'bg-white/5 border-white/5'
+            }`}>
+              <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5">Limiteur de Charge</span>
+              <div className="text-2xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
+                <span>{isOverloaded ? 'DANGER' : 'CORRECT'}</span>
+              </div>
+              <div className="text-[8px] font-black uppercase mt-3 tracking-widest text-white/30">
+                {isOverloaded ? 'ALERTE HSE' : 'CHARGE NOMINALE'}
+              </div>
             </div>
           </div>
 
-          {/* Hydraulic Pressure Gauge */}
-          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex flex-col justify-center text-center relative overflow-hidden group">
-            <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5">Pression Hyd.</span>
-            <div className="text-2xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
-              <span>{pressure}</span>
-              <span className="text-[10px] text-galf-yellow font-black">BAR</span>
+          <div className="grid grid-cols-3 gap-4">
+            {/* Fuel Level */}
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col justify-center text-center relative overflow-hidden group">
+              <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5 flex items-center justify-center gap-1">⛽ Carburant</span>
+              <div className="text-xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
+                <span>{Math.round(fuelLevel)}</span>
+                <span className="text-[10px] text-galf-yellow font-black">%</span>
+              </div>
+              <div className="h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-300 ${fuelLevel < 20 ? 'bg-red-500 animate-pulse' : 'bg-green-500'}`}
+                  style={{ width: `${fuelLevel}%` }}
+                />
+              </div>
+              {engineStarted && fuelLevel < 25 && (
+                <button
+                  onClick={() => {
+                    triggerAudioAlert(880, 0.1)
+                    setTimeout(() => triggerAudioAlert(1200, 0.2), 100)
+                    setFuelLevel(100)
+                  }}
+                  className="mt-2 py-1 bg-galf-yellow text-galf-carbon text-[8px] font-black rounded uppercase tracking-wider transition-all"
+                >
+                  Ravitaillement
+                </button>
+              )}
             </div>
-            <div className="h-1 bg-white/10 rounded-full mt-3 overflow-hidden">
-              <div 
-                className="h-full bg-galf-yellow transition-all duration-100"
-                style={{ width: `${Math.min(100, (pressure / 250) * 100)}%` }}
-              />
-            </div>
-          </div>
 
-          {/* Load safety indicator */}
-          <div className={`p-5 rounded-2xl border transition-colors flex flex-col justify-center text-center relative overflow-hidden group ${
-            isOverloaded ? 'bg-red-500/10 border-red-500/30 text-red-500' : 'bg-white/5 border-white/5'
-          }`}>
-            <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5">Limiteur de Charge</span>
-            <div className="text-2xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
-              <span>{isOverloaded ? 'DANGER' : 'CORRECT'}</span>
+            {/* Oil Temp */}
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col justify-center text-center relative overflow-hidden group">
+              <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5 flex items-center justify-center gap-1">🌡️ Temp. Huile</span>
+              <div className="text-xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
+                <span>{oilTemp.toFixed(1)}</span>
+                <span className="text-[10px] text-galf-yellow font-black">°C</span>
+              </div>
+              <div className="h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-300 ${oilTemp > 85 ? 'bg-red-500 animate-pulse' : 'bg-yellow-500'}`}
+                  style={{ width: `${Math.min(100, (oilTemp / 120) * 100)}%` }}
+                />
+              </div>
+              {engineStarted && oilTemp > 65 && (
+                <button
+                  onClick={() => {
+                    triggerAudioAlert(440, 0.3)
+                    setOilTemp(prev => Math.max(45, prev - 25))
+                  }}
+                  className="mt-2 py-1 bg-white/10 text-white hover:bg-white/20 text-[8px] font-black rounded uppercase tracking-wider transition-all"
+                >
+                  Refroidir
+                </button>
+              )}
             </div>
-            <div className="text-[8px] font-black uppercase mt-3 tracking-widest text-white/30">
-              {isOverloaded ? 'ALERTE HSE' : 'CHARGE NOMINALE'}
+
+            {/* Weather Wind / Girouette Status */}
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col justify-center text-center relative overflow-hidden group">
+              {isGrue ? (
+                <>
+                  <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5 flex items-center justify-center gap-1">💨 Vent / Sécurité</span>
+                  <div className="text-xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
+                    <span>{windSpeed}</span>
+                    <span className="text-[10px] text-galf-yellow font-black">km/h</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      triggerAudioAlert(600, 0.05)
+                      setIsVaneMode(!isVaneMode)
+                    }}
+                    className={`mt-2 py-1 text-[8px] font-black rounded uppercase tracking-wider transition-all ${
+                      isVaneMode 
+                        ? 'bg-[#10B981] text-white border-none' 
+                        : 'bg-white/10 text-white hover:bg-white/20 border-none'
+                    }`}
+                  >
+                    {isVaneMode ? "Girouette Actif" : "Mettre Girouette"}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span className="text-[9px] uppercase font-bold text-white/40 tracking-widest mb-1.5 flex items-center justify-center gap-1">⚡ Alternateur</span>
+                  <div className="text-xl font-black font-mono tracking-tight text-white flex items-baseline justify-center gap-1">
+                    <span>{engineStarted ? "14.2" : "0.0"}</span>
+                    <span className="text-[10px] text-galf-yellow font-black">V</span>
+                  </div>
+                  <div className="text-[8px] font-bold mt-2 text-white/40">CHARGE BATTERIE</div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -1192,9 +1561,52 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
         <div className={`p-6 rounded-3xl bg-white/5 border border-white/5 flex-1 flex flex-col transition-all duration-500 ${
           !engineStarted ? 'opacity-25 pointer-events-none' : ''
         }`}>
-          <h3 className="text-xs font-black uppercase tracking-[0.2em] text-white mb-4 flex items-center gap-2">
-            <HardHat className="w-4 h-4 text-galf-yellow" /> Commandes Hydrauliques Cockpit
-          </h3>
+          <div className="flex items-center justify-between mb-4 pb-2 border-b border-white/5">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-white flex items-center gap-2">
+              <HardHat className="w-4 h-4 text-galf-yellow" /> Cockpit Hydraulique
+            </h3>
+            <button
+              onClick={() => {
+                triggerAudioAlert(600, 0.05)
+                setKeyboardActive(!keyboardActive)
+              }}
+              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all border ${
+                keyboardActive 
+                  ? 'bg-galf-yellow text-galf-carbon border-galf-yellow shadow-[0_0_10px_rgba(255,176,0,0.2)]'
+                  : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
+              }`}
+            >
+              {keyboardActive ? "Clavier Actif" : "Activer Clavier"}
+            </button>
+          </div>
+
+          {keyboardActive && (
+            <div className="p-3.5 rounded-2xl bg-black/40 border border-white/5 text-[9px] font-mono text-white/60 space-y-2 mb-4 animate-fadeIn">
+              <span className="text-galf-yellow font-black uppercase block tracking-wider text-[8px]">Aide touches clavier :</span>
+              {isPelle && (
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">Z</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">S</kbd> : Flèche</div>
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">Q</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">D</kbd> : Tourelle</div>
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">↑</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">↓</kbd> : Balancier</div>
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">←</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">→</kbd> : Godet</div>
+                </div>
+              )}
+              {isGrue && (
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">Z</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">S</kbd> : Crochet</div>
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">Q</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">D</kbd> : Orientation</div>
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">↑</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">↓</kbd> : Chariot</div>
+                </div>
+              )}
+              {isBulldozer && (
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">Z</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">S</kbd> : Hauteur Lame</div>
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">Q</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">D</kbd> : Inclinaison Lame</div>
+                  <div><kbd className="bg-white/10 px-1 py-0.5 rounded">↑</kbd> / <kbd className="bg-white/10 px-1 py-0.5 rounded">↓</kbd> : Vitesse Chenilles</div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="space-y-4 flex-1 flex flex-col justify-center">
             {/* ── Pelle controls ── */}
