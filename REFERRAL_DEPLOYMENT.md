@@ -43,7 +43,8 @@ Pour exécuter les requêtes de filtres et de tris du CRM commercial et de l'adm
 
 ## 3. Déploiement sur Vercel
 
-Le projet est pré-configuré pour Vercel. 
+Le projet est pré-configuré pour Vercel.
+
 1. Connectez votre dépôt Git à votre compte Vercel.
 2. Configurez les variables ci-dessus dans **Project Settings > Environment Variables**.
 3. Lancez le déploiement. Vercel exécutera automatiquement le build :
@@ -54,12 +55,15 @@ Le projet est pré-configuré pour Vercel.
 ## 4. Plan de Recette & Rollback
 
 ### Tests Post-Déploiement (Smoke Tests)
+
 * Accédez à `/programme-parrainage` et vérifiez que vous êtes redirigé en 301 vers `/programme-ambassadeur`.
 * Créez un compte parrain de test, téléchargez sa carte ambassadeur en format image, et vérifiez que le QR Code s'affiche correctement.
 * Enregistrez un filleul de test avec le code du parrain, connectez-vous au cockpit commercial, et vérifiez que le prospect s'affiche dans votre pipeline avec son score d'intérêt calculé.
 
 ### Procédure de Rollback (Retour Arrière)
+
 En cas d'erreur critique après mise en production :
+
 1. Sur la console Vercel, accédez à l'onglet **Deployments**.
 2. Sélectionnez le déploiement précédent stable.
 3. Cliquez sur les options (trois points) et sélectionnez **Redeploy** ou **Promote to Production** pour restaurer immédiatement la version précédente sous 10 secondes.

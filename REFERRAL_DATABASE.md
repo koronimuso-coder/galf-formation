@@ -7,7 +7,9 @@ Ce document liste l'ensemble des entités, collections Firestore et structures d
 ## 1. Dictionnaire des Collections Firestore
 
 ### 1.1 `users`
+
 Contient les comptes utilisateurs et leurs rôles de sécurité.
+
 * **Document ID** : `uid` (fourni par Firebase Auth ou généré USR-XXXXXX)
 * **Champs** :
   * `uid` : string (ID unique)
@@ -18,7 +20,9 @@ Contient les comptes utilisateurs et leurs rôles de sécurité.
   * `updatedAt` : string (ISO Timestamp)
 
 ### 1.2 `referral_campaigns`
+
 Stocke les configurations des campagnes de parrainage.
+
 * **Document ID** : `id` (ex. `CAM-mines-2026`)
 * **Champs** :
   * `id` : string (ID campagne)
@@ -34,7 +38,9 @@ Stocke les configurations des campagnes de parrainage.
   * `rules` : string (Règlement en Markdown)
 
 ### 1.3 `referral_members`
+
 Profils complémentaires des parrains inscrits.
+
 * **Document ID** : `id` (Format : `userId_campaignId` pour garantir l'unicité par campagne)
 * **Champs** :
   * `userId` : string (Lien vers `users.uid`)
@@ -50,7 +56,9 @@ Profils complémentaires des parrains inscrits.
   * `marketingConsent` : boolean (Consentement marketing)
 
 ### 1.4 `referral_codes`
+
 Contient les codes uniques actifs des parrains.
+
 * **Document ID** : `code` (ex. `GALF-RENAUD-8K4P`)
 * **Champs** :
   * `code` : string (Code unique de parrainage)
@@ -60,7 +68,9 @@ Contient les codes uniques actifs des parrains.
   * `status` : string (`actif` | `suspendu` | `expire`)
 
 ### 1.5 `referred_prospects`
+
 Leads/filleuls générés.
+
 * **Document ID** : `id` (Généré PRP-XXXXXX)
 * **Champs** :
   * `id` : string (ID prospect)
@@ -81,7 +91,9 @@ Leads/filleuls générés.
   * `fraudScore` : number (Score de fraude, 0-100)
 
 ### 1.6 `referral_rewards`
+
 Bons de récompenses générés pour les parrains.
+
 * **Document ID** : `id` (ex. `GALF-REWARD-2026-000145`)
 * **Champs** :
   * `id` : string (Réf unique de récompense)
@@ -95,14 +107,18 @@ Bons de récompenses générés pour les parrains.
   * `expiresAt` : string (ISO Timestamp)
 
 ### 1.7 `reward_qualifying_entries`
+
 Associe chaque récompense aux 5 prospects qui l'ont déclenchée (pour éviter le double comptage).
+
 * **Document ID** : `id` (Format : `rewardId_prospectId`)
 * **Champs** :
   * `rewardId` : string (Lien vers `referral_rewards.id`)
   * `prospectId` : string (Lien vers `referred_prospects.id`)
 
 ### 1.8 `payment_records`
+
 Preuves de paiements d'acomptes soumises.
+
 * **Document ID** : `id` (Généré PAY-XXXXXX)
 * **Champs** :
   * `prospectId` : string (Lien vers prospect)
@@ -115,6 +131,8 @@ Preuves de paiements d'acomptes soumises.
   * `comment` : string (Note de rapprochement)
 
 ### 1.9 `commercial_activities` & `commercial_tasks`
+
 Suivis d'appels et rappels de relances.
+
 * **`commercial_activities`** : Historique des notes, objections et changements de statut.
 * **`commercial_tasks`** : Relances avec date d'échéance (`dueDate`), priorité (`basse` | `moyenne` | `haute`) et statut (`non_commence` | `complete` | `annule`).

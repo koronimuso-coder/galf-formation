@@ -8,7 +8,7 @@ Ce document décrit l'architecture logicielle de la plateforme **GALF Referral G
 
 La plateforme repose sur une architecture Next.js 15 (App Router) connectée à une base de données Firebase Firestore, sécurisée par un middleware Next.js au niveau serveur, et animée par Tailwind CSS, Framer Motion et GSAP côté client.
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                           Client Web                             │
 │  (Landing Page, Cockpit Parrain, CRM Commercial, Admin Console)  │
@@ -69,6 +69,7 @@ L'intégration a été réalisée selon une structure modulaire et typée :
 ## 4. Règle d'Attribution Temporaire (30 jours)
 
 Lorsqu'un prospect clique sur le lien d'un ambassadeur (`?ref=GALF-XXXX`) :
+
 1. Le code est enregistré dans un cookie de session client `galf_ref_code` (expirant sous 30 jours) et sauvegardé dans le `localStorage` en secours.
 2. Un clic anonymisé est enregistré dans la collection `referral_clicks` (avec empreinte anonyme de l'IP pour le calcul du taux de clics).
 3. Lors de l'inscription finale du filleul, le code parrain est automatiquement lu depuis le cookie et prérempli dans son dossier, empêchant toute modification involontaire.

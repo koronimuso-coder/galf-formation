@@ -8,17 +8,17 @@ Ce document présente la matrice de sécurité et les autorisations d'accès par
 
 La plateforme prend en charge 6 profils d'utilisateurs distincts :
 
-1. **`PARRAIN` (Ambassadeur)** : 
+1. **`PARRAIN` (Ambassadeur)** :
    Apprenant, prospect, ancien élève ou partenaire qui recommande GALF. Accède uniquement à son cockpit personnel, son code, ses filleuls anonymisés, ses badges et ses récompenses.
-2. **`COMMERCIAL`** : 
+2. **`COMMERCIAL`** :
    Conseiller commercial chargé de contacter et convertir les prospects qui lui sont attribués. Accède à son pipeline de vente dédié, ses rappels et peut soumettre des preuves de paiement.
-3. **`RESPONSABLE_COMMERCIAL` (Superviseur)** : 
+3. **`RESPONSABLE_COMMERCIAL` (Superviseur)** :
    Superviseur des ventes. Dispose d'une vue sur toutes les performances des commerciaux, peut réassigner manuellement des leads et effectuer des validations de dossier de niveau 1.
-4. **`COMPTABLE` (Validateur Financier)** : 
+4. **`COMPTABLE` (Validateur Financier)** :
    Agent administratif chargé du rapprochement bancaire. Reçoit les alertes de paiement de l'acompte (Wave/OM/MTN) et valide ou rejette les transactions pour débloquer l'inscription.
-5. **`ADMIN_PARRAINAGE`** : 
+5. **`ADMIN_PARRAINAGE`** :
    Administrateur du programme. Gère les campagnes de parrainage, approuve et émet les récompenses (dossiers à 5 validated leads), examine les fraudes.
-6. **`SUPER_ADMIN`** : 
+6. **`SUPER_ADMIN`** :
    Accès total et illimité à l'ensemble du système, incluant la configuration de la sécurité globale, des variables d'environnement et de l'audit trail général.
 
 ---
@@ -43,6 +43,7 @@ La plateforme prend en charge 6 profils d'utilisateurs distincts :
 ## 3. Sécurité Côté Serveur (Next.js Middleware)
 
 Toutes les routes d'espaces privés sont filtrées côté serveur dans [middleware.ts](file:///c:/Users/NYAMMA/GALF%20FORMATION/src/middleware.ts) par le biais des cookies `session` et `user_role`. Un utilisateur tentant de forcer l'URL d'un autre rôle est automatiquement redirigé vers la page de connexion :
+
 * `/programme-ambassadeur/dashboard` ➔ Réservé aux parrains et admins.
 * `/programme-ambassadeur/commercial` ➔ Réservé aux commerciaux et superviseurs.
 * `/programme-ambassadeur/responsable` ➔ Réservé aux superviseurs et admins.

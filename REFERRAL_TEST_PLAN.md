@@ -7,6 +7,7 @@ Ce document présente le plan de tests unitaires, d'intégration, et de bout en 
 ## 1. Tests Unitaires & Algorithmes
 
 ### 1.1 Normalisation du Numéro WhatsApp (`normalizeWhatsApp`)
+
 * **Objectif** : Valider que tous les formats de numéros ivoiriens ou internationaux saisis par les utilisateurs sont correctement nettoyés pour WhatsApp et indexés de manière unique en base.
 * **Cas de Test** :
   * Saisie : `"07 08 73 68 71"` ➔ Sortie attendue : `"+2250708736871"`
@@ -15,9 +16,11 @@ Ce document présente le plan de tests unitaires, d'intégration, et de bout en 
   * Saisie : `"2250556966492"` ➔ Sortie attendue : `"+2250556966492"`
 
 ### 1.2 Unicité & Formatage du Code Parrain (`generateUniqueReferralCode`)
+
 * **Objectif** : Vérifier que le format `GALF-PRENOM-XXXX` est respecté, ne contient pas de caractères spéciaux ou d'accents, et qu'une collision de code en base de données déclenche une régénération automatique avec un nouveau suffixe aléatoire.
 
 ### 1.3 Moteur de Lead Scoring (`evaluateLeadScore`)
+
 * **Objectif** : Confirmer que les points sont correctement attribués et que la catégorie associée est exacte.
 * **Cas de Test** :
   * Prospect froid (sans email, situation inconnue) ➔ Score : `15 pts` (Catégorie: `froid`)
@@ -29,6 +32,7 @@ Ce document présente le plan de tests unitaires, d'intégration, et de bout en 
 ## 2. Tests d'Intégration & Scénarios E2E
 
 ### Scénario de Rapprochement Financier & Progression Parrain
+
 1. **Étape 1 : Création du Parrain**
    * Un ambassadeur s'inscrit sur `/programme-ambassadeur/inscription` sous le nom "Koffi Marc".
    * Le système génère le code `GALF-MARC-A1B2`.
@@ -56,5 +60,6 @@ Ce document présente le plan de tests unitaires, d'intégration, et de bout en 
 ---
 
 ## 3. Tests de Résistance & Cas Limites
+
 * **Auto-parrainage** : Tentative d'inscription d'un filleul ayant le même numéro WhatsApp que son parrain. ➔ *Résultat attendu* : Le dossier est créé mais taggué instantanément "Fraude Suspectée", bloquant le compteur du parrain et générant un drapeau d'alerte critique.
 * **Soumissions Simultanées** : Double clic sur le bouton de soumission d'acompte. ➔ *Résultat attendu* : Le bouton est désactivé au premier clic pour empêcher le doublon de transaction.

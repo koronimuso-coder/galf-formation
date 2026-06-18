@@ -7,6 +7,7 @@ Ce guide pratique est destiné aux administrateurs du programme et comptables de
 ## 1. Gestion des Campagnes de Parrainage
 
 Pour configurer ou lancer une nouvelle campagne :
+
 1. Connectez-vous avec vos identifiants d'administration sur `/programme-ambassadeur/connexion`.
 2. Accédez à l'onglet **Campagnes**.
 3. Remplissez le formulaire de création :
@@ -22,6 +23,7 @@ Pour configurer ou lancer une nouvelle campagne :
 ## 2. Validation Comptable des Paiements (Acomptes)
 
 Lorsqu'un commercial ou un candidat déclare un paiement d'acompte (Wave, Orange, MTN ou Espèces) :
+
 1. Accédez à l'onglet **Paiements** dans la console d'administration.
 2. Une liste de transactions en attente s'affiche.
 3. Comparez les informations (montant, référence de transaction Wave/OM/MTN, nom du candidat) avec votre compte bancaire ou vos passerelles de paiement.
@@ -35,6 +37,7 @@ Lorsqu'un commercial ou un candidat déclare un paiement d'acompte (Wave, Orange
 ## 3. Attribution & Approbation des Récompenses
 
 Le moteur de récompenses détecte automatiquement quand un parrain atteint 5 inscriptions confirmées.
+
 1. Accédez à l'onglet **Récompenses** (les dossiers à valider affichent le statut `eligible`).
 2. Cliquez sur **Approuver le dossier**.
 3. Sélectionnez dans la liste déroulante la formation offerte choisie par l'ambassadeur (ex. "Pelle Hydraulique" d'une valeur de 195 000 F CFA).

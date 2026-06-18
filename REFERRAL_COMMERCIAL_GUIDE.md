@@ -8,6 +8,7 @@ Ce document explique le fonctionnement du CRM commercial et la méthodologie de 
 
 L'espace commercial est accessible sur `/programme-ambassadeur/commercial` pour les utilisateurs ayant le rôle `COMMERCIAL` ou `RESPONSABLE_COMMERCIAL`.
 Il se divise en deux zones principales :
+
 1. **La colonne des Leads (Gauche)** : Liste tous les prospects parrainés qui vous sont attribués, triés par score d'intérêt.
 2. **Le Cockpit de Suivi (Droite)** : Affiche les détails administratifs, l'historique de suivi, les boutons de contact rapide, et le panneau de mise à jour du statut.
 
@@ -16,6 +17,7 @@ Il se divise en deux zones principales :
 ## 2. Comprendre le Lead Scoring Explicable
 
 Chaque prospect possède un score d'intérêt de 0 à 100 points, calculé automatiquement. Ce score vous aide à prioriser vos appels du jour :
+
 * **Prioritaire (81 - 100 pts)** : Prospect chaud ayant envoyé sa preuve de paiement ou commencé son dossier d'inscription. Contactez-le immédiatement.
 * **Chaud (61 - 80 pts)** : Prospect intéressé ayant un rendez-vous fixé ou une orientation effectuée.
 * **Tiède (31 - 60 pts)** : Nouveau prospect ayant complété son objectif professionnel et résidant dans un centre de formation actif.
@@ -28,6 +30,7 @@ Pour comprendre le score d'un candidat, cliquez sur l'icône **Info (i)** à cô
 ## 3. Piloter le Pipeline Commercial (15 étapes)
 
 Au fur et à mesure de vos échanges téléphoniques ou physiques avec le candidat, vous devez mettre à jour son statut :
+
 1. **Nouveau Prospect** : Le lead vient d'être généré par un parrain.
 2. **À Contacter** : Relance à effectuer sous 24h.
 3. **Contacté** : Premier contact établi.
