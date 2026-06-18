@@ -4,9 +4,10 @@ import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { FadeIn } from '@/components/animations/FadeIn'
 import { GALF_FORMATIONS } from '@/lib/data'
-import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck, Info, Sparkles, Smile, Shield, Download } from 'lucide-react'
+import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck, Info, Sparkles, Smile, Shield, Download, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { getAttributionCode } from '@/lib/firebase/services/referral'
 
 export default function Inscription() {
   const [step, setStep] = useState(1)
@@ -28,6 +29,8 @@ export default function Inscription() {
   const [registrationDate, setRegistrationDate] = useState('')
   const [isDownloadingReceipt, setIsDownloadingReceipt] = useState(false)
   const receiptRef = useRef<HTMLDivElement>(null)
+  
+  const [detectedRefCode, setDetectedRefCode] = useState<string | null>(null)
 
   const toggleFormation = (fId: string) => {
     try {
@@ -97,6 +100,12 @@ export default function Inscription() {
         if (parsed.step) setStep(parsed.step)
         setDraftRestored(true)
       } catch (e) {}
+    }
+    
+    // Read global referral attribution cookie
+    const refCode = getAttributionCode()
+    if (refCode) {
+      setDetectedRefCode(refCode)
     }
   }, [])
 
@@ -272,6 +281,24 @@ export default function Inscription() {
               >
                 Ignorer
               </button>
+            </div>
+          </FadeIn>
+        )}
+
+        {detectedRefCode && (
+          <FadeIn>
+            <div className="max-w-2xl mx-auto mb-8 p-4 rounded-xl flex items-center justify-between border border-galf-yellow/30 bg-galf-yellow/5 backdrop-blur-md text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-galf-yellow/10 flex items-center justify-center text-galf-yellow shrink-0">
+                  <Sparkles className="w-4 h-4 animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black uppercase tracking-wider text-white">Avantage Parrainage Activé !</h4>
+                  <p className="text-[10px] text-white/60">
+                    Vous êtes recommandé par l&apos;ambassadeur <strong className="text-galf-yellow font-mono">{detectedRefCode}</strong>. Votre dossier bénéficie d&apos;un traitement prioritaire.
+                  </p>
+                </div>
+              </div>
             </div>
           </FadeIn>
         )}
@@ -769,6 +796,12 @@ export default function Inscription() {
                             </strong>
                           </div>
                           <div><span className="font-medium text-slate-500">Date :</span> <strong className="text-slate-800">{registrationDate}</strong></div>
+                          {detectedRefCode && (
+                            <div className="mt-1 pt-1 border-t border-slate-100 flex justify-between">
+                              <span className="font-medium text-slate-500">Code Parrain :</span>
+                              <strong className="text-galf-yellow font-mono text-[9px]">{detectedRefCode}</strong>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -853,6 +886,38 @@ export default function Inscription() {
                       <span className="flex items-center gap-1.5"><span className="text-lg">💸</span> MTN MoMo</span>
                       <span className="text-[9px] font-normal">+225 05 56 96 64 92</span>
                     </a>
+                  </div>
+                </div>
+
+                {/* Viral Loops: Invite candidate to become an ambassador */}
+                <div className="my-8 p-6 rounded-2xl border border-galf-yellow/20 bg-galf-yellow/5 text-left max-w-xl mx-auto backdrop-blur-md relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-10">
+                    <Trophy className="w-16 h-16 text-galf-yellow" />
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-galf-yellow/10 flex items-center justify-center text-galf-yellow shrink-0">
+                      <Sparkles className="w-5 h-5 animate-pulse" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-black uppercase tracking-wider text-white">Remboursez votre formation ! 🎁</h4>
+                      <p className="text-xs text-white/70 mt-1 leading-relaxed">
+                        Rejoignez le programme Ambassadeurs de GALF FORMATION. Si <strong className="text-galf-yellow font-bold">5 proches</strong> s&apos;inscrivent avec votre lien, votre propre formation devient <strong className="text-galf-yellow font-bold">100% GRATUITE</strong> et votre acompte vous sera intégralement remboursé !
+                      </p>
+                      <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                        <Link 
+                          href="/programme-ambassadeur/inscription" 
+                          className="px-4 py-2.5 rounded-lg bg-galf-yellow text-galf-carbon font-black text-[10px] uppercase tracking-wider text-center hover:brightness-110 transition-all shadow-md font-bold"
+                        >
+                          Devenir Ambassadeur
+                        </Link>
+                        <Link 
+                          href="/programme-ambassadeur" 
+                          className="px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white font-bold text-[10px] uppercase tracking-wider text-center hover:bg-white/10 transition-all"
+                        >
+                          En savoir plus
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

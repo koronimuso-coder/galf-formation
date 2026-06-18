@@ -39,6 +39,7 @@ export default function CockpitAmbassadeur() {
   const [cardLayout, setCardLayout] = useState<'horizontal' | 'vertical' | 'square'>('horizontal')
   const [generatingCard, setGeneratingCard] = useState(false)
   const [showQrModal, setShowQrModal] = useState(false)
+  const [simulatedCount, setSimulatedCount] = useState(5)
 
   // Fetch all dashboard data
   const loadDashboardData = async () => {
@@ -511,6 +512,103 @@ export default function CockpitAmbassadeur() {
                         Bénéficiez d'une certification professionnelle complète au choix, d'une valeur allant jusqu'à 850 000 F CFA.
                       </span>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Simulator of Rewards */}
+              <div className="glass-card p-6 md:p-8 rounded-[2rem] bg-black/10 text-left">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-galf-yellow/10 flex items-center justify-center text-galf-yellow shrink-0">
+                    <Gift className="w-5 h-5 animate-bounce" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black uppercase tracking-wider text-white">Simulateur de Gains & Récompenses</h3>
+                    <p className="text-[10px] text-white/50 font-medium">Glissez le curseur pour simuler vos performances et débloquer des bourses d&apos;études.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex justify-between items-center mb-2 text-xs font-bold text-white">
+                      <span>Filleuls validés :</span>
+                      <span className="text-galf-yellow font-mono text-base font-black">{simulatedCount}</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="15" 
+                      value={simulatedCount} 
+                      onChange={(e) => setSimulatedCount(parseInt(e.target.value))}
+                      className="w-full accent-galf-yellow cursor-pointer bg-white/5 h-2 rounded-lg"
+                    />
+                    <div className="flex justify-between text-[9px] text-white/35 font-bold mt-1.5 font-mono">
+                      <span>0 (Départ)</span>
+                      <span>5 (Formation Gratuite)</span>
+                      <span>10 (Formation + Bonus)</span>
+                      <span>15 (Double Formation)</span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3">
+                    <span className="text-[10px] font-black uppercase text-galf-yellow tracking-wider block">Récompenses Estimées :</span>
+                    
+                    <ul className="space-y-2.5 text-xs text-white/70">
+                      <li className="flex items-center gap-2">
+                        <span className={`text-[10px] shrink-0 ${simulatedCount >= 1 ? 'text-green-400' : 'text-white/20'}`}>
+                          {simulatedCount >= 1 ? '✓' : '○'}
+                        </span>
+                        <span className={simulatedCount >= 1 ? 'text-white font-medium' : 'text-white/40 line-through'}>
+                          Accès Canal VIP WhatsApp & Badge &quot;Actif&quot;
+                        </span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className={`text-[10px] shrink-0 ${simulatedCount >= 3 ? 'text-green-400' : 'text-white/20'}`}>
+                          {simulatedCount >= 3 ? '✓' : '○'}
+                        </span>
+                        <span className={simulatedCount >= 3 ? 'text-white font-medium' : 'text-white/40 line-through'}>
+                          Kit Physique Ambassadeur (T-shirt + Casquette brodée GALF)
+                        </span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className={`text-[10px] shrink-0 ${simulatedCount >= 5 ? 'text-green-400' : 'text-white/20'}`}>
+                          {simulatedCount >= 5 ? '✓' : '○'}
+                        </span>
+                        <span className={simulatedCount >= 5 ? 'text-galf-yellow font-black' : 'text-white/40 line-through'}>
+                          🏆 1 FORMATION 100% OFFERTE DE VOTRE CHOIX (Valeur max: 850k F CFA)
+                        </span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className={`text-[10px] shrink-0 ${simulatedCount >= 10 ? 'text-green-400' : 'text-white/20'}`}>
+                          {simulatedCount >= 10 ? '✓' : '○'}
+                        </span>
+                        <span className={simulatedCount >= 10 ? 'text-white font-bold' : 'text-white/40 line-through'}>
+                          💵 Bonus Cash Supplémentaire de 50 000 F CFA
+                        </span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className={`text-[10px] shrink-0 ${simulatedCount >= 15 ? 'text-green-400' : 'text-white/20'}`}>
+                          {simulatedCount >= 15 ? '✓' : '○'}
+                        </span>
+                        <span className={simulatedCount >= 15 ? 'text-galf-yellow font-bold text-sm shadow-sm' : 'text-white/40 line-through'}>
+                          🎓 DEUX FORMATIONS 100% OFFERTES ou Double Bourse d&apos;études
+                        </span>
+                      </li>
+                    </ul>
+
+                    {simulatedCount > 0 && (
+                      <div className="pt-2 border-t border-white/5 text-[10px] text-white/50 italic leading-snug">
+                        {simulatedCount >= 15 ? (
+                          <span>Vous êtes un Ambassadeur d&apos;Élite ! Votre dévouement vous permet de parrainer toute votre communauté.</span>
+                        ) : simulatedCount >= 10 ? (
+                          <span>Incroyable ! Vous cumulez formation offerte et prime financière cash.</span>
+                        ) : simulatedCount >= 5 ? (
+                          <span>Objectif Ultime Atteint ! Votre prochaine certification est intégralement financée par GALF.</span>
+                        ) : (
+                          <span>Encore quelques efforts pour débloquer votre formation gratuite ! Partagez régulièrement votre lien.</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

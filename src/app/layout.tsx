@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { ScrollProgress } from '@/components/animations/ScrollProgress';
 import { PageTransition } from '@/components/animations/PageTransition';
 import { CookieBanner } from '@/components/layout/CookieBanner';
+import { GlobalReferralTracker } from '@/components/layout/GlobalReferralTracker';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="fr" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen flex flex-col antialiased`}>
         <ThemeProvider>
+          <GlobalReferralTracker />
           <ScrollProgress />
           <Loader />
           <Navbar />
