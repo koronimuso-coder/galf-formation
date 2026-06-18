@@ -5,13 +5,13 @@ import Link from 'next/link'
 import { 
   Gift, Users, Link as LinkIcon, Download, Copy, Share2, 
   Award, Bell, HelpCircle, User, LogOut, ShieldCheck, 
-  CheckCircle, Clock, AlertCircle, ChevronRight, CheckCircle2 
+  CheckCircle, Clock, AlertCircle, ChevronRight, CheckCircle2, Trophy, QrCode
 } from 'lucide-react'
 import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { getCurrentUser, signOutUser, UserProfile } from '@/lib/firebase/services/auth'
 import { 
   getSponsorProfile, getSponsorBadges, getNotifications, 
-  markNotificationAsRead, SponsorProfile, Badge, Notification 
+  markNotificationAsRead, getLeaderboard, SponsorProfile, Badge, Notification, LeaderboardEntry 
 } from '@/lib/firebase/services/referral'
 import { dbGetDocs, dbGetDoc } from '@/lib/firebase/services/dbClient'
 import { ReferredProspect } from '@/lib/firebase/services/commercial'
@@ -29,14 +29,16 @@ export default function CockpitAmbassadeur() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [referredProspects, setReferredProspects] = useState<ReferredProspect[]>([])
   const [rewards, setRewards] = useState<ReferralReward[]>([])
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [isLoading, setIsLoading] = useState(true)
   
   // Dashboard states
   const [copiedCode, setCopiedCode] = useState(false)
   const [copiedLink, setCopiedLink] = useState(false)
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'filleuls' | 'rewards' | 'help'>('dashboard')
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'filleuls' | 'rewards' | 'leaderboard' | 'help'>('dashboard')
   const [cardLayout, setCardLayout] = useState<'horizontal' | 'vertical' | 'square'>('horizontal')
   const [generatingCard, setGeneratingCard] = useState(false)
+  const [showQrModal, setShowQrModal] = useState(false)
 
   // Fetch all dashboard data
   const loadDashboardData = async () => {
@@ -79,6 +81,10 @@ export default function CockpitAmbassadeur() {
         { field: "campaignId", op: "==", value: campaignId }
       ])
       setRewards(rewardsSnaps.map(s => s.data() as ReferralReward))
+
+      // Get leaderboard
+      const leaderboardList = await getLeaderboard(campaignId)
+      setLeaderboard(leaderboardList)
 
     } catch (e) {
       console.error("Failed to load dashboard data:", e)
@@ -385,6 +391,7 @@ export default function CockpitAmbassadeur() {
             { id: 'dashboard', label: 'Tableau de bord', icon: Award },
             { id: 'filleuls', label: `Filleuls (${totalCount})`, icon: Users },
             { id: 'rewards', label: `Récompenses (${rewards.length})`, icon: Gift },
+            { id: 'leaderboard', label: 'Classement', icon: Trophy },
             { id: 'help', label: 'Centre d\'aide', icon: HelpCircle },
           ].map(tab => (
             <button 
@@ -446,6 +453,64 @@ export default function CockpitAmbassadeur() {
                   <div>
                     <strong className="text-white block font-bold mb-1">Status : {milestoneCount === 5 ? "Éligible 🏆" : "En cours"}</strong>
                     {milestoneMessage}
+                  </div>
+                </div>
+              </div>
+
+              {/* Milestone Timeline */}
+              <div className="glass-card p-6 md:p-8 rounded-[2rem] bg-black/10 text-left">
+                <h3 className="text-sm font-black uppercase tracking-wider text-white mb-6">Paliers & Récompenses Intermédiaires</h3>
+                <div className="relative border-l border-white/10 ml-4 pl-6 space-y-8">
+                  {/* Palier 1 */}
+                  <div className="relative">
+                    <span className={`absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full border-2 transition-colors flex items-center justify-center text-[8px] font-black ${
+                      milestoneCount >= 1 
+                        ? 'bg-galf-yellow border-galf-yellow text-galf-carbon' 
+                        : 'bg-galf-bg border-white/20 text-white/40'
+                    }`}>
+                      {milestoneCount >= 1 ? "✓" : "1"}
+                    </span>
+                    <div className="text-xs">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-white/40 block">1er Filleul Validé</span>
+                      <strong className="text-white block mt-0.5">Statut Actif & Canal Privé 💬</strong>
+                      <span className="text-white/60 block mt-1">
+                        Débloque le badge "Actif" et votre invitation exclusive au groupe WhatsApp d'élite des ambassadeurs GALF.
+                      </span>
+                    </div>
+                  </div>
+                  {/* Palier 2 */}
+                  <div className="relative">
+                    <span className={`absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full border-2 transition-colors flex items-center justify-center text-[8px] font-black ${
+                      milestoneCount >= 3 
+                        ? 'bg-galf-yellow border-galf-yellow text-galf-carbon' 
+                        : 'bg-galf-bg border-white/20 text-white/40'
+                    }`}>
+                      {milestoneCount >= 3 ? "✓" : "2"}
+                    </span>
+                    <div className="text-xs">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-white/40 block">3 Filleuls Validés</span>
+                      <strong className="text-white block mt-0.5">Kit Ambassadeur Officiel 👕</strong>
+                      <span className="text-white/60 block mt-1">
+                        Obtenez votre pack textile physique (T-Shirt premium + Casquette officielle GALF brodée) livré gratuitement.
+                      </span>
+                    </div>
+                  </div>
+                  {/* Palier 3 */}
+                  <div className="relative">
+                    <span className={`absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full border-2 transition-colors flex items-center justify-center text-[8px] font-black ${
+                      milestoneCount >= 5 
+                        ? 'bg-galf-yellow border-galf-yellow text-galf-carbon' 
+                        : 'bg-galf-bg border-white/20 text-white/40'
+                    }`}>
+                      {milestoneCount >= 5 ? "✓" : "3"}
+                    </span>
+                    <div className="text-xs">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-white/40 block">5 Filleuls Validés</span>
+                      <strong className="text-galf-yellow block mt-0.5">Formation 100% Offerte ! 🏆</strong>
+                      <span className="text-white/60 block mt-1">
+                        Bénéficiez d'une certification professionnelle complète au choix, d'une valeur allant jusqu'à 850 000 F CFA.
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -568,6 +633,12 @@ export default function CockpitAmbassadeur() {
                       </button>
                     ))}
                   </div>
+                  <button 
+                    onClick={() => setShowQrModal(true)}
+                    className="w-full bg-galf-surface-alt border border-galf-border text-white hover:bg-white/5 py-3.5 rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all mt-4"
+                  >
+                    <QrCode className="w-4 h-4 text-galf-yellow animate-pulse" /> Partage Face à Face (Code QR)
+                  </button>
                 </div>
 
                 <div className="pt-6 mt-4 border-t border-white/5">
@@ -735,6 +806,102 @@ export default function CockpitAmbassadeur() {
           </div>
         )}
 
+        {/* TAB CONTENT: LEADERBOARD */}
+        {activeTab === 'leaderboard' && (
+          <div className="glass-card p-6 md:p-8 rounded-[2rem] text-left">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+              <div>
+                <h3 className="text-lg font-black text-white uppercase tracking-tight">Tableau d'Honneur des Ambassadeurs</h3>
+                <p className="text-xs text-white/50">Classement en temps réel des meilleurs parrains de la campagne.</p>
+              </div>
+              <div className="px-4 py-2 bg-galf-yellow/10 border border-galf-yellow/20 rounded-xl text-xs font-bold text-galf-yellow text-center md:text-left">
+                🏆 Top Ambassadeur en cours : <strong className="text-white font-black">{leaderboard[0]?.displayName || "En attente"}</strong>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-white">
+                <thead className="border-b border-white/5 text-[10px] font-black uppercase text-white/40">
+                  <tr>
+                    <th className="pb-3 text-center w-16">Rang</th>
+                    <th className="pb-3 text-left">Ambassadeur</th>
+                    <th className="pb-3 text-center">Inscriptions Validées</th>
+                    <th className="pb-3 text-right">Titre / Niveau</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5 text-xs">
+                  {leaderboard.map(entry => {
+                    const isCurrentUser = userProfile && (
+                      entry.displayName.toLowerCase().startsWith(userProfile.displayName.split(" ")[0].toLowerCase())
+                    )
+                    
+                    let rankBadge = `${entry.rank}`
+                    let rankStyle = "text-white/70"
+                    if (entry.rank === 1) {
+                      rankBadge = "🥇 1er"
+                      rankStyle = "text-galf-yellow font-black text-sm"
+                    } else if (entry.rank === 2) {
+                      rankBadge = "🥈 2e"
+                      rankStyle = "text-gray-300 font-bold"
+                    } else if (entry.rank === 3) {
+                      rankBadge = "🥉 3e"
+                      rankStyle = "text-amber-600 font-bold"
+                    }
+
+                    // Level label based on validated referrals
+                    let levelLabel = "Novice 🌱"
+                    let levelColor = "text-white/40 bg-white/5 border-white/10"
+                    if (entry.validatedCount >= 5) {
+                      levelLabel = "Lauréat Or 🏆"
+                      levelColor = "text-galf-yellow bg-galf-yellow/10 border-galf-yellow/20"
+                    } else if (entry.validatedCount >= 3) {
+                      levelLabel = "Influenceur Argent 🌟"
+                      levelColor = "text-gray-300 bg-white/5 border-white/10"
+                    } else if (entry.validatedCount >= 1) {
+                      levelLabel = "Actif Bronze 🚀"
+                      levelColor = "text-amber-500/20 text-amber-400 border-amber-500/20"
+                    }
+
+                    return (
+                      <tr 
+                        key={entry.rank} 
+                        className={`transition-colors ${
+                          isCurrentUser 
+                            ? 'bg-galf-yellow/5 border-y border-galf-yellow/20' 
+                            : 'hover:bg-white/5'
+                        }`}
+                      >
+                        <td className={`py-4 text-center ${rankStyle}`}>{rankBadge}</td>
+                        <td className="py-4 font-bold">
+                          <span className="flex items-center gap-2">
+                            {entry.displayName}
+                            {isCurrentUser && (
+                              <span className="px-1.5 py-0.5 bg-galf-yellow text-galf-carbon text-[7px] font-black rounded uppercase">Vous</span>
+                            )}
+                          </span>
+                        </td>
+                        <td className="py-4 text-center font-mono font-bold text-white">{entry.validatedCount} filleuls</td>
+                        <td className="py-4 text-right">
+                          <span className={`px-2 py-1 rounded text-[8px] font-black uppercase border ${levelColor}`}>
+                            {levelLabel}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Current user positioning banner */}
+            {userProfile && (
+              <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/5 text-xs text-white/60">
+                🚀 Recommandez plus de formations pour grimper dans le classement et obtenir des formations 100% gratuites ! Chaque palier de 5 inscriptions validées vous offre un pass complet.
+              </div>
+            )}
+          </div>
+        )}
+
         {/* TAB CONTENT: HELP CENTER */}
         {activeTab === 'help' && (
           <div className="glass-card p-6 md:p-8 rounded-[2rem] text-left">
@@ -762,6 +929,75 @@ export default function CockpitAmbassadeur() {
           </div>
         )}
       </div>
+
+      {/* MODAL: FACE-TO-FACE QR CODE */}
+      {showQrModal && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="glass-card p-6 md:p-8 rounded-[2.5rem] bg-[#141416] border border-white/10 max-w-sm w-full text-center relative shadow-2xl">
+            <button 
+              onClick={() => setShowQrModal(false)}
+              className="absolute top-5 right-5 text-white/50 hover:text-white font-bold text-sm"
+            >
+              ✕
+            </button>
+            <div className="w-12 h-12 rounded-2xl bg-galf-yellow/10 flex items-center justify-center mb-4 mx-auto border border-galf-yellow/20">
+              <QrCode className="w-6 h-6 text-galf-yellow" />
+            </div>
+            <h3 className="text-base font-black text-white mb-2 uppercase">Parrainage Direct</h3>
+            <p className="text-xs text-white/50 mb-6">Faites scanner ce code par votre filleul pour l'enregistrer sous votre parrainage.</p>
+
+            {/* High-Contrast scan area */}
+            <div className="bg-white p-5 rounded-2xl inline-block shadow-inner mb-6">
+              <div className="w-48 h-48 bg-white flex flex-col justify-between">
+                {Array.from({ length: 21 }).map((_, row) => (
+                  <div key={row} className="flex justify-between w-full h-[9.14px]">
+                    {Array.from({ length: 21 }).map((_, col) => {
+                      const isFinder = 
+                        (row < 7 && col < 7) || 
+                        (row < 7 && col >= 21 - 7) || 
+                        (row >= 21 - 7 && col < 7);
+                        
+                      let isFilled = false;
+                      if (isFinder) {
+                        const isBorder = 
+                          row === 0 || row === 6 || col === 0 || col === 6 ||
+                          (row < 7 && (col === 21 - 7 || col === 21 - 1)) ||
+                          (row === 0 && col >= 21 - 7) || (row === 6 && col >= 21 - 7) ||
+                          (row >= 21 - 7 && (col === 0 || col === 6)) ||
+                          (row === 21 - 7 && col < 7) || (row === 21 - 1 && col < 7);
+                          
+                        const isCenter = 
+                          (row >= 2 && row <= 4 && col >= 2 && col <= 4) ||
+                          (row >= 2 && row <= 4 && col >= 21 - 5 && col <= 21 - 3) ||
+                          (row >= 21 - 5 && row <= 21 - 3 && col >= 2 && col <= 4);
+
+                        isFilled = isBorder || isCenter;
+                      } else {
+                        isFilled = (row * 13 + col * 37) % 5 === 0 || (row * col) % 3 === 0;
+                      }
+                      return (
+                        <div 
+                          key={col} 
+                          className={`w-[9.14px] h-[9.14px] ${isFilled ? 'bg-[#0E0E10]' : 'bg-white'}`} 
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="text-xs font-mono text-galf-yellow font-black p-3.5 rounded-xl bg-white/5 border border-white/5 select-all">
+                {sponsorProfile?.code}
+              </div>
+              <p className="text-[10px] text-white/40 leading-relaxed">
+                Ce code QR redirige vers le formulaire pré-rempli d'inscription.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

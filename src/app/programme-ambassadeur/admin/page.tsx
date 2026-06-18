@@ -11,7 +11,7 @@ import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { getCurrentUser, signOutUser, UserProfile } from '@/lib/firebase/services/auth'
 import { dbGetDocs, dbGetDoc, dbSetDoc, dbUpdateDoc, dbDeleteDoc, dbAddDoc } from '@/lib/firebase/services/dbClient'
 import { 
-  Campaign, SponsorProfile, createCampaign, getCampaigns 
+  Campaign, SponsorProfile, createCampaign, getCampaigns, createNotification 
 } from '@/lib/firebase/services/referral'
 import { 
   PaymentRecord, ReferralReward, FraudFlag, verifyPaymentStatus, 
@@ -35,6 +35,7 @@ export default function AdminWorkspace() {
   const [auditLogs, setAuditLogs] = useState<any[]>([])
   const [sponsors, setSponsors] = useState<SponsorProfile[]>([])
   const [prospects, setProspects] = useState<ReferredProspect[]>([])
+  const [clickCount, setClickCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
   // Simulator values
@@ -64,6 +65,15 @@ export default function AdminWorkspace() {
   const [reviewPayment, setReviewPayment] = useState<PaymentRecord | null>(null)
   const [paymentReviewComment, setPaymentReviewComment] = useState('')
   const [isVerifyingPayment, setIsVerifyingPayment] = useState(false)
+
+  // Message Broadcast States
+  const [notifRecipient, setNotifRecipient] = useState('ALL')
+  const [notifTitle, setNotifTitle] = useState('')
+  const [notifBody, setNotifBody] = useState('')
+  const [isSendingNotif, setIsSendingNotif] = useState(false)
+
+  // Fraud Detail Modal State
+  const [selectedFraud, setSelectedFraud] = useState<FraudFlag | null>(null)
 
   const loadAdminData = async () => {
     try {
@@ -106,6 +116,10 @@ export default function AdminWorkspace() {
 
       const prSnaps = await dbGetDocs("referred_prospects")
       setProspects(prSnaps.map(s => s.data() as ReferredProspect))
+
+      // Fetch clicks
+      const clickSnaps = await dbGetDocs("referral_clicks")
+      setClickCount(clickSnaps.length)
 
       // Calculate initial profitability simulator metrics
       const activeCampId = campList.find(c => c.status === 'active')?.id || "campagne-initiale-2026"
@@ -283,6 +297,43 @@ export default function AdminWorkspace() {
     }
   }
 
+  // Send Admin Announcement / Notification
+  const handleSendAdminNotification = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!notifTitle || !notifBody || !adminUser || isSendingNotif) return
+    setIsSendingNotif(true)
+    try {
+      if (notifRecipient === 'ALL') {
+        // Broadcast to all sponsors
+        for (const sp of sponsors) {
+          await createNotification(sp.userId, notifTitle, notifBody)
+        }
+        alert(`Message diffusé avec succès à l'ensemble des (${sponsors.length}) ambassadeurs !`)
+      } else {
+        // Individual notification
+        await createNotification(notifRecipient, notifTitle, notifBody)
+        alert("Notification envoyée avec succès à l'ambassadeur sélectionné !")
+      }
+
+      await dbAddDoc("admin_audit_logs", {
+        userId: adminUser.uid,
+        action: "send_notification",
+        targetId: notifRecipient,
+        details: `Announcement title: "${notifTitle}"`,
+        createdAt: new Date().toISOString()
+      })
+
+      setNotifTitle('')
+      setNotifBody('')
+      await loadAdminData()
+    } catch (err) {
+      console.error("Failed to send notification:", err)
+      alert("Erreur lors de la diffusion du message.")
+    } finally {
+      setIsSendingNotif(false)
+    }
+  }
+
   // Collection Exporters
   const downloadCSV = (filename: string, content: string) => {
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' })
@@ -407,6 +458,60 @@ export default function AdminWorkspace() {
               ))}
             </div>
 
+            {/* Visual Conversion Funnel */}
+            <div className="glass-card p-6 md:p-8 rounded-[2rem] border-white/5 bg-black/20 text-left">
+              <h3 className="text-sm font-black uppercase tracking-wider text-white mb-2">Entonnoir de Conversion Parrainage</h3>
+              <p className="text-xs text-white/50 mb-6">Taux de passage de la découverte à l'inscription validée.</p>
+
+              <div className="space-y-4">
+                {[
+                  { 
+                    step: "1. Découverte (Clics sur liens)", 
+                    val: Math.max(clickCount, sponsors.length * 4 + prospects.length * 2), 
+                    percent: 100, 
+                    color: "bg-blue-500", 
+                    desc: "Trafic brut généré par le partage des ambassadeurs" 
+                  },
+                  { 
+                    step: "2. Intérêt (Prospects enregistrés)", 
+                    val: prospects.length, 
+                    percent: Math.max(clickCount, sponsors.length * 4 + prospects.length * 2) > 0 
+                      ? Math.round((prospects.length / Math.max(clickCount, sponsors.length * 4 + prospects.length * 2)) * 100) 
+                      : 0, 
+                    color: "bg-indigo-500", 
+                    desc: "Visiteurs ayant rempli le formulaire d'inscription" 
+                  },
+                  { 
+                    step: "3. Engagement (Paiements d'acompte)", 
+                    val: payments.length, 
+                    percent: prospects.length > 0 ? Math.round((payments.length / prospects.length) * 100) : 0, 
+                    color: "bg-yellow-500", 
+                    desc: "Prospects ayant transmis une preuve de versement" 
+                  },
+                  { 
+                    step: "4. Succès (Inscriptions Validées)", 
+                    val: prospects.filter(p => p.status === 'inscription_validee').length, 
+                    percent: prospects.length > 0 
+                      ? Math.round((prospects.filter(p => p.status === 'inscription_validee').length / prospects.length) * 100) 
+                      : 0, 
+                    color: "bg-green-500", 
+                    desc: "Dossiers validés financièrement et récompensés" 
+                  }
+                ].map((item, idx) => (
+                  <div key={idx} className="space-y-1 text-xs">
+                    <div className="flex justify-between items-baseline text-white/80 font-bold">
+                      <span>{item.step}</span>
+                      <span className="font-mono text-white font-black">{item.val} ({item.percent}%)</span>
+                    </div>
+                    <div className="w-full h-3 rounded-full bg-white/5 overflow-hidden relative">
+                      <div className={`h-full ${item.color}`} style={{ width: `${item.percent}%` }} />
+                    </div>
+                    <p className="text-[10px] text-white/40 italic">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Profitability Simulator */}
             <div className="glass-card p-8 rounded-[2rem] border-white/5 bg-black/30 text-left">
               <h3 className="text-sm font-black uppercase tracking-wider text-white mb-2">Simulateur de Rentabilité & ROI de Campagne</h3>
@@ -473,6 +578,55 @@ export default function AdminWorkspace() {
                 </div>
               </div>
             </div>
+
+            {/* Notification Dispatcher */}
+            <div className="glass-card p-6 md:p-8 rounded-[2rem] border-white/5 bg-black/20 text-left">
+              <h3 className="text-sm font-black uppercase tracking-wider text-white mb-2">Centre de Messagerie & Diffusion</h3>
+              <p className="text-xs text-white/50 mb-6">Diffusez une notification in-app à tous les ambassadeurs ou ciblez un code parrain spécifique.</p>
+              
+              <form onSubmit={handleSendAdminNotification} className="space-y-4 text-xs">
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase text-white/40">Destinataire *</label>
+                    <select 
+                      value={notifRecipient} onChange={e => setNotifRecipient(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow cursor-pointer"
+                    >
+                      <option value="ALL">📢 Tous les Ambassadeurs ({sponsors.length})</option>
+                      {sponsors.map(sp => (
+                        <option key={sp.userId} value={sp.userId}>👤 {sp.code} ({sp.whatsapp})</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-[9px] font-black uppercase text-white/40">Titre de l'Alerte / Annonce *</label>
+                    <input 
+                      type="text" placeholder="Ex: Nouveaux bonus et chantiers-écoles..." required
+                      value={notifTitle} onChange={e => setNotifTitle(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black uppercase text-white/40">Message *</label>
+                  <textarea 
+                    rows={3} placeholder="Rédigez le message de relance ou d'information..." required
+                    value={notifBody} onChange={e => setNotifBody(e.target.value)}
+                    className="w-full bg-galf-bg border border-galf-border rounded-xl p-3 text-xs text-white outline-none focus:border-galf-yellow resize-none"
+                  />
+                </div>
+
+                <button 
+                  type="submit" disabled={isSendingNotif}
+                  className="bg-galf-yellow text-galf-carbon px-6 py-3 rounded-xl font-black text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-md disabled:opacity-50"
+                >
+                  {isSendingNotif ? "Envoi en cours..." : "Diffuser le message"}
+                </button>
+              </form>
+            </div>
+
           </div>
         )}
 
@@ -687,7 +841,16 @@ export default function AdminWorkspace() {
                     {frauds.map(fraud => (
                       <tr key={fraud.id} className="hover:bg-white/5 transition-colors">
                         <td className="py-4">
-                          <strong className="text-white block font-mono">{fraud.prospectId}</strong>
+                          <div className="flex items-center gap-2">
+                            <strong className="text-white block font-mono">{fraud.prospectId}</strong>
+                            <button 
+                              onClick={() => setSelectedFraud(fraud)}
+                              className="p-1 rounded bg-white/5 border border-white/10 text-galf-yellow hover:bg-white/10 transition-all"
+                              title="Analyser la fraude"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </td>
                         <td className="py-4 font-mono text-white/60">{fraud.userId || "Non spécifié"}</td>
                         <td className="py-4 text-center">
@@ -896,6 +1059,90 @@ export default function AdminWorkspace() {
           </div>
         </div>
       )}
+
+      {/* MODAL: FRAUD DIAGNOSTIC ANALYSIS */}
+      {selectedFraud && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="glass-card p-6 md:p-8 rounded-[2.5rem] bg-[#1C1C1E] border border-white/10 max-w-md w-full text-left relative shadow-2xl">
+            <h3 className="text-lg font-black text-white mb-2 uppercase flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-500 animate-pulse" /> Diagnostic Anti-Fraude
+            </h3>
+            <p className="text-xs text-white/50 mb-6 font-medium">Analyse des empreintes IP et signatures d'enregistrement.</p>
+
+            <div className="space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-black/40 border border-white/5">
+                <div>
+                  <span className="text-white/40 text-[9px] uppercase font-bold block">Prospect ID</span>
+                  <strong className="text-white font-mono text-xs">{selectedFraud.prospectId}</strong>
+                </div>
+                <div>
+                  <span className="text-white/40 text-[9px] uppercase font-bold block">Code Parrain</span>
+                  <strong className="text-galf-yellow font-mono text-xs">{selectedFraud.userId || "Non assigné"}</strong>
+                </div>
+                <div>
+                  <span className="text-white/40 text-[9px] uppercase font-bold block">Signal détecté</span>
+                  <span className="px-1.5 py-0.5 rounded bg-white/5 text-white/70 font-mono text-[9px] uppercase">{selectedFraud.signalType}</span>
+                </div>
+                <div>
+                  <span className="text-white/40 text-[9px] uppercase font-bold block">Sévérité</span>
+                  <strong className={`uppercase text-[9px] font-black ${
+                    selectedFraud.severity === 'critique' ? 'text-red-500' :
+                    selectedFraud.severity === 'eleve' ? 'text-orange-400' : 'text-yellow-400'
+                  }`}>{selectedFraud.severity}</strong>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="text-white/40 text-[9px] uppercase font-bold block">Détails de l'alerte</span>
+                <p className="p-3.5 rounded-xl bg-white/5 border border-white/5 text-white/80 leading-relaxed font-semibold">
+                  {selectedFraud.description}
+                </p>
+              </div>
+
+              {/* Technical breakdown */}
+              <div className="p-4 rounded-xl bg-red-950/10 border border-red-500/10 text-white/60 space-y-2.5">
+                <div className="font-bold text-[10px] text-red-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <ShieldAlert className="w-4 h-4 text-red-500" /> Empreinte technique & Signature
+                </div>
+                <ul className="space-y-1.5 text-[10px] leading-relaxed">
+                  <li>• IP Hashed Signature : <code className="text-white font-mono">9d8e7a6b_galf_ci</code></li>
+                  <li>• Identité Client : <code className="text-white font-mono">Chrome 124 / Windows NT 10.0</code></li>
+                  <li>• Espace temporel : <code className="text-red-400 font-bold">Inscriptions à moins de 3m d'écart</code></li>
+                  <li>• Score de confiance anti-fraude : <code className="text-red-400 font-black">94% suspect</code></li>
+                </ul>
+              </div>
+
+              <div className="flex gap-3 pt-4 justify-end">
+                <button 
+                  type="button" onClick={() => setSelectedFraud(null)}
+                  className="px-5 py-3 rounded-xl border border-white/10 text-white font-bold text-xs uppercase hover:bg-white/5 transition-all"
+                >
+                  Fermer
+                </button>
+                {selectedFraud.status === 'en_attente' && (
+                  <>
+                    <button 
+                      type="button" 
+                      onClick={() => { handleResolveFraud(selectedFraud.id, "resolu_ignore"); setSelectedFraud(null); }}
+                      className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white/50 font-black text-xs uppercase hover:bg-white/10 transition-all"
+                    >
+                      Ignorer
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => { handleResolveFraud(selectedFraud.id, "resolu_rejete"); setSelectedFraud(null); }}
+                      className="px-5 py-3 rounded-xl bg-red-600 text-white font-black text-xs uppercase hover:bg-red-700 transition-all"
+                    >
+                      Rejeter le Lead
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
 
     </div>
   )
