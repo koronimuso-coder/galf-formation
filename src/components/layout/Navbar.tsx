@@ -39,6 +39,7 @@ export function Navbar() {
   const links = [
     { href: '/formations', label: 'Formations' },
     { href: '/entreprise', label: 'Entreprises' },
+    { href: '/programme-ambassadeur', label: 'Ambassadeur' },
     { href: '/mediatheque', label: 'Médiathèque' },
     { href: '/mediatheque/simulateur', label: 'Simulateur 3D' },
     { href: '/a-propos', label: 'À propos' },

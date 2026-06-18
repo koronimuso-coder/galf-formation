@@ -52,6 +52,10 @@ export function Footer() {
               <li><Link href="/entreprise" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Espace Entreprise</Link></li>
               <li><Link href="/inscription" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Inscription</Link></li>
               <li><Link href="/connexion" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Connexion</Link></li>
+              <li><Link href="/programme-ambassadeur" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Programme Ambassadeur</Link></li>
+              <li><Link href="/programme-ambassadeur/reglement" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Règlement</Link></li>
+              <li><Link href="/programme-ambassadeur#faq" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Questions fréquentes</Link></li>
+              <li><Link href="/programme-ambassadeur/connexion" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Connexion parrain</Link></li>
             </ul>
           </div>
 

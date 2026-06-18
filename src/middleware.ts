@@ -13,29 +13,61 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
   // Define protected routes that require ANY auth
-  const protectedPaths = ['/candidat', '/apprenant', '/admin', '/instructeur']
+  const protectedPaths = ['/candidat', '/apprenant', '/admin', '/instructeur', '/programme-ambassadeur/dashboard', '/programme-ambassadeur/commercial', '/programme-ambassadeur/responsable', '/programme-ambassadeur/admin']
   const isProtectedPath = protectedPaths.some(p => pathname.startsWith(p))
 
   if (isProtectedPath) {
     const session = getSession(request)
     
-    // Redirect unauthenticated users to login
+    // Redirect unauthenticated users to login page
     if (!session) {
-      const loginUrl = new URL('/connexion', request.url)
+      const loginUrl = new URL('/programme-ambassadeur/connexion', request.url)
       loginUrl.searchParams.set('redirect', pathname)
       return NextResponse.redirect(loginUrl)
     }
   }
 
-  // Admin-only protection
-  if (pathname.startsWith('/admin')) {
+  // Espace Parrain Protection
+  if (pathname.startsWith('/programme-ambassadeur/dashboard')) {
+    const userRole = getUserRole(request)
+    if (!['PARRAIN', 'ADMIN_PARRAINAGE', 'SUPER_ADMIN'].includes(userRole || '')) {
+      return NextResponse.redirect(new URL('/programme-ambassadeur/connexion', request.url))
+    }
+  }
+
+  // Espace Commercial Protection
+  if (pathname.startsWith('/programme-ambassadeur/commercial')) {
+    const userRole = getUserRole(request)
+    if (!['COMMERCIAL', 'RESPONSABLE_COMMERCIAL', 'ADMIN_PARRAINAGE', 'SUPER_ADMIN'].includes(userRole || '')) {
+      return NextResponse.redirect(new URL('/programme-ambassadeur/connexion', request.url))
+    }
+  }
+
+  // Espace Responsable Protection
+  if (pathname.startsWith('/programme-ambassadeur/responsable')) {
+    const userRole = getUserRole(request)
+    if (!['RESPONSABLE_COMMERCIAL', 'ADMIN_PARRAINAGE', 'SUPER_ADMIN'].includes(userRole || '')) {
+      return NextResponse.redirect(new URL('/programme-ambassadeur/connexion', request.url))
+    }
+  }
+
+  // Espace Admin Parrainage Protection
+  if (pathname.startsWith('/programme-ambassadeur/admin')) {
+    const userRole = getUserRole(request)
+    if (!['ADMIN_PARRAINAGE', 'SUPER_ADMIN'].includes(userRole || '')) {
+      return NextResponse.redirect(new URL('/programme-ambassadeur/connexion', request.url))
+    }
+  }
+
+  // Admin-only protection (existing)
+  if (pathname.startsWith('/admin') && !pathname.startsWith('/programme-ambassadeur/admin')) {
     const userRole = getUserRole(request)
     if (userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN') {
       return NextResponse.redirect(new URL('/connexion', request.url))
     }
   }
 
-  // Instructeur-only protection
+  // Instructeur-only protection (existing)
   if (pathname.startsWith('/instructeur')) {
     const userRole = getUserRole(request)
     if (userRole !== 'INSTRUCTEUR' && userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN') {

@@ -10,17 +10,35 @@ import { PageHeader } from '@/components/layout/PageHeader'
 
 export default function Inscription() {
   const [step, setStep] = useState(1)
-  const [selectedFormation, setSelectedFormation] = useState('')
+  const [selectedFormations, setSelectedFormations] = useState<string[]>([])
   const [paymentMethod, setPaymentMethod] = useState('')
   const [acompte, setAcompte] = useState(30)
   
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
+  const [idNumber, setIdNumber] = useState('')
+  const [birthDate, setBirthDate] = useState('')
+  const [city, setCity] = useState('')
+  const [gender, setGender] = useState('')
+  const [education, setEducation] = useState('')
+  const [experience, setExperience] = useState('')
+  
   const [receiptId, setReceiptId] = useState('')
   const [registrationDate, setRegistrationDate] = useState('')
   const [isDownloadingReceipt, setIsDownloadingReceipt] = useState(false)
   const receiptRef = useRef<HTMLDivElement>(null)
+
+  const toggleFormation = (fId: string) => {
+    try {
+      playPromoSound('click')
+    } catch (e) {}
+    if (selectedFormations.includes(fId)) {
+      setSelectedFormations(selectedFormations.filter(id => id !== fId))
+    } else {
+      setSelectedFormations([...selectedFormations, fId])
+    }
+  }
   
   // ── Wave 5: Enrollment Interactive Feature States ──
   const [promoCode, setPromoCode] = useState('')
@@ -56,18 +74,26 @@ export default function Inscription() {
     { label: "Confirmation", icon: CheckCircle2 },
   ]
 
-    // Auto-saver: Restore draft on mount
+  // Auto-saver: Restore draft on mount
   useEffect(() => {
     const saved = localStorage.getItem('galf_enrollment_draft')
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
-        if (parsed.selectedFormation) setSelectedFormation(parsed.selectedFormation)
+        if (parsed.selectedFormations) setSelectedFormations(parsed.selectedFormations)
+        else if (parsed.selectedFormation) setSelectedFormations([parsed.selectedFormation])
+        
         if (parsed.acompte) setAcompte(parsed.acompte)
         if (parsed.paymentMethod) setPaymentMethod(parsed.paymentMethod)
         if (parsed.fullName) setFullName(parsed.fullName)
         if (parsed.phone) setPhone(parsed.phone)
         if (parsed.email) setEmail(parsed.email)
+        if (parsed.idNumber) setIdNumber(parsed.idNumber)
+        if (parsed.birthDate) setBirthDate(parsed.birthDate)
+        if (parsed.city) setCity(parsed.city)
+        if (parsed.gender) setGender(parsed.gender)
+        if (parsed.education) setEducation(parsed.education)
+        if (parsed.experience) setExperience(parsed.experience)
         if (parsed.step) setStep(parsed.step)
         setDraftRestored(true)
       } catch (e) {}
@@ -83,23 +109,37 @@ export default function Inscription() {
       setRegistrationDate(formattedDate)
       
       const randNum = Math.floor(1000 + Math.random() * 9000)
-      const codeSuffix = selectedFormation ? selectedFormation.toUpperCase().slice(0, 5) : 'GEN'
+      const firstSelected = selectedFormations[0]
+      const codeSuffix = firstSelected ? firstSelected.toUpperCase().slice(0, 5) : 'GEN'
       setReceiptId(`GALF-${codeSuffix}-${randNum}`)
     }
-  }, [step, selectedFormation])
+  }, [step, selectedFormations])
 
   // Auto-saver: Save draft when changing inputs
-  const saveDraft = (nextStep: number, currentFullName = fullName, currentPhone = phone, currentEmail = email) => {
+  const saveDraft = (nextStep: number) => {
     localStorage.setItem('galf_enrollment_draft', JSON.stringify({
-      selectedFormation,
+      selectedFormations,
       acompte,
       paymentMethod,
-      fullName: currentFullName,
-      phone: currentPhone,
-      email: currentEmail,
+      fullName,
+      phone,
+      email,
+      idNumber,
+      birthDate,
+      city,
+      gender,
+      education,
+      experience,
       step: nextStep
     }))
   }
+
+  // Automatic saving on state changes
+  useEffect(() => {
+    if (step < 5 && (selectedFormations.length > 0 || fullName || phone || email || idNumber || birthDate || city || gender || education || experience || paymentMethod)) {
+      saveDraft(step)
+    }
+  }, [selectedFormations, acompte, paymentMethod, fullName, phone, email, idNumber, birthDate, city, gender, education, experience, step])
 
   const handleDownloadReceiptPDF = async () => {
     if (!receiptRef.current) return;
@@ -187,8 +227,8 @@ export default function Inscription() {
     }
   }
 
-  const formation = GALF_FORMATIONS.find(f => f.id === selectedFormation)
-  const basePrice = formation ? (formation.pricePromo || formation.price) : 0
+  const selectedList = GALF_FORMATIONS.filter(f => selectedFormations.includes(f.id))
+  const basePrice = selectedList.reduce((sum, f) => sum + (f.pricePromo || f.price), 0)
   const discountAmount = (basePrice * discountPercent) / 100
   const price = basePrice - discountAmount
   const totalAcompte = (price * acompte) / 100
@@ -269,19 +309,29 @@ export default function Inscription() {
               <div className="glass-card p-8 rounded-2xl">
                 <h2 className="text-xl font-black mb-6" style={{ color: 'var(--galf-text)' }}>1. Sélectionnez votre domaine</h2>
                 <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2 px-1">
-                  {GALF_FORMATIONS.filter(f => f.status === 'Actif').map(f => (
-                    <button key={f.id} onClick={() => setSelectedFormation(f.id)}
-                      className={`w-full text-left p-5 rounded-xl transition-all flex items-center justify-between group h-full ${selectedFormation === f.id ? 'border-galf-yellow' : 'hover:border-galf-yellow/30'}`}
-                      style={selectedFormation === f.id ? { border: '2px solid #FFB000', background: 'var(--galf-yellow-glow)' } : { border: '1px solid var(--galf-border)', background: 'var(--galf-surface)' }}>
-                      <div>
-                        <div className="font-black text-sm" style={{ color: 'var(--galf-text)' }}>{f.name}</div>
-                        <div className="text-[10px] uppercase font-bold tracking-widest mt-1 text-galf-yellow">{f.category}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-black" style={{ color: 'var(--galf-text)' }}>{(f.pricePromo || f.price).toLocaleString('fr-FR')} F</div>
-                      </div>
-                    </button>
-                  ))}
+                  {GALF_FORMATIONS.filter(f => f.status === 'Actif').map(f => {
+                    const isSelected = selectedFormations.includes(f.id)
+                    return (
+                      <button key={f.id} onClick={() => toggleFormation(f.id)}
+                        className={`w-full text-left p-4 rounded-xl transition-all flex items-center justify-between group border-2 ${isSelected ? 'border-galf-yellow' : 'border-galf-border hover:border-galf-yellow/40'}`}
+                        style={{ background: isSelected ? 'var(--galf-yellow-glow)' : 'var(--galf-surface)' }}>
+                        <div className="flex items-center gap-3">
+                          <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                            isSelected ? 'bg-galf-yellow border-galf-yellow text-galf-carbon' : 'border-galf-border group-hover:border-galf-yellow/60'
+                          }`}>
+                            {isSelected && <span className="text-[10px] font-black">✓</span>}
+                          </div>
+                          <div>
+                            <div className="font-black text-sm" style={{ color: 'var(--galf-text)' }}>{f.name}</div>
+                            <div className="text-[10px] uppercase font-bold tracking-widest mt-1 text-galf-yellow">{f.category}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-black" style={{ color: 'var(--galf-text)' }}>{(f.pricePromo || f.price).toLocaleString('fr-FR')} F</div>
+                        </div>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             </FadeIn>
@@ -293,16 +343,112 @@ export default function Inscription() {
                 <h2 className="text-xl font-black mb-8" style={{ color: 'var(--galf-text)' }}>2. Vos coordonnées &amp; Justificatifs</h2>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Nom complet</label>
-                    <input type="text" className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" placeholder="Ex: Jean Kouassi" />
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Nom complet *</label>
+                    <input 
+                      type="text" 
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" 
+                      placeholder="Ex: Jean Kouassi" 
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">WhatsApp / Tel</label>
-                    <input type="tel" className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" placeholder="+225 07..." />
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">WhatsApp / Tel *</label>
+                    <input 
+                      type="tel" 
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" 
+                      placeholder="+225 07..." 
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Email professionnel *</label>
+                    <input 
+                      type="email" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" 
+                      placeholder="jean@mail.com" 
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">N° de CNI / Passeport *</label>
+                    <input 
+                      type="text" 
+                      value={idNumber}
+                      onChange={(e) => setIdNumber(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" 
+                      placeholder="Ex: C01234567" 
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Date de naissance *</label>
+                    <input 
+                      type="date" 
+                      value={birthDate}
+                      onChange={(e) => setBirthDate(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all text-sm" 
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Genre / Sexe *</label>
+                    <select 
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all text-sm cursor-pointer"
+                      required
+                    >
+                      <option value="" disabled>Sélectionner le genre</option>
+                      <option value="Masculin">Masculin</option>
+                      <option value="Féminin">Féminin</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Ville de résidence *</label>
+                    <input 
+                      type="text" 
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" 
+                      placeholder="Ex: Abidjan, Bouaké..." 
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Niveau d'études *</label>
+                    <select 
+                      value={education}
+                      onChange={(e) => setEducation(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all text-sm cursor-pointer"
+                      required
+                    >
+                      <option value="" disabled>Sélectionner votre niveau</option>
+                      <option value="Sans diplôme">Sans diplôme</option>
+                      <option value="CAP / BEP">CAP / BEP</option>
+                      <option value="BAC">BAC</option>
+                      <option value="BAC+2">BAC+2 (BTS, etc.)</option>
+                      <option value="BAC+3 et plus">BAC+3 et plus (Licence, Master)</option>
+                    </select>
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Email professionnel</label>
-                    <input type="email" className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all" placeholder="jean@mail.com" />
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Expérience en conduite d'engins *</label>
+                    <select 
+                      value={experience}
+                      onChange={(e) => setExperience(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-4 focus:border-galf-yellow outline-none transition-all text-sm cursor-pointer"
+                      required
+                    >
+                      <option value="" disabled>Sélectionner votre expérience</option>
+                      <option value="Débutant (Jamais conduit)">Débutant (Jamais conduit)</option>
+                      <option value="Intermédiaire (Bases de conduite)">Intermédiaire (Bases de conduite)</option>
+                      <option value="Expérimenté (Déjà opérateur certifié)">Expérimenté (Déjà opérateur certifié)</option>
+                    </select>
                   </div>
                 </div>
 
@@ -531,9 +677,13 @@ export default function Inscription() {
                 <h2 className="text-xl font-black mb-8" style={{ color: 'var(--galf-text)' }}>4. Récapitulatif de dossier</h2>
                 
                 <div className="space-y-6">
-                  <div className="flex justify-between items-center py-4 border-b border-galf-border">
-                    <span className="text-xs font-bold opacity-60">Formation choisie</span>
-                    <span className="font-black text-right max-w-[200px]">{formation?.name}</span>
+                  <div className="flex justify-between items-start py-4 border-b border-galf-border">
+                    <span className="text-xs font-bold opacity-60">Formations choisies</span>
+                    <span className="font-black text-right max-w-[250px] flex flex-col gap-1">
+                      {selectedList.map(f => (
+                        <span key={f.id}>{f.name} ({(f.pricePromo || f.price).toLocaleString('fr-FR')} F)</span>
+                      ))}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center py-4 border-b border-galf-border">
                     <span className="text-xs font-bold opacity-60">Total Formation</span>
@@ -603,14 +753,21 @@ export default function Inscription() {
                           <div><span className="font-medium text-slate-500">Nom :</span> <strong className="text-slate-800 uppercase">{fullName || 'Non renseigné'}</strong></div>
                           <div><span className="font-medium text-slate-500">WhatsApp :</span> <strong className="text-slate-800">{phone || 'Non renseigné'}</strong></div>
                           <div><span className="font-medium text-slate-500">Email :</span> <strong className="text-slate-800">{email || 'Non renseigné'}</strong></div>
+                          <div><span className="font-medium text-slate-500">N° Pièce :</span> <strong className="text-slate-800">{idNumber || 'Non renseigné'}</strong></div>
+                          <div><span className="font-medium text-slate-500">Date Naiss. :</span> <strong className="text-slate-800">{birthDate || 'Non renseigné'}</strong></div>
+                          <div><span className="font-medium text-slate-500">Ville :</span> <strong className="text-slate-800">{city || 'Non renseigné'}</strong></div>
                         </div>
                       </div>
 
                       <div className="space-y-1.5">
-                        <h4 className="text-[8px] uppercase tracking-widest text-slate-400 font-black">Détails Formation</h4>
+                        <h4 className="text-[8px] uppercase tracking-widest text-slate-400 font-black">Détails Formations</h4>
                         <div className="bg-slate-50 p-3 rounded-xl space-y-1 border border-slate-100">
-                          <div><span className="font-medium text-slate-500">Intitulé :</span> <strong className="text-slate-800">{formation?.name}</strong></div>
-                          <div><span className="font-medium text-slate-500">Catégorie :</span> <strong className="text-slate-800">{formation?.category}</strong></div>
+                          <div>
+                            <span className="font-medium text-slate-500">Formations :</span>{' '}
+                            <strong className="text-slate-800">
+                              {selectedList.map(f => f.name).join(', ')}
+                            </strong>
+                          </div>
                           <div><span className="font-medium text-slate-500">Date :</span> <strong className="text-slate-800">{registrationDate}</strong></div>
                         </div>
                       </div>
@@ -729,7 +886,21 @@ export default function Inscription() {
                    setStep(nextStep);
                    saveDraft(nextStep);
                  }} 
-                 disabled={(step === 1 && !selectedFormation) || (step === 2 && (!fullName.trim() || !phone.trim() || !email.trim())) || (step === 3 && !paymentMethod)}
+                 disabled={
+                    (step === 1 && selectedFormations.length === 0) || 
+                    (step === 2 && (
+                      !fullName.trim() || 
+                      !phone.trim() || 
+                      !email.trim() || 
+                      !idNumber.trim() || 
+                      !birthDate || 
+                      !city.trim() || 
+                      !gender || 
+                      !education || 
+                      !experience
+                    )) || 
+                    (step === 3 && !paymentMethod)
+                  }
                  className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-xl font-black hover:brightness-110 transition-all flex items-center gap-3 shadow-xl disabled:opacity-50"
                >
                  {step === 4 ? "Confirmer l'inscription" : "Étape suivante"} <ArrowRight className="w-4 h-4" />

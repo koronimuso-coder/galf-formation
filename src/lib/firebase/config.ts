@@ -12,11 +12,23 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+let app: any;
+let auth: any;
+let db: any;
+let storage: any;
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+try {
+  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+  auth = getAuth(app);
+  db = getFirestore(app);
+  storage = getStorage(app);
+} catch (e) {
+  console.warn("Firebase initialization failed. Running in localized fallback mode.", e);
+  app = null;
+  auth = null;
+  db = null;
+  storage = null;
+}
 
+export { auth, db, storage };
 export default app;

@@ -112,6 +112,11 @@ const nextConfig: NextConfig = {
         destination: '/inscription',
         permanent: true,
       },
+      {
+        source: '/programme-parrainage',
+        destination: '/programme-ambassadeur',
+        permanent: true,
+      },
     ];
   },
 };
