@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { 
   ArrowRight, Trophy, Award, MapPin, Star, ChevronRight, Play, Clock, 
   Users, Factory, Settings, ChevronLeft, Pause, Sparkles, Shield, 
-  TrendingUp, CheckCircle2, Calendar, User, Zap, RefreshCw, AlertCircle
+  TrendingUp, CheckCircle2, Calendar, User, Zap, RefreshCw, AlertCircle, Gift
 } from 'lucide-react'
 import { FadeIn, AnimatedCounter, MagneticHover, TextReveal } from '@/components/animations/FadeIn'
 import { SplineHero } from '@/components/3d/SplineHero'
@@ -780,6 +780,73 @@ export default function Home() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════
+          AMBASSADOR PROGRAM CTA (NEW FEATURE)
+         ═══════════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden" style={{ background: '#09090b', borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--galf-yellow) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+        
+        <div className="container-galf relative z-10">
+          <div className="glass-card p-8 md:p-16 rounded-[3rem] border-2 border-galf-yellow/20 bg-black/40 glow-yellow relative overflow-hidden flex flex-col lg:flex-row items-center gap-12 text-left">
+            <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-galf-yellow/5 rounded-full blur-3xl pointer-events-none" />
+            
+            {/* Left Col: Text & Promise */}
+            <div className="flex-1 space-y-6">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase bg-galf-yellow/10 text-galf-yellow border border-galf-yellow/20 tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 animate-pulse" /> Croissance &amp; Parrainage
+              </span>
+              
+              <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight">
+                Ne gardez pas <br className="hidden md:inline" />
+                l&apos;information pour <span className="text-galf-yellow text-glow-yellow">vous</span> !
+              </h2>
+              
+              <p className="text-sm md:text-base text-white/70 leading-relaxed font-medium max-w-xl">
+                Rejoignez le programme **GALF Ambassadeur**. Recommandez nos formations d&apos;excellence à votre entourage, aidez vos proches à se qualifier pour les métiers des mines, du BTP et du HSE, et **gagnez votre formation 100% offerte** !
+              </p>
+
+              <div className="grid grid-cols-2 gap-6 pt-4 max-w-md">
+                <div className="flex items-start gap-3">
+                  <span className="text-galf-yellow text-lg">✓</span>
+                  <div>
+                    <h4 className="text-xs font-black text-white uppercase">Inscription 100% Gratuite</h4>
+                    <p className="text-[10px] text-white/50">Générez votre code personnel en 1 minute.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-galf-yellow text-lg">✓</span>
+                  <div>
+                    <h4 className="text-xs font-black text-white uppercase">Seuil Récompense (5 Filleuls)</h4>
+                    <p className="text-[10px] text-white/50">Inscriptions confirmées = formation offerte.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Col: CTA Action Box */}
+            <div className="w-full lg:w-96 bg-white/5 border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col justify-between items-center text-center">
+              <div className="w-12 h-12 rounded-2xl bg-galf-yellow/10 border border-galf-yellow/20 flex items-center justify-center mb-6">
+                <Gift className="w-6 h-6 text-galf-yellow" />
+              </div>
+              <h3 className="text-lg font-black text-white mb-2 uppercase">Devenez Ambassadeur</h3>
+              <p className="text-xs text-white/60 mb-6 leading-relaxed">
+                Partagez votre lien de parrainage et suivez votre progression en direct.
+              </p>
+              
+              <div className="w-full space-y-3">
+                <Link href="/programme-ambassadeur" className="w-full bg-galf-yellow text-galf-carbon py-4 rounded-xl font-black text-xs uppercase tracking-wider block hover:brightness-110 transition-all shadow-md">
+                  Découvrir le programme
+                </Link>
+                <Link href="/programme-ambassadeur/inscription" className="w-full bg-transparent text-white border border-white/10 hover:bg-white/5 py-4 rounded-xl font-bold text-xs uppercase tracking-wider block transition-all">
+                  Créer mon compte parrain
+                </Link>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

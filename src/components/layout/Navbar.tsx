@@ -54,9 +54,9 @@ export function Navbar() {
           <div className="bg-galf-yellow text-galf-carbon text-[11px] uppercase tracking-wider font-extrabold h-9 flex items-center relative overflow-hidden border-b border-galf-yellow/20 select-none z-[60]">
             <div className="flex-1 overflow-hidden relative h-full flex items-center pr-12">
               <div className="animate-marquee whitespace-nowrap flex gap-16 absolute pl-4">
-                <span className="flex items-center gap-2">⚡ Offre Exceptionnelle : -15% sur toutes les formations Grue et Pelle jusqu'à la fin du mois !</span>
+                <span className="flex items-center gap-2">🎁 Nouveau : Gagnez votre formation 100% offerte en parrainant vos proches ! Cliquez sur le lien &apos;Ambassadeur&apos; dans la barre.</span>
+                <span className="flex items-center gap-2">⚡ Offre Exceptionnelle : -15% sur toutes les formations Grue et Pelle jusqu&apos;à la fin du mois !</span>
                 <span className="flex items-center gap-2">🏗️ Nouveau : Ouverture de notre centre de pratique à San Pedro ! Réservez vite.</span>
-                <span className="flex items-center gap-2">🎓 Conformité : Certifications BTP de pointe en Côte d'Ivoire.</span>
                 
                 {/* Duplicated for infinite effect */}
                 <span className="flex items-center gap-2">⚡ Offre Exceptionnelle : -15% sur toutes les formations Grue et Pelle jusqu'à la fin du mois !</span>
