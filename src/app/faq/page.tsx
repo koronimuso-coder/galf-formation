@@ -188,8 +188,8 @@ export default function FAQ() {
            ═══════════════════════════════════════════════ */}
         <FadeIn delay={0.1}>
           <div className="mb-10 relative">
-            <div className="glass-card p-2 rounded-2xl border border-white/5 flex items-center gap-3 focus-within:border-galf-yellow/45 transition-colors">
-              <div className="pl-4 text-white/40">
+            <div className="glass-card p-2 rounded-2xl border border-adaptive flex items-center gap-3 focus-within:border-galf-yellow/45 transition-colors">
+              <div className="pl-4 text-adaptive-muted">
                 <Search className="w-5 h-5" />
               </div>
               <input
@@ -201,7 +201,7 @@ export default function FAQ() {
                   setShowSuggestions(true)
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                className="flex-1 bg-transparent border-none outline-none py-3 text-sm text-white placeholder-white/40"
+                className="flex-1 bg-transparent border-none outline-none py-3 text-sm text-adaptive placeholder:text-adaptive-muted"
               />
               {searchQuery && (
                 <button
@@ -210,7 +210,7 @@ export default function FAQ() {
                     setShowSuggestions(false)
                     triggerAudioClick()
                   }}
-                  className="p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                  className="p-2 text-adaptive-muted hover:text-adaptive hover:bg-galf-yellow/5 rounded-lg transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -235,13 +235,13 @@ export default function FAQ() {
                           setShowSuggestions(false)
                           triggerAudioClick()
                         }}
-                        className="text-xs px-3 py-1.5 bg-white/5 hover:bg-galf-yellow hover:text-galf-carbon rounded-lg border border-white/5 font-semibold text-white/80 transition-all"
+                        className="text-xs px-3 py-1.5 chip-adaptive hover:bg-galf-yellow hover:text-galf-carbon rounded-lg font-semibold transition-all"
                       >
                         {s.label}
                       </button>
                     ))}
                   {suggestions.filter(s => s.label.toLowerCase().includes(searchQuery.toLowerCase()) || s.query.includes(searchQuery.toLowerCase())).length === 0 && (
-                    <span className="text-xs text-white/40 italic">Aucune suggestion rapide pour cette saisie.</span>
+                    <span className="text-xs text-adaptive-muted italic">Aucune suggestion rapide pour cette saisie.</span>
                   )}
                 </div>
               </div>
@@ -270,7 +270,7 @@ export default function FAQ() {
                   </p>
                   
                   {/* Helpfulness feedback system */}
-                  <div className="pt-4 border-t border-white/5 flex items-center justify-between text-[11px] font-bold text-white/50">
+                  <div className="pt-4 border-t border-adaptive flex items-center justify-between text-[11px] font-bold text-adaptive-muted">
                     <span>Cette réponse vous a-t-elle été utile ?</span>
                     <div className="flex items-center gap-3">
                       {votes[index] ? (
@@ -281,13 +281,13 @@ export default function FAQ() {
                         <>
                           <button 
                             onClick={() => handleVote(index, 'yes')}
-                            className="px-3 py-1 rounded-md bg-white/5 border border-white/5 text-white/70 hover:bg-white/10 hover:border-white/20 transition-all"
+                            className="px-3 py-1 rounded-md chip-adaptive hover:bg-galf-yellow/20 hover:border-galf-yellow/30 transition-all"
                           >
                             👍 Oui
                           </button>
                           <button 
                             onClick={() => handleVote(index, 'no')}
-                            className="px-3 py-1 rounded-md bg-white/5 border border-white/5 text-white/70 hover:bg-white/10 hover:border-white/20 transition-all"
+                            className="px-3 py-1 rounded-md chip-adaptive hover:bg-galf-yellow/20 hover:border-galf-yellow/30 transition-all"
                           >
                             👎 Non
                           </button>
@@ -304,9 +304,9 @@ export default function FAQ() {
           {filteredFaqs.length === 0 && (
             <FadeIn>
               <div className="text-center py-16 bg-white/5 border border-white/5 rounded-2xl space-y-4">
-                <Search className="w-12 h-12 text-white/20 mx-auto" />
+                <Search className="w-12 h-12 text-adaptive-muted mx-auto" />
                 <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Aucun résultat trouvé</h3>
-                <p className="text-sm text-white/50 max-w-md mx-auto leading-relaxed">
+                <p className="text-sm text-adaptive-secondary max-w-md mx-auto leading-relaxed">
                   Aucune question de notre base de connaissances ne correspond à votre recherche "{searchQuery}". Essayez de saisir un autre mot-clé ou demandez de l'aide en direct à notre assistant.
                 </p>
                 <button
@@ -329,10 +329,10 @@ export default function FAQ() {
         <FadeIn>
           <div className="glass-card p-8 rounded-[2rem] border border-white/5 shadow-2xl mb-12 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
-            <h3 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+            <h3 className="text-2xl font-black mb-2 text-adaptive flex items-center gap-2">
               <Search className="text-galf-yellow w-5 h-5" /> Glossaire Interactif BTP &amp; Mines
             </h3>
-            <p className="text-xs text-white/60 mb-6 max-w-xl">
+            <p className="text-xs text-adaptive-secondary mb-6 max-w-xl">
               Tapez un terme ou un acronyme technique (CACES, Élingue, Godet...) pour obtenir sa définition réglementaire conforme aux standards industriels.
             </p>
 
@@ -343,12 +343,12 @@ export default function FAQ() {
                   placeholder="Rechercher une définition dans le glossaire..."
                   value={glossarySearch}
                   onChange={(e) => setGlossarySearch(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-galf-yellow"
+                  className="input-adaptive w-full rounded-xl px-4 py-3 text-xs"
                 />
                 {glossarySearch && (
                   <button 
                     onClick={() => setGlossarySearch("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-adaptive-muted hover:text-adaptive"
                   >
                     ✕
                   </button>
@@ -362,16 +362,16 @@ export default function FAQ() {
                     g.definition.toLowerCase().includes(glossarySearch.toLowerCase())
                   )
                   .map((item, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-galf-yellow/30 transition-all space-y-1">
+                    <div key={idx} className="p-4 rounded-2xl panel-bg hover:border-galf-yellow/30 transition-all space-y-1">
                       <span className="text-xs font-black text-galf-yellow uppercase tracking-wider">{item.term}</span>
-                      <p className="text-[11px] text-white/70 leading-relaxed font-sans">{item.definition}</p>
+                      <p className="text-[11px] text-adaptive-secondary leading-relaxed font-sans">{item.definition}</p>
                     </div>
                   ))}
                 {GLOSSARY_DB.filter(g => 
                   g.term.toLowerCase().includes(glossarySearch.toLowerCase()) || 
                   g.definition.toLowerCase().includes(glossarySearch.toLowerCase())
                 ).length === 0 && (
-                  <div className="col-span-2 text-center text-xs text-white/40 italic py-4">
+                  <div className="col-span-2 text-center text-xs text-adaptive-muted italic py-4">
                     Aucune définition correspondante dans le lexique.
                   </div>
                 )}
@@ -386,10 +386,10 @@ export default function FAQ() {
         <FadeIn>
           <div className="glass-card p-8 rounded-[2rem] border border-white/5 shadow-2xl mb-12 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
-            <h3 className="text-2xl font-black mb-2 text-white flex items-center gap-2">
+            <h3 className="text-2xl font-black mb-2 text-adaptive flex items-center gap-2">
               <Bot className="text-galf-yellow w-5 h-5" /> Code des Signaux de Main de Grutier
             </h3>
-            <p className="text-xs text-white/60 mb-6 max-w-xl">
+            <p className="text-xs text-adaptive-secondary mb-6 max-w-xl">
               Cliquez sur les gestes conventionnels de guidage ci-dessous pour découvrir la signification officielle et sécuriser le plateau technique.
             </p>
 
@@ -406,7 +406,7 @@ export default function FAQ() {
                     className={`p-4 rounded-2xl border transition-all text-left flex flex-col justify-between h-32 relative overflow-hidden ${
                       isSelected 
                         ? 'bg-galf-yellow/15 border-galf-yellow text-galf-yellow shadow-[0_0_15px_rgba(255,176,0,0.15)] scale-[0.98]' 
-                        : 'bg-black/30 border-white/5 text-white hover:border-white/20'
+                        : 'choice-btn hover:border-galf-yellow/30'
                     }`}
                   >
                     <span className="text-2xl">{signal.icon}</span>
@@ -426,7 +426,7 @@ export default function FAQ() {
                 <span className="text-galf-yellow font-black uppercase tracking-wider block mb-1">
                   {SIGNALS_DB.find(s => s.id === selectedSignal)?.label}
                 </span>
-                <p className="text-white/80">
+                <p className="text-adaptive-secondary">
                   {SIGNALS_DB.find(s => s.id === selectedSignal)?.description}
                 </p>
               </div>

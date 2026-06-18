@@ -270,19 +270,19 @@ export default function About() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <FadeIn delay={0.1} className="glass-card p-6 rounded-xl border-l-4 border-l-galf-yellow">
               <h3 className="text-xl font-black mb-3">Engins de chantier & mines</h3>
-              <p className="text-sm opacity-80">Excavatrices, bulldozers, niveleuses, chargeuses, grues, tombereaux, etc.</p>
+              <p className="text-sm" style={{ color: 'var(--galf-text-secondary)' }}>Excavatrices, bulldozers, niveleuses, chargeuses, grues, tombereaux, etc.</p>
             </FadeIn>
             <FadeIn delay={0.2} className="glass-card p-6 rounded-xl border-l-4 border-l-galf-yellow">
               <h3 className="text-xl font-black mb-3">Manutention & logistique</h3>
-              <p className="text-sm opacity-80">Chariots élévateurs (caristes), gerbeurs et équipements de levage.</p>
+              <p className="text-sm" style={{ color: 'var(--galf-text-secondary)' }}>Chariots élévateurs (caristes), gerbeurs et équipements de levage.</p>
             </FadeIn>
             <FadeIn delay={0.3} className="glass-card p-6 rounded-xl border-l-4 border-l-galf-yellow">
               <h3 className="text-xl font-black mb-3">Transport poids lourds</h3>
-              <p className="text-sm opacity-80">Sensibilisation sécurité routière et exploitation logistique.</p>
+              <p className="text-sm" style={{ color: 'var(--galf-text-secondary)' }}>Sensibilisation sécurité routière et exploitation logistique.</p>
             </FadeIn>
             <FadeIn delay={0.4} className="glass-card p-6 rounded-xl border-l-4 border-l-galf-yellow">
               <h3 className="text-xl font-black mb-3">HSE</h3>
-              <p className="text-sm opacity-80">Hygiène, sécurité et environnement, prévention des risques et bonnes pratiques sur chantier.</p>
+              <p className="text-sm" style={{ color: 'var(--galf-text-secondary)' }}>Hygiène, sécurité et environnement, prévention des risques et bonnes pratiques sur chantier.</p>
             </FadeIn>
           </div>
         </div>
@@ -521,7 +521,7 @@ export default function About() {
 
                     {valueTestAnswer !== null && (
                       <div className="flex justify-between items-center pt-2">
-                        <span className="text-[10px] font-black uppercase">
+                        <span className="text-[10px] font-black uppercase" style={{ color: valueTestAnswer ? '#16a34a' : '#ea580c' }}>
                           {valueTestAnswer ? "🎉 Alignement parfait !" : "⚠️ Réflexe à corriger"}
                         </span>
                         <button

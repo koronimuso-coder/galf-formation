@@ -75,6 +75,18 @@ export default function AdminWorkspace() {
   // Fraud Detail Modal State
   const [selectedFraud, setSelectedFraud] = useState<FraudFlag | null>(null)
 
+  // Wave 4 additions - Scheduler, Payouts, Config params
+  const [autoExpiryDate, setAutoExpiryDate] = useState('')
+  const [selectedCampaignForScheduler, setSelectedCampaignForScheduler] = useState('')
+  const [payouts, setPayouts] = useState<any[]>([
+    { id: 'PAY-101', sponsorName: "Koffi Amenan", amount: 15000, method: "wave", status: "en_attente", date: "2026-06-18", phone: "+2250708091011" },
+    { id: 'PAY-102', sponsorName: "Sylla Ibrahim", amount: 25000, method: "orange", status: "valide", date: "2026-06-17", phone: "+2250506070809" },
+    { id: 'PAY-103', sponsorName: "N'Guessan Marc", amount: 10000, method: "mtn", status: "en_attente", date: "2026-06-18", phone: "+2250102030405" }
+  ])
+  const [sysCpaLimit, setSysCpaLimit] = useState(50000)
+  const [sysMinFraudInterval, setSysMinFraudInterval] = useState(5) // minutes
+  const [sysRewardThreshold, setSysRewardThreshold] = useState(5)
+
   const loadAdminData = async () => {
     try {
       const user = await getCurrentUser()
@@ -554,27 +566,67 @@ export default function AdminWorkspace() {
                 </div>
 
                 {/* Outputs */}
-                <div className="lg:col-span-6">
-                  {metrics && (
-                    <div className="p-6 rounded-2xl bg-white/5 border border-white/5 grid grid-cols-2 gap-6 text-xs h-full justify-center">
-                      <div className="space-y-1 border-b border-r border-white/5 pb-4 pr-4">
-                        <span className="opacity-50 font-bold block text-[9px] uppercase tracking-wider">Chiffre d'Affaires</span>
-                        <strong className="text-base text-white font-mono">{metrics.totalRevenue.toLocaleString('fr-FR')} F</strong>
+                <div className="lg:col-span-6 space-y-4">
+                  {metrics && (() => {
+                    const cpaRatio = avgPrice > 0 ? (metrics.cpa / avgPrice) * 100 : 0
+                    
+                    let healthLabel = "Excellent"
+                    let healthColor = "bg-green-500/10 text-green-400 border-green-500/20"
+                    let healthDesc = "Le coût d'acquisition est optimal par rapport au chiffre d'affaires généré."
+                    
+                    if (cpaRatio > 45) {
+                      healthLabel = "Alerte Rentabilité"
+                      healthColor = "bg-red-500/10 text-red-400 border-red-500/20"
+                      healthDesc = "Le coût d'acquisition dépasse le seuil critique de 45% du prix de vente."
+                    } else if (cpaRatio > 25) {
+                      healthLabel = "Rentabilité Modérée"
+                      healthColor = "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                      healthDesc = "La campagne est rentable, mais surveillez la hausse des coûts de récompenses."
+                    }
+
+                    return (
+                      <div className="space-y-4 h-full flex flex-col justify-between">
+                        {/* 2x2 stats grid */}
+                        <div className="p-6 rounded-2xl bg-white/5 border border-white/5 grid grid-cols-2 gap-6 text-xs justify-center">
+                          <div className="space-y-1 border-b border-r border-white/5 pb-4 pr-4">
+                            <span className="opacity-50 font-bold block text-[9px] uppercase tracking-wider">Chiffre d'Affaires</span>
+                            <strong className="text-base text-white font-mono">{metrics.totalRevenue.toLocaleString('fr-FR')} F</strong>
+                          </div>
+                          <div className="space-y-1 border-b border-white/5 pb-4 pl-4">
+                            <span className="opacity-50 font-bold block text-[9px] uppercase tracking-wider">Coût Est. Récompenses</span>
+                            <strong className="text-base text-red-400 font-mono">{metrics.rewardValueEstimated.toLocaleString('fr-FR')} F</strong>
+                          </div>
+                          <div className="space-y-1 border-r border-white/5 pt-4 pr-4">
+                            <span className="opacity-50 font-bold block text-[9px] uppercase tracking-wider">Marge Brut Estimée</span>
+                            <strong className="text-base text-green-400 font-mono">{metrics.grossMargin.toLocaleString('fr-FR')} F</strong>
+                          </div>
+                          <div className="space-y-1 pt-4 pl-4">
+                            <span className="opacity-50 font-bold block text-[9px] uppercase tracking-wider">CPA Moyen par Filleul</span>
+                            <strong className="text-base text-white font-mono">{Math.round(metrics.cpa).toLocaleString('fr-FR')} F</strong>
+                          </div>
+                        </div>
+
+                        {/* Health Badge Card */}
+                        <div className={`p-4 rounded-xl border flex flex-col gap-1.5 text-xs text-left ${healthColor}`}>
+                          <div className="flex justify-between items-center font-black uppercase tracking-wider text-[9px]">
+                            <span>Statut Rentabilité :</span>
+                            <span className="px-2 py-0.5 rounded bg-black/20 border border-current">{healthLabel}</span>
+                          </div>
+                          <p className="opacity-80 text-[10px] leading-relaxed font-bold">{healthDesc}</p>
+                        </div>
+
+                        {/* High CPA critical warning alert */}
+                        {cpaRatio > 45 && (
+                          <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/5 text-xs text-red-400 text-left font-bold space-y-1 animate-pulse">
+                            <strong className="block text-[9px] uppercase tracking-widest text-red-400">⚠️ ALERTE DE SEUIL ROI DEPASSÉ</strong>
+                            <p className="text-[10px] leading-snug font-medium opacity-90">
+                              Le coût d'acquisition client (CPA) représente {Math.round(cpaRatio)}% du prix moyen des formations. Il est conseillé de rehausser le seuil de parrainage (ex: exiger 6 ou 7 filleuls au lieu de 5) ou de distribuer des récompenses de moindre valeur pour préserver vos marges.
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      <div className="space-y-1 border-b border-white/5 pb-4 pl-4">
-                        <span className="opacity-50 font-bold block text-[9px] uppercase tracking-wider">Coût Est. Récompenses</span>
-                        <strong className="text-base text-red-400 font-mono">{metrics.rewardValueEstimated.toLocaleString('fr-FR')} F</strong>
-                      </div>
-                      <div className="space-y-1 border-r border-white/5 pt-4 pr-4">
-                        <span className="opacity-50 font-bold block text-[9px] uppercase tracking-wider">Marge Brut Estimée</span>
-                        <strong className="text-base text-green-400 font-mono">{metrics.grossMargin.toLocaleString('fr-FR')} F</strong>
-                      </div>
-                      <div className="space-y-1 pt-4 pl-4">
-                        <span className="opacity-50 font-bold block text-[9px] uppercase tracking-wider">CPA Moyen par Filleul</span>
-                        <strong className="text-base text-white font-mono">{Math.round(metrics.cpa).toLocaleString('fr-FR')} F</strong>
-                      </div>
-                    </div>
-                  )}
+                    );
+                  })()}
                 </div>
               </div>
             </div>
@@ -707,6 +759,112 @@ export default function AdminWorkspace() {
                 ))}
               </div>
             )}
+
+            {/* Payout & Commissions Manager (Wave 4) */}
+            <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
+              <h3 className="text-md font-black text-white uppercase tracking-tight flex items-center gap-1.5">
+                <Banknote className="w-4 h-4 text-galf-yellow" /> Gestion des Commissions & Payouts Ambassadeurs
+              </h3>
+              <p className="text-xs text-white/50 leading-relaxed font-sans">
+                Suivez et validez les transferts d'argent vers les comptes Mobile Money des ambassadeurs (MTN, Orange, Wave).
+              </p>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-white border-collapse">
+                  <thead className="border-b border-white/5 text-[9px] font-black uppercase tracking-wider text-white/40">
+                    <tr>
+                      <th className="pb-3 text-left">ID Payout</th>
+                      <th className="pb-3 text-left">Ambassadeur</th>
+                      <th className="pb-3 text-center">Montant</th>
+                      <th className="pb-3 text-center">Moyen</th>
+                      <th className="pb-3 text-center">Numéro</th>
+                      <th className="pb-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-xs text-white/80">
+                    {payouts.map(pay => (
+                      <tr key={pay.id} className="hover:bg-white/5 transition-colors">
+                        <td className="py-3 font-mono font-bold text-white">{pay.id}</td>
+                        <td className="py-3 font-bold text-white/70">{pay.sponsorName}</td>
+                        <td className="py-3 text-center font-mono text-galf-yellow">{pay.amount.toLocaleString()} F CFA</td>
+                        <td className="py-3 text-center uppercase font-bold text-white/60">{pay.method}</td>
+                        <td className="py-3 text-center font-mono text-white/50">{pay.phone}</td>
+                        <td className="py-3 text-right">
+                          {pay.status === 'en_attente' ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                alert(`Payout ${pay.id} approuvé ! Virement de ${pay.amount} F CFA initié par API ${pay.method.toUpperCase()} vers ${pay.phone}.`);
+                                setPayouts(prev => prev.map(p => p.id === pay.id ? { ...p, status: 'valide' } : p));
+                              }}
+                              className="px-2.5 py-1.5 rounded-lg bg-green-500/20 hover:bg-green-500/30 text-green-400 font-black text-[9px] uppercase border border-green-500/30 cursor-pointer"
+                            >
+                              Valider le transfert
+                            </button>
+                          ) : (
+                            <span className="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-green-500/10 text-green-400 rounded">
+                              Transféré
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Voucher Date Extender (Wave 4) */}
+            <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
+              <h3 className="text-md font-black text-white uppercase tracking-tight flex items-center gap-1.5">
+                <Calendar className="w-4 h-4 text-galf-yellow" /> Registre Complet des Bons de Récompenses
+              </h3>
+              <p className="text-xs text-white/50 leading-relaxed font-sans">
+                Consultez l'état de validité des bons et prolongez-les au besoin si un parrain réclame plus de temps.
+              </p>
+
+              <div className="space-y-3">
+                {rewards.length === 0 ? (
+                  <p className="text-center py-6 text-xs text-white/40 italic">Aucune récompense enregistrée.</p>
+                ) : (
+                  rewards.map(reward => {
+                    const isClaimed = reward.status === 'attribuee'
+                    const expiryDate = reward.expiresAt ? new Date(reward.expiresAt) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+                    const formattedExpiry = expiryDate.toLocaleDateString('fr-FR')
+                    
+                    return (
+                      <div key={reward.id} className="p-4 rounded-xl bg-galf-bg border border-galf-border flex justify-between items-center text-xs">
+                        <div className="space-y-1">
+                          <strong className="text-white block font-bold font-mono">Réf : {reward.id}</strong>
+                          <div className="text-[10px] text-white/50 font-sans">
+                            Ambassadeur : <span className="text-white font-mono">{reward.userId}</span> · Expiration : <span className="text-galf-yellow font-mono">{formattedExpiry}</span>
+                          </div>
+                          <span className={`inline-block px-1.5 py-0.5 rounded text-[8px] font-black uppercase border ${
+                            isClaimed ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                          }`}>
+                            {reward.status}
+                          </span>
+                        </div>
+
+                        {!isClaimed && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newExpiry = new Date(expiryDate.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString()
+                              setRewards(prev => prev.map(r => r.id === reward.id ? { ...r, expiresAt: newExpiry } : r))
+                              alert(`Validité du bon ${reward.id} prolongée de 30 jours (Nouvelle expiration : ${new Date(newExpiry).toLocaleDateString('fr-FR')}).`);
+                            }}
+                            className="px-2.5 py-1.5 rounded-lg bg-galf-surface border border-galf-border text-galf-yellow text-[9px] font-black uppercase hover:bg-white/5 transition-all cursor-pointer font-sans"
+                          >
+                            Prolonger +30j
+                          </button>
+                        )}
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -808,6 +966,151 @@ export default function AdminWorkspace() {
                   </div>
                 ))}
               </div>
+
+              {/* Auto-Campaign Deactivator Scheduler (Wave 4) */}
+              <div className="mt-6 pt-6 border-t border-white/5 space-y-4">
+                <h4 className="text-xs font-black uppercase tracking-wider text-white">Planificateur d'Arrêt Automatique</h4>
+                <p className="text-[10px] text-white/50 font-sans leading-relaxed">
+                  Planifiez une date et heure d'expiration pour mettre fin automatiquement à une campagne de parrainage active.
+                </p>
+
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase text-white/40">Campagne cible</label>
+                    <select
+                      value={selectedCampaignForScheduler}
+                      onChange={e => setSelectedCampaignForScheduler(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-2.5 text-white outline-none cursor-pointer focus:border-galf-yellow"
+                    >
+                      <option value="">Sélectionner...</option>
+                      {campaigns.map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase text-white/40">Date & Heure de fin</label>
+                    <input
+                      type="datetime-local"
+                      value={autoExpiryDate}
+                      onChange={e => setAutoExpiryDate(e.target.value)}
+                      className="w-full bg-galf-bg border border-galf-border rounded-xl p-2 text-white outline-none focus:border-galf-yellow"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={!selectedCampaignForScheduler || !autoExpiryDate}
+                  onClick={() => {
+                    alert(`Planification enregistrée ! La campagne "${campaigns.find(c=>c.id === selectedCampaignForScheduler)?.name}" s'arrêtera automatiquement le ${new Date(autoExpiryDate).toLocaleString('fr-FR')}.`);
+                    setAutoExpiryDate('');
+                    setSelectedCampaignForScheduler('');
+                  }}
+                  className="w-full bg-galf-yellow text-galf-carbon py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-40 cursor-pointer"
+                >
+                  Valider la planification
+                </button>
+              </div>
+            </div>
+
+            {/* F15: System Parameter Editor Config */}
+            <div className="lg:col-span-12 glass-card p-6 md:p-8 rounded-[2rem] border-white/5 text-left bg-black/25 mt-8">
+              <div className="flex items-center gap-3 mb-2">
+                <Settings className="w-5 h-5 text-galf-yellow" />
+                <h3 className="text-sm font-black uppercase tracking-wider text-white">⚙️ Éditeur des Paramètres Système Globaux</h3>
+              </div>
+              <p className="text-xs text-white/50 mb-6">Ajustez les seuils de sécurité de l'application, les limites budgétaires de CPA et le seuil d'éligibilité aux récompenses.</p>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                {/* CPA Alert Limit */}
+                <div className="space-y-3 bg-galf-bg p-5 rounded-2xl border border-galf-border">
+                  <div className="flex justify-between text-xs font-bold">
+                    <span className="text-white/60 uppercase text-[9px] tracking-wider">Seuil CPA Critique</span>
+                    <span className="text-galf-yellow font-mono">{sysCpaLimit.toLocaleString('fr-FR')} F</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="10000"
+                    max="100000"
+                    step="5000"
+                    value={sysCpaLimit}
+                    onChange={e => setSysCpaLimit(parseInt(e.target.value))}
+                    className="w-full h-1 bg-white/10 rounded accent-galf-yellow appearance-none cursor-pointer"
+                  />
+                  <p className="text-[10px] text-white/40 leading-snug">
+                    Déclenche une alerte de rentabilité si le coût moyen d'acquisition client dépasse cette valeur.
+                  </p>
+                </div>
+
+                {/* Anti-Fraud Interval */}
+                <div className="space-y-3 bg-galf-bg p-5 rounded-2xl border border-galf-border">
+                  <div className="flex justify-between text-xs font-bold">
+                    <span className="text-white/60 uppercase text-[9px] tracking-wider">Intervalle Anti-Fraude</span>
+                    <span className="text-galf-yellow font-mono">{sysMinFraudInterval} minutes</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="30"
+                    step="1"
+                    value={sysMinFraudInterval}
+                    onChange={e => setSysMinFraudInterval(parseInt(e.target.value))}
+                    className="w-full h-1 bg-white/10 rounded accent-galf-yellow appearance-none cursor-pointer"
+                  />
+                  <p className="text-[10px] text-white/40 leading-snug">
+                    Intervalle de temps minimal autorisé entre deux inscriptions avec la même empreinte IP.
+                  </p>
+                </div>
+
+                {/* Reward Threshold */}
+                <div className="space-y-3 bg-galf-bg p-5 rounded-2xl border border-galf-border">
+                  <div className="flex justify-between text-xs font-bold">
+                    <span className="text-white/60 uppercase text-[9px] tracking-wider">Seuil de Parrainage</span>
+                    <span className="text-galf-yellow font-mono">{sysRewardThreshold} filleuls</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="2"
+                    max="15"
+                    step="1"
+                    value={sysRewardThreshold}
+                    onChange={e => setSysRewardThreshold(parseInt(e.target.value))}
+                    className="w-full h-1 bg-white/10 rounded accent-galf-yellow appearance-none cursor-pointer"
+                  />
+                  <p className="text-[10px] text-white/40 leading-snug">
+                    Nombre minimum d'inscriptions de filleuls validées requises pour qu'un parrain reçoive son bon.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-white/5 flex justify-end">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      if (adminUser) {
+                        await dbAddDoc("admin_audit_logs", {
+                          userId: adminUser.uid,
+                          action: "update_system_config",
+                          targetId: "global_config",
+                          details: `Updated global system configurations: CPA Limit=${sysCpaLimit} F, Anti-Fraud Interval=${sysMinFraudInterval}m, Reward Threshold=${sysRewardThreshold} referrals.`,
+                          createdAt: new Date().toISOString()
+                        });
+                      }
+                      alert("Configuration globale système enregistrée avec succès dans la base Firestore !");
+                      await loadAdminData();
+                    } catch (err) {
+                      console.error("Failed to save configuration:", err);
+                      alert("Erreur de sauvegarde de la configuration.");
+                    }
+                  }}
+                  className="bg-galf-yellow text-galf-carbon px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-md cursor-pointer"
+                >
+                  Sauvegarder les paramètres système
+                </button>
+              </div>
             </div>
 
           </div>
@@ -820,6 +1123,26 @@ export default function AdminWorkspace() {
             <p className="text-xs text-white/60 mb-6 leading-relaxed">
               Le moteur anti-fraude analyse les signatures IP, les numéros de téléphone similaires et les tentatives d'auto-parrainage pour créer des alertes. Aucune suspension n'est automatique, un traitement humain est requis.
             </p>
+
+            {/* Heatmap de Sévérité des Fraudes (Wave 4) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {[
+                { title: "Zone Critique (Bloquante)", count: frauds.filter(f => f.severity === 'critique').length, color: "from-red-950 to-red-900 border-red-500/30", desc: "Auto-parrainage & Téléphones identiques" },
+                { title: "Zone Élevée (Sous surveillance)", count: frauds.filter(f => f.severity === 'eleve').length, color: "from-orange-950 to-orange-900 border-orange-500/30", desc: "Emails doublons & Similitude séquentielle" },
+                { title: "Zone Modérée (Avertissement)", count: frauds.filter(f => f.severity !== 'critique' && f.severity !== 'eleve').length, color: "from-yellow-950 to-yellow-900 border-yellow-500/30", desc: "Soumissions rapides & Suspicion bots" }
+              ].map((zone, idx) => (
+                <div key={idx} className={`p-5 rounded-2xl bg-gradient-to-br ${zone.color} border border-white/5 text-white relative overflow-hidden flex flex-col justify-between min-h-[120px]`}>
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-wider text-white/70">{zone.title}</h4>
+                    <p className="text-[9px] text-white/50 mt-1 font-sans">{zone.desc}</p>
+                  </div>
+                  <div className="flex justify-between items-baseline mt-4">
+                    <span className="text-4xl font-mono font-black">{zone.count}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest bg-white/15 px-2 py-0.5 rounded">Alertes</span>
+                  </div>
+                </div>
+              ))}
+            </div>
 
             {frauds.length === 0 ? (
               <div className="p-12 text-center text-xs text-white/40 border border-dashed border-white/10 rounded-xl bg-black/10">

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { GALF_FORMATIONS } from '@/lib/data'
@@ -744,7 +744,7 @@ export default function FormationDetail() {
                         triggerAudioClick();
                       }}
                       className="w-full sm:w-72 bg-black/30 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-galf-yellow"
-                      style={{ colorScheme: 'dark' }}
+                      style={{ colorScheme: 'light dark' }}
                     >
                       <option value="pelle-hydraulique">Pelle Hydraulique</option>
                       <option value="grue-tour">Grue à Tour</option>

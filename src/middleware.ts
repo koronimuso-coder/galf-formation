@@ -21,7 +21,9 @@ export function middleware(request: NextRequest) {
     
     // Redirect unauthenticated users to login page
     if (!session) {
-      const loginUrl = new URL('/programme-ambassadeur/connexion', request.url)
+      const isAmbassadorRoute = pathname.startsWith('/programme-ambassadeur')
+      const targetLogin = isAmbassadorRoute ? '/programme-ambassadeur/connexion' : '/connexion'
+      const loginUrl = new URL(targetLogin, request.url)
       loginUrl.searchParams.set('redirect', pathname)
       return NextResponse.redirect(loginUrl)
     }

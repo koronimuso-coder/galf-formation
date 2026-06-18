@@ -17,6 +17,12 @@ export default function robots(): MetadataRoute.Robots {
           '/inscription',
           '/mot-de-passe-oublie',
           '/api/',
+          '/programme-ambassadeur/admin/',
+          '/programme-ambassadeur/commercial/',
+          '/programme-ambassadeur/responsable/',
+          '/programme-ambassadeur/dashboard/',
+          '/programme-ambassadeur/connexion',
+          '/programme-ambassadeur/inscription',
         ],
       },
       {

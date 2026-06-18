@@ -129,6 +129,19 @@ export const evaluateLeadScore = (prospect: Partial<ReferredProspect>): Explicab
 // PROSPECTS REGISTRATION & ASSIGNMENT
 // ────────────────────────────────────────────────────────────────────────
 
+const arePhonesSimilar = (phone1: string, phone2: string): boolean => {
+  const p1 = phone1.replace(/[^0-9]/g, "");
+  const p2 = phone2.replace(/[^0-9]/g, "");
+  if (p1.length !== p2.length) return false;
+  let diffCount = 0;
+  for (let i = 0; i < p1.length; i++) {
+    if (p1[i] !== p2[i]) {
+      diffCount++;
+    }
+  }
+  return diffCount <= 2; // differs by at most 2 digits
+};
+
 // Register referred prospect
 export const registerReferredProspect = async (
   prospect: Omit<ReferredProspect, "id" | "phone" | "status" | "leadScore" | "leadCategory" | "fraudScore">,
@@ -146,8 +159,14 @@ export const registerReferredProspect = async (
     throw new Error("Un dossier prospect avec ce numéro WhatsApp existe déjà pour cette campagne.");
   }
 
-  // Check auto-referral: is the prospect's phone matching the sponsor's phone?
+  // ── DETECT MULTIPLE FRAUD SIGNALS ──
   let isAutoReferral = false;
+  let isSameEmail = false;
+  let isRapidSubmission = false;
+  let isSimilarPhone = false;
+  let similarPhoneDetails = "";
+
+  // 1. Check Auto-Referral
   const sponsorSnap = await dbGetDocs("referral_members", [
     { field: "campaignId", op: "==", value: prospect.campaignId },
     { field: "userId", op: "==", value: prospect.sponsorUserId }
@@ -160,16 +179,66 @@ export const registerReferredProspect = async (
     }
   }
 
+  // 2. Check Same Email across other prospects
+  if (prospect.email && prospect.email.trim() !== "") {
+    const existingEmail = await dbGetDocs("referred_prospects", [
+      { field: "campaignId", op: "==", value: prospect.campaignId },
+      { field: "email", op: "==", value: prospect.email.trim() }
+    ]);
+    if (existingEmail.length > 0) {
+      isSameEmail = true;
+    }
+  }
+
+  // 3. Check Rapid Submissions (more than 3 signups in last 5 minutes by same sponsor)
+  if (prospect.sponsorUserId && prospect.sponsorUserId !== "") {
+    const sponsorProspects = await dbGetDocs("referred_prospects", [
+      { field: "campaignId", op: "==", value: prospect.campaignId },
+      { field: "sponsorUserId", op: "==", value: prospect.sponsorUserId }
+    ]);
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    const recentSubmissions = sponsorProspects.filter(p => {
+      const pData = p.data();
+      return pData.createdAt && pData.createdAt >= fiveMinutesAgo;
+    });
+    if (recentSubmissions.length >= 3) {
+      isRapidSubmission = true;
+    }
+  }
+
+  // 4. Check Similar Phone numbers registered by same sponsor
+  if (prospect.sponsorUserId && prospect.sponsorUserId !== "") {
+    const sponsorProspects = await dbGetDocs("referred_prospects", [
+      { field: "campaignId", op: "==", value: prospect.campaignId },
+      { field: "sponsorUserId", op: "==", value: prospect.sponsorUserId }
+    ]);
+    for (const snap of sponsorProspects) {
+      const existingProspect = snap.data();
+      if (arePhonesSimilar(phone, existingProspect.phone)) {
+        isSimilarPhone = true;
+        similarPhoneDetails = existingProspect.phone;
+        break;
+      }
+    }
+  }
+
+  // Calculate Fraud Score
+  let fraudScore = 0;
+  if (isAutoReferral) fraudScore += 100;
+  if (isSameEmail) fraudScore += 50;
+  if (isRapidSubmission) fraudScore += 70;
+  if (isSimilarPhone) fraudScore += 60;
+  fraudScore = Math.min(100, fraudScore);
+
   // Automatic Commercial assignment (Round Robin on available commercials)
   const commercials = await dbGetDocs("users", [{ field: "role", op: "==", value: "COMMERCIAL" }]);
   let assignedCommercialId = "";
   if (commercials.length > 0) {
-    // Basic assignment: Pick random commercial for demo, can be customized in admin
     const randomIndex = Math.floor(Math.random() * commercials.length);
     assignedCommercialId = commercials[randomIndex].id;
   }
 
-  const initialStatus = isAutoReferral ? "fraude_suspectee" : "nouveau_prospect";
+  const initialStatus = fraudScore >= 50 ? "fraude_suspectee" : "nouveau_prospect";
   
   const tempProspect: Partial<ReferredProspect> = {
     ...prospect,
@@ -179,7 +248,6 @@ export const registerReferredProspect = async (
   };
 
   const evalResult = evaluateLeadScore(tempProspect);
-  const fraudScore = isAutoReferral ? 100 : 0;
 
   const fullProspect: ReferredProspect = {
     ...tempProspect,
@@ -193,15 +261,16 @@ export const registerReferredProspect = async (
 
   await dbSetDoc("referred_prospects", fullProspect.id, fullProspect);
 
-  // Log audit
+  // Log audit trail
   await dbAddDoc("admin_audit_logs", {
     userId: prospect.sponsorUserId,
     action: "prospect_registration",
     targetId: fullProspect.id,
-    details: `Prospect ${fullProspect.fullName} registered under code ${prospect.referralCode}. Auto-referred: ${isAutoReferral}`,
+    details: `Prospect ${fullProspect.fullName} registered under code ${prospect.referralCode}. Fraud score: ${fraudScore}/100.`,
     createdAt: new Date().toISOString()
   });
 
+  // Log fraud flags if any
   if (isAutoReferral) {
     await dbAddDoc("referral_fraud_flags", {
       prospectId: fullProspect.id,
@@ -209,6 +278,39 @@ export const registerReferredProspect = async (
       signalType: "auto_referral",
       severity: "critique",
       description: `Tentative d'auto-parrainage détectée pour le numéro ${phone}`,
+      status: "en_attente",
+      createdAt: new Date().toISOString()
+    });
+  }
+  if (isSameEmail) {
+    await dbAddDoc("referral_fraud_flags", {
+      prospectId: fullProspect.id,
+      userId: prospect.sponsorUserId,
+      signalType: "same_email",
+      severity: "moyen",
+      description: `Email doublon détecté pour ${prospect.email}`,
+      status: "en_attente",
+      createdAt: new Date().toISOString()
+    });
+  }
+  if (isRapidSubmission) {
+    await dbAddDoc("referral_fraud_flags", {
+      prospectId: fullProspect.id,
+      userId: prospect.sponsorUserId,
+      signalType: "rapid_submissions",
+      severity: "eleve",
+      description: `Soumissions trop rapides (spam) détectées pour le parrain`,
+      status: "en_attente",
+      createdAt: new Date().toISOString()
+    });
+  }
+  if (isSimilarPhone) {
+    await dbAddDoc("referral_fraud_flags", {
+      prospectId: fullProspect.id,
+      userId: prospect.sponsorUserId,
+      signalType: "similar_numbers",
+      severity: "eleve",
+      description: `Numéro similaire détecté (${phone} ressemble à ${similarPhoneDetails})`,
       status: "en_attente",
       createdAt: new Date().toISOString()
     });

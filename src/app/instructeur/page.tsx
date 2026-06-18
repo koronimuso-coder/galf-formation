@@ -465,7 +465,7 @@ export default function InstructeurDashboard() {
                             <text
                               x={labelX}
                               y={labelY}
-                              fill="#fff"
+                              fill="var(--galf-text)"
                               fontSize="8"
                               fontWeight="bold"
                               textAnchor="middle"

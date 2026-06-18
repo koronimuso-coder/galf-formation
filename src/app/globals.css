@@ -159,6 +159,168 @@ html { scroll-behavior: smooth; }
 }
 
 /* ═══════════════════════════════════════════════════════
+   DUAL-THEME ADAPTIVE UTILITIES
+   These classes automatically adapt to light and dark mode.
+   Use instead of hardcoded text-white/X, bg-black/X etc.
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Panel / Card inner backgrounds ── */
+.panel-bg {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.dark .panel-bg {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.panel-bg-deep {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.dark .panel-bg-deep {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ── Input fields inside dark cards ── */
+.input-adaptive {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: var(--galf-text);
+  outline: none;
+}
+.input-adaptive::placeholder { color: var(--galf-text-muted); }
+.input-adaptive:focus { border-color: #FFB000; }
+.dark .input-adaptive {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f5f5f5;
+}
+.dark .input-adaptive::placeholder { color: rgba(255,255,255,0.35); }
+
+/* ── Adaptive text colors (replaces text-white/X) ── */
+.text-adaptive { color: var(--galf-text); }
+.text-adaptive-secondary { color: var(--galf-text-secondary); }
+.text-adaptive-muted { color: var(--galf-text-muted); }
+
+/* Specific opacity equivalents */
+.text-adaptive-80 { color: var(--galf-text); opacity: 0.85; }
+.text-adaptive-60 { color: var(--galf-text-secondary); }
+.text-adaptive-50 { color: var(--galf-text-muted); }
+.text-adaptive-40 { color: var(--galf-text-muted); opacity: 0.8; }
+.text-adaptive-30 { color: var(--galf-text-muted); opacity: 0.6; }
+
+/* ── Adaptive border ── */
+.border-adaptive { border-color: var(--galf-border); }
+.border-adaptive-hover:hover { border-color: var(--galf-border-hover); }
+
+/* ── Adaptive interactive button options (quiz/choice buttons) ── */
+.choice-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--galf-text);
+  transition: all 0.2s ease;
+}
+.choice-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(255, 176, 0, 0.4);
+}
+.dark .choice-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+}
+.dark .choice-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 176, 0, 0.4);
+}
+
+/* ── Chat / Terminal console ── */
+.console-bg {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 1rem;
+}
+.dark .console-bg {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chat-bubble-tech {
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--galf-text);
+  border-radius: 0.75rem;
+}
+.dark .chat-bubble-tech {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.chat-bubble-system {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  color: var(--galf-text-muted);
+  border-radius: 9999px;
+  font-size: 9px;
+  font-weight: 700;
+}
+.dark .chat-bubble-system {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Adaptive tag / chip ── */
+.chip-adaptive {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  color: var(--galf-text-secondary);
+}
+.dark .chip-adaptive {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Adaptive divider ── */
+.divider-adaptive { border-color: var(--galf-border); }
+
+/* ── SVG Map background ── */
+.svg-map-bg {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 0.75rem;
+}
+.dark .svg-map-bg {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ── Adaptive section inner card ── */
+.inner-card {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1.25rem;
+}
+.dark .inner-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ── Warning label text adaptive ── */
+.label-adaptive {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--galf-text-muted);
+}
+.dark .label-adaptive { color: rgba(255, 255, 255, 0.5); }
+
+/* ═══════════════════════════════════════════════════════
    INDUSTRIAL HERO THEME — Spline 3D Integration
    ═══════════════════════════════════════════════════════ */
 
@@ -236,6 +398,10 @@ html { scroll-behavior: smooth; }
   background: linear-gradient(to bottom, #0e0e10, var(--galf-bg));
   border-top: 1px solid rgba(255, 176, 0, 0.1);
 }
+:root:not(.dark) .industrial-divider {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.08), var(--galf-bg));
+  border-top: 1px solid rgba(255, 176, 0, 0.15);
+}
 .industrial-divider::before {
   content: '';
   position: absolute;
@@ -258,6 +424,13 @@ html { scroll-behavior: smooth; }
   background: linear-gradient(180deg, 
     #0e0e10 0%, 
     #161618 50%,
+    var(--galf-bg) 100%
+  );
+}
+:root:not(.dark) .section-industrial-transition {
+  background: linear-gradient(180deg, 
+    rgba(0,0,0,0.06) 0%, 
+    rgba(0,0,0,0.03) 50%,
     var(--galf-bg) 100%
   );
 }
@@ -295,10 +468,705 @@ main {
   transition: padding-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.text-shadow-premium {
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9), 0 2px 4px rgba(0, 0, 0, 0.95);
+/* ═══════════════════════════════════════════════════════
+   ADDITIONAL CSS VARIABLES — Inputs, Panels, Responsive
+   ═══════════════════════════════════════════════════════ */
+:root {
+  --galf-input-bg: rgba(0, 0, 0, 0.04);
+  --galf-input-border: rgba(0, 0, 0, 0.12);
+  --galf-panel-inner: rgba(0, 0, 0, 0.04);
+  --galf-panel-border: rgba(0, 0, 0, 0.07);
+  --galf-hover-bg: rgba(0, 0, 0, 0.05);
+}
+.dark {
+  --galf-input-bg: rgba(0, 0, 0, 0.35);
+  --galf-input-border: rgba(255, 255, 255, 0.10);
+  --galf-panel-inner: rgba(0, 0, 0, 0.3);
+  --galf-panel-border: rgba(255, 255, 255, 0.06);
+  --galf-hover-bg: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Theme-Adaptive Utility Classes ── */
+.panel-bg {
+  background: var(--galf-panel-inner);
+  border: 1px solid var(--galf-panel-border);
+}
+.text-adaptive {
+  color: var(--galf-text);
+}
+.text-adaptive-secondary {
+  color: var(--galf-text-secondary);
+}
+.text-adaptive-muted {
+  color: var(--galf-text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════
+   LIGHT MODE GLOBAL OVERRIDES — Complete Coverage
+   
+   Strategy: Target all hardcoded dark-only Tailwind classes
+   inside page containers to ensure readability in light mode.
+   
+   In DARK mode  → these rules do nothing (native classes win)
+   In LIGHT mode → these rules override to ensure readability
+   ═══════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────
+   1. TEXT COLORS — all white/opacity variants
+   ───────────────────────────────────────────────────── */
+
+/* Full white → primary text */
+:root:not(.dark) .glass-card .text-white,
+:root:not(.dark) .glass-card p.text-white,
+:root:not(.dark) .glass-card h1.text-white,
+:root:not(.dark) .glass-card h2.text-white,
+:root:not(.dark) .glass-card h3.text-white,
+:root:not(.dark) .glass-card h4.text-white,
+:root:not(.dark) .glass-card span.text-white,
+:root:not(.dark) .glass-card div.text-white,
+:root:not(.dark) .glass-card label.text-white {
+  color: var(--galf-text) !important;
+}
+
+/* 80-90% opacity → primary text */
+:root:not(.dark) .glass-card [class*="text-white\/9"],
+:root:not(.dark) .glass-card [class*="text-white\/8"] {
+  color: var(--galf-text) !important;
+}
+
+/* 60-70% opacity → secondary text */
+:root:not(.dark) .glass-card [class*="text-white\/7"],
+:root:not(.dark) .glass-card [class*="text-white\/6"] {
+  color: var(--galf-text-secondary) !important;
+}
+
+/* 40-50% opacity → muted text */
+:root:not(.dark) .glass-card [class*="text-white\/5"],
+:root:not(.dark) .glass-card [class*="text-white\/4"] {
+  color: var(--galf-text-muted) !important;
+}
+
+/* 10-30% opacity → very muted / decorative */
+:root:not(.dark) .glass-card [class*="text-white\/3"],
+:root:not(.dark) .glass-card [class*="text-white\/2"],
+:root:not(.dark) .glass-card [class*="text-white\/1"] {
+  color: var(--galf-text-muted) !important;
+  opacity: 0.7;
+}
+
+/* Also target outside glass-card (sections, panels) */
+:root:not(.dark) section:not([style*="#0e0e10"]):not([style*="#0E0E10"]) [class*="text-white\/"] {
+  color: var(--galf-text-secondary) !important;
+}
+
+/* Restore white text and opacity inside intentionally dark containers (like simulator) in light mode */
+:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/"],
+:root:not(.dark) .bg-galf-carbon [class*="text-white\/"],
+:root:not(.dark) [class*="bg-galf-carbon"] .text-white,
+:root:not(.dark) .bg-galf-carbon .text-white,
+:root:not(.dark) [class*="bg-galf-carbon"] h3.text-white,
+:root:not(.dark) .bg-galf-carbon h3.text-white,
+:root:not(.dark) [class*="bg-galf-carbon"] span.text-white,
+:root:not(.dark) .bg-galf-carbon span.text-white {
+  color: #ffffff !important;
+}
+:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/4"],
+:root:not(.dark) .bg-galf-carbon [class*="text-white\/4"] {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/5"],
+:root:not(.dark) .bg-galf-carbon [class*="text-white\/5"] {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/6"],
+:root:not(.dark) .bg-galf-carbon [class*="text-white\/6"] {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/7"],
+:root:not(.dark) .bg-galf-carbon [class*="text-white\/7"] {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/8"],
+:root:not(.dark) .bg-galf-carbon [class*="text-white\/8"] {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 
+/* ─────────────────────────────────────────────────────
+   2. BACKGROUND COLORS — dark transparent overlays
+   ───────────────────────────────────────────────────── */
 
+/* Inside glass-card: dark bg → subtle light bg */
+:root:not(.dark) .glass-card [class*="bg-black\/4"],
+:root:not(.dark) .glass-card [class*="bg-black\/3"] {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+:root:not(.dark) .glass-card [class*="bg-black\/2"] {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Specifically bg-black/20, 30, 40, 50, 60 */
+:root:not(.dark) .glass-card .bg-black\/20 { background: rgba(0, 0, 0, 0.04) !important; }
+:root:not(.dark) .glass-card .bg-black\/30 { background: rgba(0, 0, 0, 0.04) !important; }
+:root:not(.dark) .glass-card .bg-black\/40 { background: rgba(0, 0, 0, 0.05) !important; }
+:root:not(.dark) .glass-card .bg-black\/50 { background: rgba(0, 0, 0, 0.06) !important; }
+:root:not(.dark) .glass-card .bg-black\/60 { background: rgba(0, 0, 0, 0.06) !important; }
+
+/* White/5 → light bg */
+:root:not(.dark) .glass-card [class*="bg-white\/5"] { background: rgba(0, 0, 0, 0.04) !important; }
+:root:not(.dark) .glass-card [class*="bg-white\/1"] { background: rgba(0, 0, 0, 0.03) !important; }
+
+/* Outside glass-card sections */
+:root:not(.dark) .bg-black\/5  { background: rgba(0, 0, 0, 0.04) !important; }
+:root:not(.dark) .bg-black\/10 { background: rgba(0, 0, 0, 0.06) !important; }
+:root:not(.dark) .bg-black\/20 { background: rgba(0, 0, 0, 0.05) !important; }
+:root:not(.dark) .bg-black\/30 { background: rgba(0, 0, 0, 0.04) !important; }
+:root:not(.dark) .bg-black\/40 { background: rgba(0, 0, 0, 0.06) !important; }
+
+/* Slate backgrounds in light mode */
+:root:not(.dark) .bg-slate-800 { background: rgba(0, 0, 0, 0.04) !important; }
+:root:not(.dark) .bg-slate-900 { background: rgba(0, 0, 0, 0.06) !important; }
+:root:not(.dark) .bg-slate-950 { background: rgba(0, 0, 0, 0.08) !important; }
+:root:not(.dark) .bg-slate-950\/90 { background: rgba(0, 0, 0, 0.08) !important; }
+
+/* Range slider track in light mode */
+:root:not(.dark) input[type="range"].bg-white\/10 { background: rgba(0, 0, 0, 0.10) !important; }
+
+/* Very low opacity white text → muted text in light mode */
+:root:not(.dark) .text-white\/40 { color: var(--galf-text-muted) !important; }
+:root:not(.dark) .text-white\/30 { color: var(--galf-text-muted) !important; opacity: 0.7; }
+
+/* Hover state overrides for light mode */
+:root:not(.dark) .hover\:bg-white\/5:hover { background: rgba(0, 0, 0, 0.05) !important; }
+:root:not(.dark) .hover\:bg-white\/10:hover { background: rgba(0, 0, 0, 0.07) !important; }
+:root:not(.dark) .hover\:bg-black\/10:hover { background: rgba(0, 0, 0, 0.07) !important; }
+:root:not(.dark) .hover\:bg-black\/40:hover { background: rgba(0, 0, 0, 0.08) !important; }
+:root:not(.dark) .hover\:border-white\/20:hover { border-color: rgba(0, 0, 0, 0.15) !important; }
+:root:not(.dark) .hover\:border-white\/25:hover { border-color: rgba(0, 0, 0, 0.18) !important; }
+
+/* ─────────────────────────────────────────────────────
+   3. BORDERS — white/X → dark/X
+   ───────────────────────────────────────────────────── */
+
+:root:not(.dark) .glass-card [class*="border-white\/5"]  { border-color: rgba(0, 0, 0, 0.08) !important; }
+:root:not(.dark) .glass-card [class*="border-white\/1"]  { border-color: rgba(0, 0, 0, 0.07) !important; }
+:root:not(.dark) .glass-card .border-white\/10           { border-color: rgba(0, 0, 0, 0.10) !important; }
+:root:not(.dark) .glass-card .border-white\/20           { border-color: rgba(0, 0, 0, 0.12) !important; }
+
+/* General border-white outside cards */
+:root:not(.dark) [class*="border-white\/5"]  { border-color: rgba(0, 0, 0, 0.08) !important; }
+:root:not(.dark) [class*="border-white\/10"] { border-color: rgba(0, 0, 0, 0.10) !important; }
+
+/* ─────────────────────────────────────────────────────
+   4. FORM ELEMENTS — inputs, selects, textareas
+   ───────────────────────────────────────────────────── */
+
+:root:not(.dark) input[class*="bg-black"],
+:root:not(.dark) textarea[class*="bg-black"],
+:root:not(.dark) select[class*="bg-black"] {
+  background: var(--galf-input-bg) !important;
+  border-color: var(--galf-input-border) !important;
+  color: var(--galf-text) !important;
+}
+
+:root:not(.dark) input[class*="text-white"],
+:root:not(.dark) textarea[class*="text-white"],
+:root:not(.dark) select[class*="text-white"] {
+  color: var(--galf-text) !important;
+}
+
+:root:not(.dark) input::placeholder,
+:root:not(.dark) textarea::placeholder {
+  color: var(--galf-text-muted) !important;
+  opacity: 1;
+}
+
+/* colorScheme fix for selects */
+:root:not(.dark) select {
+  color-scheme: light;
+}
+
+/* ─────────────────────────────────────────────────────
+   5. BUTTONS — dark styled buttons in panels
+   ───────────────────────────────────────────────────── */
+
+:root:not(.dark) .glass-card button[class*="bg-black"],
+:root:not(.dark) .glass-card button[class*="bg-white\/5"],
+:root:not(.dark) .glass-card button[class*="border-white\/5"] {
+  background: var(--galf-panel-inner) !important;
+  border-color: var(--galf-panel-border) !important;
+  color: var(--galf-text) !important;
+}
+
+/* Hover states */
+:root:not(.dark) .glass-card button[class*="hover:bg-white\/5"]:hover,
+:root:not(.dark) .glass-card button[class*="hover:bg-white\/10"]:hover {
+  background: rgba(0, 0, 0, 0.07) !important;
+}
+
+/* Choice/quiz buttons outside glass-card */
+:root:not(.dark) button[class*="bg-black\/30"][class*="border-white"] {
+  background: var(--galf-panel-inner) !important;
+  border-color: var(--galf-panel-border) !important;
+  color: var(--galf-text) !important;
+}
+
+/* Dark nav/UI buttons */
+:root:not(.dark) button[class*="bg-black\/5"] { background: rgba(0,0,0,0.05) !important; }
+:root:not(.dark) button[class*="bg-white\/5"] { background: rgba(0,0,0,0.04) !important; }
+
+/* ─────────────────────────────────────────────────────
+   6. SVG — text and path on dark-only SVG contexts
+   ───────────────────────────────────────────────────── */
+
+/* SVG map text labels in light mode → dark text */
+:root:not(.dark) .svg-map-bg text,
+:root:not(.dark) svg.svg-map text[fill="white"] {
+  fill: #1A1A1D !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   7. DARK DIVIDERS / PANELS outside glass-card
+   ───────────────────────────────────────────────────── */
+
+:root:not(.dark) [class*="border-white\/5"]:not([class*="galf-yellow"]):not(input):not(textarea):not(select) {
+  border-color: var(--galf-border) !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   8. RANGE SLIDERS — track color
+   ───────────────────────────────────────────────────── */
+
+:root:not(.dark) input[type="range"][class*="bg-white\/10"] {
+  background: var(--galf-border) !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   9. CHAT / TIMELINE / LOG BUBBLES
+   ───────────────────────────────────────────────────── */
+
+:root:not(.dark) [class*="rounded"][class*="bg-black\/4"] {
+  background: rgba(0,0,0,0.04) !important;
+  color: var(--galf-text) !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   10. DARK SECTIONS with inline style overrides
+       (Sections that set dark bg inline)
+   ───────────────────────────────────────────────────── */
+
+/* Don't override the cinematic hero (dark by design) */
+section[style*="#0e0e10"],
+section[style*="#0E0E10"],
+section[style*="0e0e10"],
+.hero-title-industrial,
+.hero-subtitle-industrial,
+.hero-cta-secondary {
+  /* These are intentionally dark - do not override */
+  color: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE MOBILE OPTIMIZATIONS (Consolidated below)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Section padding: reduce on mobile ── */
+.section-padding {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+}
+
+
+/* ── Typography scale on mobile ── */
+@media (max-width: 767px) {
+  h2[class*="text-6xl"] { font-size: 2.5rem !important; }
+  h2[class*="text-5xl"] { font-size: 2.25rem !important; }
+  h1[class*="text-8xl"] { font-size: 3rem !important; }
+  h1[class*="text-7xl"] { font-size: 2.75rem !important; }
+  
+  /* PageHeader title on mobile */
+  .page-header-title { 
+    font-size: 2.5rem !important;
+    line-height: 1 !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   EXTENDED LIGHT MODE OVERRIDES — Full Coverage Pass
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Opacity-based text in light mode ── */
+:root:not(.dark) .opacity-80 {
+  opacity: 1;
+  color: var(--galf-text-secondary);
+}
+
+/* ── text-slate-* colors for light mode ── */
+:root:not(.dark) .text-slate-900 { color: #111111 !important; }
+:root:not(.dark) .text-slate-950 { color: #111111 !important; }
+
+/* ── SVG map text fills — light mode ── */
+:root:not(.dark) svg text[fill="white"],
+:root:not(.dark) svg text[fill="#ffffff"],
+:root:not(.dark) svg text[fill="#FFFFFF"] {
+  fill: #333333 !important;
+}
+
+/* ── SVG map stroke — light mode ── */
+:root:not(.dark) svg path[stroke="rgba(255,255,255,0.1)"] {
+  stroke: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ── Dark-themed CTA sections (bg-galf-carbon / bg-[#0e0e10]) — KEEP DARK by design ── */
+.bg-galf-carbon,
+[style*="background"][style*="#0e0e10"],
+[style*="background"][style*="#0E0E10"] {
+  /* These sections are intentionally dark in both themes — no override needed */
+}
+
+/* Fix: text-white INSIDE intentionally dark sections stays white in light mode */
+:root:not(.dark) .bg-galf-carbon .text-white,
+:root:not(.dark) .bg-galf-carbon h2.text-white,
+:root:not(.dark) .bg-galf-carbon h3.text-white,
+:root:not(.dark) .bg-galf-carbon p.text-white {
+  color: #ffffff !important;
+}
+
+/* Fix: glass-card and borders inside dark CTA sections */
+:root:not(.dark) .bg-galf-carbon .glass-card {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+/* ── Braking bar adaptive (contact page) ── */
+:root:not(.dark) .bg-black\/40 {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+:root:not(.dark) .text-slate-950 {
+  color: #111111 !important;
+}
+
+/* ── Tech typing bubble (contact page) ── */
+:root:not(.dark) .bg-white\/5 {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* ── Remaining text-white overrides outside intentionally-dark sections ── */
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white {
+  color: var(--galf-text) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/90 {
+  color: var(--galf-text) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/80 {
+  color: var(--galf-text) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/70 {
+  color: var(--galf-text-secondary) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/60 {
+  color: var(--galf-text-secondary) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/50 {
+  color: var(--galf-text-muted) !important;
+}
+
+/* ── border-white overrides outside dark sections ── */
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .border-white\/5 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.10) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ── bg-white/X overrides for light mode (outside dark sections) ── */
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .bg-white\/5 {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .bg-white\/10 {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .bg-white\/20 {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ── bg-black/X overrides for light mode ── */
+:root:not(.dark) .bg-black\/60 {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCED RESPONSIVE — MOBILE + TABLET OPTIMIZATION
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Minimum font sizes globally ── */
+@media (max-width: 767px) {
+  .text-\[8px\] { font-size: 10px !important; }
+  .text-\[9px\] { font-size: 10px !important; }
+  .text-\[10px\] { font-size: 11px !important; }
+  .text-\[11px\] { font-size: 12px !important; }
+}
+
+/* ── Hero Section Mobile ── */
+@media (max-width: 767px) {
+  section[style*="#0e0e10"] {
+    min-height: 100vh !important;
+  }
+  
+  .hero-title-industrial {
+    font-size: 2.5rem !important;
+    line-height: 0.95 !important;
+  }
+  
+  .hero-subtitle-industrial {
+    font-size: 1rem !important;
+  }
+
+  /* Hero CTA stack on mobile */
+  .hero-cta-primary,
+  .hero-cta-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 1rem 1.5rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* ── Better section padding on mobile ── */
+@media (max-width: 767px) {
+  section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .py-32 { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
+  .py-24 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+  .py-20 { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+  
+  .mb-16 { margin-bottom: 2.5rem !important; }
+  .mb-20 { margin-bottom: 3rem !important; }
+  
+  /* Container padding */
+  .container-galf {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* ── Glass card responsive padding ── */
+@media (max-width: 767px) {
+  .glass-card {
+    padding: 1.25rem !important;
+  }
+  .glass-card.p-8 { padding: 1.25rem !important; }
+  .glass-card.p-10 { padding: 1.25rem !important; }
+  .glass-card.p-12 { padding: 1.5rem !important; }
+  .glass-card.md\:p-12 { padding: 1.25rem !important; }
+}
+
+/* ── Rounded corners on mobile ── */
+@media (max-width: 767px) {
+  .rounded-\[2\.5rem\] { border-radius: 1.25rem !important; }
+  .rounded-\[2rem\] { border-radius: 1rem !important; }
+}
+
+/* ── Grid responsive fixes ── */
+@media (max-width: 767px) {
+  /* Force single column on mobile for all major grids */
+  .grid.md\:grid-cols-2 { grid-template-columns: 1fr !important; }
+  .grid.md\:grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid.lg\:grid-cols-3 { grid-template-columns: 1fr !important; }
+  .grid.lg\:grid-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid.lg\:grid-cols-12 { grid-template-columns: 1fr !important; }
+  
+  /* 2-col grids should still be 2-col if items are small */
+  .grid.grid-cols-2 {
+    gap: 0.5rem !important;
+  }
+  
+  /* About values: 2 cols on mobile */
+  .grid.grid-cols-2.md\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  
+  /* Card inner grids */
+  .grid.grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  
+  /* Homepage form grid */
+  .grid.grid-cols-2.gap-4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Tablet (768px - 1023px) ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .py-32 { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+  .py-24 { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
+  
+  /* Tablet grids: 2 columns max */
+  .grid.lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .grid.lg\:grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .grid.lg\:grid-cols-12 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* About values: 3 cols on tablet */
+  .grid.grid-cols-2.md\:grid-cols-4 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* ── Touch targets: minimum 44x44px ── */
+@media (max-width: 767px) {
+  button, a[role="button"], [role="button"] {
+    min-height: 42px;
+  }
+  
+  input, select, textarea {
+    min-height: 44px;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}
+
+/* ── Card 3D: disable on touch devices ── */
+@media (max-width: 767px) {
+  .card-3d { transform: none !important; }
+  .card-3d:hover { transform: none !important; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+  
+  /* Equipment gallery: minimum height */
+  .card-3d {
+    min-height: 280px !important;
+  }
+}
+
+/* ── Tables responsive ── */
+@media (max-width: 767px) {
+  table { 
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ── Footer responsive ── */
+@media (max-width: 767px) {
+  footer .grid {
+    gap: 2rem !important;
+  }
+  
+  footer .flex.gap-6 {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+}
+
+/* ── SVG Map responsive ── */
+@media (max-width: 767px) {
+  svg.svg-map-bg,
+  .svg-map-bg {
+    max-height: 120px !important;
+  }
+  
+  svg text {
+    font-size: 9px !important;
+  }
+}
+
+/* ── Navigation responsive ── */
+@media (max-width: 767px) {
+  .navbar-mobile-fix {
+    letter-spacing: 0.05em !important;
+  }
+}
+
+/* ── CTA buttons full width on mobile ── */
+@media (max-width: 767px) {
+  .flex.flex-col.sm\:flex-row {
+    flex-direction: column !important;
+    width: 100%;
+  }
+  .flex.flex-col.sm\:flex-row > * {
+    width: 100%;
+  }
+  
+  /* Flex wrap gaps on mobile */
+  .flex.flex-wrap.gap-4 {
+    gap: 0.5rem !important;
+  }
+  
+  .flex.justify-center.gap-4 {
+    flex-wrap: wrap;
+    gap: 0.75rem !important;
+  }
+}
+
+/* ── Carousel / Slider controls on mobile ── */
+@media (max-width: 767px) {
+  .max-w-4xl {
+    max-width: 100% !important;
+  }
+}
+
+/* ── Scroll progress bar: keep visible ── */
+@media (max-width: 767px) {
+  .scroll-progress {
+    height: 3px !important;
+  }
+}
+
+/* ── Animations: reduce motion for accessibility ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Prevent content overflow ── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* ── Image / iframe overflow prevention ── */
+img, iframe, video, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Landscape mobile fix ── */
+@media (max-height: 500px) and (orientation: landscape) {
+  section[style*="#0e0e10"] {
+    min-height: auto !important;
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+  }
+}
 

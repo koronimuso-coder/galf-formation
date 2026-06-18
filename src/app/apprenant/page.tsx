@@ -1,6 +1,7 @@
-"use client"
+﻿"use client"
 import { FadeIn } from '@/components/animations/FadeIn'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { Play, BookOpen, CheckCircle2, Clock, Award, FileText, Download, ExternalLink, TrendingUp, Lock, Check, X, AlertTriangle, Timer, Edit3, ShieldAlert, Award as BadgeIcon } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
@@ -81,6 +82,7 @@ function ConfettiEffect() {
 }
 
 export default function ApprenantDashboard() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<'cours' | 'certificats'>('cours')
   const [activeModule, setActiveModule] = useState(2)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -128,6 +130,14 @@ export default function ApprenantDashboard() {
   const [cacesFeedback, setCacesFeedback] = useState<'correct' | 'wrong' | null>(null)
   const [cacesScore, setCacesScore] = useState(0)
   const [cacesCompleted, setCacesCompleted] = useState(false)
+
+  // Wave 4 additions - QCM countdown timer, Speak config, Scanner simulation
+  const [cacesTimer, setCacesTimer] = useState(30)
+  const [speakRate, setSpeakRate] = useState(1.0)
+  const [speakPitch, setSpeakPitch] = useState(1.0)
+  const [showQrScanner, setShowQrScanner] = useState(false)
+  const [qrScanProgress, setQrScanProgress] = useState(0)
+  const [qrScanResult, setQrScanResult] = useState<string | null>(null)
 
   // Carbon calculator states
   const [ecoSpeed, setEcoSpeed] = useState(15)
@@ -208,6 +218,7 @@ export default function ApprenantDashboard() {
   const handleCacesNextQuestion = () => {
     setCacesSelectedOption(null)
     setCacesFeedback(null)
+    setCacesTimer(30)
     if (cacesQuizStep < cacesQuestions.length - 1) {
       setCacesQuizStep(prev => prev + 1)
     } else {
@@ -221,7 +232,51 @@ export default function ApprenantDashboard() {
     setCacesFeedback(null)
     setCacesScore(0)
     setCacesCompleted(false)
+    setCacesTimer(30)
   }
+
+  // QCM CACES countdown timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (activeTab === 'cours' && !cacesCompleted && cacesFeedback === null) {
+      interval = setInterval(() => {
+        setCacesTimer(prev => {
+          if (prev <= 1) {
+            setCacesSelectedOption(-1)
+            setCacesFeedback('wrong')
+            triggerAudioAlert(220, 0.4)
+            return 0
+          }
+          if (prev <= 6) {
+            triggerAudioAlert(440, 0.05)
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+    return () => clearInterval(interval)
+  }, [cacesQuizStep, cacesFeedback, cacesCompleted, activeTab])
+
+  // QR Scanner simulation effect
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (showQrScanner && qrScanProgress < 100) {
+      timer = setTimeout(() => {
+        setQrScanProgress(prev => {
+          const next = prev + 5
+          if (next >= 100) {
+            triggerAudioAlert(880, 0.15)
+            setTimeout(() => triggerAudioAlert(1320, 0.2), 100)
+            setQrScanResult("AUTHENTIQUE")
+          } else {
+            if (next % 20 === 0) triggerAudioAlert(600, 0.03)
+          }
+          return next
+        })
+      }, 100)
+    }
+    return () => clearTimeout(timer)
+  }, [showQrScanner, qrScanProgress])
 
   const handleStopSiren = () => {
     if (sirenNodeRef.current) {
@@ -763,6 +818,8 @@ export default function ApprenantDashboard() {
       const textToSpeak = `Module de formation GALF. ${modules[activeModule].title}. Ce module dure environ ${modules[activeModule].duration}. Il contient ${modules[activeModule].lessons} leçons. Veuillez écouter les instructions de sécurité et inspecter votre équipement.`
       const utterance = new SpeechSynthesisUtterance(textToSpeak)
       utterance.lang = 'fr-FR'
+      utterance.rate = speakRate
+      utterance.pitch = speakPitch
       utterance.onend = () => setIsSpeaking(false)
       utterance.onerror = () => setIsSpeaking(false)
       setIsSpeaking(true)
@@ -1201,6 +1258,47 @@ export default function ApprenantDashboard() {
                       <div className="text-[9px] font-mono text-white/30 text-center">
                         {equippedEpi.length}/5 Éléments sélectionnés
                       </div>
+
+                      {/* Locker Protection Rating Gauges */}
+                      {(() => {
+                        const headEquipped = equippedEpi.includes('casque')
+                        const bodyEquipped = equippedEpi.includes('gilet')
+                        const feetEquipped = equippedEpi.includes('bottes')
+                        const handsEquipped = equippedEpi.includes('gants')
+                        const eyesEquipped = equippedEpi.includes('lunettes')
+                        const totalProtection = (headEquipped ? 20 : 0) + (bodyEquipped ? 20 : 0) + (feetEquipped ? 20 : 0) + (handsEquipped ? 20 : 0) + (eyesEquipped ? 20 : 0)
+                        
+                        return (
+                          <div className="mt-4 pt-4 border-t border-white/5 space-y-3">
+                            <div className="flex justify-between items-center text-[10px] uppercase font-black text-white/50 tracking-wider">
+                              <span>Indice de protection global :</span>
+                              <span className={`font-mono font-black ${totalProtection === 100 ? 'text-green-400' : 'text-galf-yellow'}`}>{totalProtection}%</span>
+                            </div>
+                            <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                              <div className={`h-full transition-all duration-500 ${totalProtection === 100 ? 'bg-green-500' : 'bg-galf-yellow'}`} style={{ width: `${totalProtection}%` }} />
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-2 text-[9px] text-white/60">
+                              <div className="flex justify-between p-1.5 rounded bg-black/20">
+                                <span>🪖 Tête :</span>
+                                <span className={headEquipped ? 'text-green-400 font-bold' : 'text-red-400'}>{headEquipped ? '100%' : '0%'}</span>
+                              </div>
+                              <div className="flex justify-between p-1.5 rounded bg-black/20">
+                                <span>🦺 Corps :</span>
+                                <span className={bodyEquipped ? 'text-green-400 font-bold' : 'text-red-400'}>{bodyEquipped ? '100%' : '0%'}</span>
+                              </div>
+                              <div className="flex justify-between p-1.5 rounded bg-black/20">
+                                <span>🧤 Mains :</span>
+                                <span className={handsEquipped ? 'text-green-400 font-bold' : 'text-red-400'}>{handsEquipped ? '100%' : '0%'}</span>
+                              </div>
+                              <div className="flex justify-between p-1.5 rounded bg-black/20">
+                                <span>🥽 Yeux :</span>
+                                <span className={eyesEquipped ? 'text-green-400 font-bold' : 'text-red-400'}>{eyesEquipped ? '100%' : '0%'}</span>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })()}
                     </div>
 
                     {/* 4. Badges Cabinet */}
@@ -1320,6 +1418,31 @@ export default function ApprenantDashboard() {
                             ))}
                           </div>
                         )}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mb-4 text-[10px]">
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-white/50 font-bold uppercase tracking-wider">
+                            <span>Vitesse</span>
+                            <span>{speakRate.toFixed(1)}x</span>
+                          </div>
+                          <input
+                            type="range" min="0.5" max="2.0" step="0.1" value={speakRate}
+                            onChange={(e) => setSpeakRate(parseFloat(e.target.value))}
+                            className="w-full h-1 bg-white/10 rounded accent-galf-yellow appearance-none cursor-pointer"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-white/50 font-bold uppercase tracking-wider">
+                            <span>Pitch</span>
+                            <span>{speakPitch.toFixed(1)}x</span>
+                          </div>
+                          <input
+                            type="range" min="0.5" max="2.0" step="0.1" value={speakPitch}
+                            onChange={(e) => setSpeakPitch(parseFloat(e.target.value))}
+                            className="w-full h-1 bg-white/10 rounded accent-galf-yellow appearance-none cursor-pointer"
+                          />
+                        </div>
                       </div>
 
                       <button
@@ -1578,6 +1701,9 @@ export default function ApprenantDashboard() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center text-[10px] text-white/50 font-bold uppercase tracking-wider">
                       <span>Progression Test</span>
+                      <span className={`px-2.5 py-0.5 rounded font-mono font-black ${cacesTimer <= 10 ? 'bg-red-500 text-white animate-pulse' : 'bg-galf-yellow text-galf-carbon'}`}>
+                        ⏱️ {cacesTimer}s
+                      </span>
                       <span>Question {cacesQuizStep + 1} / {cacesQuestions.length}</span>
                     </div>
 
@@ -1607,7 +1733,7 @@ export default function ApprenantDashboard() {
                             disabled={cacesFeedback !== null}
                             onClick={() => handleCacesOptionSelect(idx)}
                             className="w-full text-left p-3.5 rounded-xl text-xs border transition-all flex items-center justify-between cursor-pointer border-white/5 bg-black/30 hover:border-galf-yellow/40 text-white/70 hover:text-white"
-                            style={{ colorScheme: 'dark' }}
+                            style={{ colorScheme: 'light dark' }}
                           >
                             <span className="flex-1 pr-4">{opt}</span>
                             {cacesFeedback !== null && isCorrect && <span className="text-green-400 font-bold shrink-0">✓</span>}
@@ -2033,6 +2159,17 @@ export default function ApprenantDashboard() {
                         <Download className={`w-6 h-6 ${isDownloading ? 'animate-bounce' : 'group-hover:-translate-y-1 transition-transform'}`} /> 
                         {isDownloading ? "Traitement HD en cours..." : "Télécharger mon Diplôme (PDF Ultra-HD)"}
                       </button>
+                      <button 
+                        onClick={() => {
+                          setShowQrScanner(true);
+                          setQrScanProgress(0);
+                          setQrScanResult(null);
+                          triggerAudioAlert(880, 0.15);
+                        }}
+                        className="glass-card flex-1 px-12 py-5 rounded-[1.5rem] font-black text-lg text-slate-900 dark:text-white flex items-center justify-center gap-3 hover:border-galf-yellow/50 transition-all group"
+                      >
+                        <Award className="w-6 h-6 group-hover:scale-110 transition-transform text-galf-yellow animate-pulse" /> Simuler Scan QR
+                      </button>
                       <button className="glass-card flex-1 px-12 py-5 rounded-[1.5rem] font-black text-lg text-slate-900 dark:text-white flex items-center justify-center gap-3 hover:border-galf-yellow/50 transition-all group">
                         <ExternalLink className="w-6 h-6 group-hover:rotate-12 transition-transform" /> Propulser sur LinkedIn
                       </button>
@@ -2103,6 +2240,93 @@ export default function ApprenantDashboard() {
           </div>
         )}
       </div>
+
+      {showQrScanner && (
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center z-[150] p-4 animate-fadeIn">
+          <style>{`
+            @keyframes scan {
+              0% { top: 0%; }
+              50% { top: 100%; }
+              100% { top: 0%; }
+            }
+            .animate-scan-line {
+              position: absolute;
+              animation: scan 2.5s linear infinite;
+            }
+          `}</style>
+          
+          <div className="w-full max-w-md bg-galf-carbon border border-white/10 rounded-[2.5rem] p-8 text-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
+            
+            <h3 className="text-xl font-black text-white mb-2 uppercase tracking-wide">Simulation de Numérisation QR Code</h3>
+            <p className="text-xs text-white/50 mb-6 font-sans">Cadre photo-détecteur actif. Analyse des clés de chiffrement...</p>
+
+            {/* Scanner Animation Box */}
+            <div className="relative w-64 h-64 border-2 border-dashed border-galf-yellow/30 mx-auto rounded-3xl overflow-hidden bg-black/60 flex items-center justify-center mb-6">
+              {qrScanResult === null ? (
+                <>
+                  {/* Laser line scanning */}
+                  <div className="absolute left-0 w-full h-1 bg-galf-yellow shadow-[0_0_15px_#FFB000] animate-scan-line z-10" />
+                  
+                  {/* Corner ornaments */}
+                  <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-galf-yellow" />
+                  <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-galf-yellow" />
+                  <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-galf-yellow" />
+                  <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-galf-yellow" />
+                  
+                  {/* Progress Ring or percentage */}
+                  <div className="text-center z-20">
+                    <span className="text-4xl block">📸</span>
+                    <span className="block text-xs font-mono font-black text-galf-yellow mt-2">{qrScanProgress}%</span>
+                  </div>
+                </>
+              ) : (
+                <div className="p-6 text-center space-y-4 animate-fadeIn z-20">
+                  <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto animate-bounce" />
+                  <div>
+                    <span className="text-xs font-black text-white uppercase tracking-wider block">Certificat Authentique</span>
+                    <span className="text-[10px] font-mono text-green-400 mt-1 block">ID: {certData.id}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              {qrScanResult === 'AUTHENTIQUE' ? (
+                <div className="space-y-3">
+                  <p className="text-[11px] text-white/70 leading-relaxed font-sans">
+                    L'attestation de réussite pour <strong>{userName}</strong> ({certData.course}) est enregistrée dans nos registres sécurisés.
+                  </p>
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={() => {
+                        setShowQrScanner(false);
+                        router.push(`/verification-certificat?id=${certData.id}`);
+                      }}
+                      className="flex-1 bg-galf-yellow text-galf-carbon py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all cursor-pointer"
+                    >
+                      Ouvrir la Fiche Publique
+                    </button>
+                    <button 
+                      onClick={() => setShowQrScanner(false)}
+                      className="px-5 py-3 rounded-xl border border-white/10 text-white font-bold text-xs uppercase hover:bg-white/5 transition-all cursor-pointer"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowQrScanner(false)}
+                  className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer"
+                >
+                  Annuler la numérisation
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

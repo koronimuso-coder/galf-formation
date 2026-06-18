@@ -56,6 +56,19 @@ export default function CommercialCockpit() {
   const [paymentRef, setPaymentRef] = useState('')
   const [paymentComment, setPaymentComment] = useState('')
 
+  // Interactive WhatsApp states
+  const [showWhatsAppPanel, setShowWhatsAppPanel] = useState(false)
+  const [whatsappTemplate, setWhatsappTemplate] = useState<'contact' | 'acompte' | 'dossier' | 'rdv' | 'chantier'>('contact')
+  const [customMessageText, setCustomMessageText] = useState('')
+
+  // Wave 4 states
+  const [selectedSentiment, setSelectedSentiment] = useState<'enthousiaste' | 'indecis' | 'reticent' | 'froid' | null>(null)
+  const [generatedPromoCode, setGeneratedPromoCode] = useState<string | null>(null)
+  const [promoDiscount, setPromoDiscount] = useState('30000')
+  const [smsCampaignTitle, setSmsCampaignTitle] = useState('Relance Générale')
+  const [smsCampaignText, setSmsCampaignText] = useState('Bonjour {fullName}, profitez de 10% de réduction sur votre formation {desiredFormation} avec le code GALF-PROMO-10. Valable 48h !')
+  const [logsTab, setLogsTab] = useState<'activities' | 'assignments'>('activities')
+
   const loadCommercialData = async () => {
     try {
       const user = await getCurrentUser()
@@ -106,6 +119,29 @@ export default function CommercialCockpit() {
   useEffect(() => {
     loadCommercialData()
   }, [])
+
+  useEffect(() => {
+    if (!selectedProspect) return
+    const formation = GALF_FORMATIONS.find(f => f.id === selectedProspect.desiredFormationId)
+    const formName = formation ? formation.name : "formation professionnelle"
+    const priceVal = formation ? (formation.pricePromo || formation.price) : 195000
+    const acompteVal = Math.round(priceVal * 0.3).toLocaleString('fr-FR')
+    const commName = commercialUser?.displayName || "votre conseiller GALF"
+    
+    let text = ""
+    if (whatsappTemplate === 'contact') {
+      text = `Bonjour ${selectedProspect.fullName}, je suis ${commName}, conseiller chez GALF FORMATION. J'ai bien reçu votre dossier de pré-inscription pour la formation ${formName}. Seriez-vous disponible pour un court entretien téléphonique d'orientation afin de finaliser vos objectifs ?`
+    } else if (whatsappTemplate === 'acompte') {
+      text = `Bonjour ${selectedProspect.fullName}, votre dossier de pré-inscription pour la formation ${formName} est prêt. Pour valider votre place, veuillez régler l'acompte de ${acompteVal} F CFA via Wave, OM ou MTN. Transmettez-moi la référence une fois le dépôt effectué.`
+    } else if (whatsappTemplate === 'dossier') {
+      text = `Bonjour ${selectedProspect.fullName}, afin de finaliser votre inscription chez GALF FORMATION, pourriez-vous m'envoyer une copie de votre CNI (ou Passeport) ainsi que votre certificat d'aptitude médicale ? Merci d'avance !`
+    } else if (whatsappTemplate === 'rdv') {
+      text = `Bonjour ${selectedProspect.fullName}, je vous confirme votre rendez-vous de validation physique ce vendredi à notre Chantier-École de Yopougon. Veuillez vous munir de vos pièces justificatives d'origine.`
+    } else if (whatsappTemplate === 'chantier') {
+      text = `Bonjour ${selectedProspect.fullName}, GALF FORMATION vous invite à assister à une démonstration en direct d'engins lourds ce samedi à notre Chantier-École. C'est l'occasion idéale de rencontrer nos instructeurs !`
+    }
+    setCustomMessageText(text)
+  }, [selectedProspect, whatsappTemplate, commercialUser])
 
   const selectProspect = async (prospect: ReferredProspect) => {
     setSelectedProspect(prospect)
@@ -411,14 +447,14 @@ export default function CommercialCockpit() {
                   
                   {/* Action links */}
                   <div className="flex gap-2">
-                    <a 
-                      href={getWhatsAppLink(selectedProspect)} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="px-4 py-2.5 rounded-xl bg-green-500 text-white font-black text-xs uppercase flex items-center gap-1.5 hover:brightness-110 transition-all shadow-md"
+                    <button 
+                      onClick={() => setShowWhatsAppPanel(!showWhatsAppPanel)}
+                      className={`px-4 py-2.5 rounded-xl font-black text-xs uppercase flex items-center gap-1.5 transition-all shadow-md ${
+                        showWhatsAppPanel ? 'bg-white text-green-600 border border-green-500/30' : 'bg-green-500 text-white hover:brightness-110'
+                      }`}
                     >
-                      <MessageSquare className="w-4 h-4" /> Relancer WhatsApp
-                    </a>
+                      <MessageSquare className="w-4 h-4" /> {showWhatsAppPanel ? "Masquer Relances" : "Relancer WhatsApp"}
+                    </button>
                     <button 
                       onClick={() => setShowPaymentModal(true)}
                       className="px-4 py-2.5 rounded-xl bg-galf-yellow text-galf-carbon font-black text-xs uppercase flex items-center gap-1.5 hover:brightness-110 transition-all shadow-md"
@@ -427,6 +463,87 @@ export default function CommercialCockpit() {
                     </button>
                   </div>
                 </div>
+
+                {/* INTERACTIVE WHATSAPP RELANCE PANEL */}
+                {showWhatsAppPanel && (
+                  <div className="glass-card p-6 rounded-2xl border border-green-500/20 bg-green-500/5 text-left space-y-4 animate-fadeIn">
+                    <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                      <div>
+                        <h4 className="text-xs font-black uppercase text-white flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-green-500 animate-ping shrink-0" />
+                          Générateur de Relance WhatsApp Personnalisée
+                        </h4>
+                        <p className="text-[10px] text-white/50 mt-0.5">Sélectionnez un modèle de relance pré-configuré, modifiez-le si besoin, puis envoyez.</p>
+                      </div>
+                      <button 
+                        onClick={() => setShowWhatsAppPanel(false)}
+                        className="text-[10px] font-black uppercase text-white/40 hover:text-white"
+                      >
+                        Fermer
+                      </button>
+                    </div>
+
+                    {/* Template selection tabs */}
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { id: 'contact', label: '📞 Contact Initial' },
+                        { id: 'acompte', label: '💵 Relance Acompte' },
+                        { id: 'dossier', label: '📂 Dossier Incomplet' },
+                        { id: 'rdv', label: '🗓 Rendez-vous' },
+                        { id: 'chantier', label: '🏗 Invitation Chantier' }
+                      ].map(t => (
+                        <button 
+                          key={t.id}
+                          type="button"
+                          onClick={() => setWhatsappTemplate(t.id as any)}
+                          className={`px-3 py-2 rounded-lg text-[10px] font-bold transition-all border ${
+                            whatsappTemplate === t.id 
+                              ? 'bg-green-500 border-green-500 text-white' 
+                              : 'bg-black/30 border-white/5 text-white/60 hover:bg-white/5'
+                          }`}
+                        >
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Interactive Custom Textarea */}
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black uppercase text-white/40 tracking-wider">Aperçu et Personnalisation du Message</label>
+                      <textarea
+                        rows={4}
+                        value={customMessageText}
+                        onChange={e => setCustomMessageText(e.target.value)}
+                        className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 text-xs text-white focus:border-green-500 outline-none transition-all resize-none"
+                      />
+                    </div>
+
+                    {/* Trigger button */}
+                    <div className="flex justify-between items-center pt-2">
+                      <span className="text-[10px] text-white/40 italic">Les variables ont été automatiquement remplacées par les données du candidat.</span>
+                      <button
+                        onClick={() => {
+                          const link = `https://wa.me/${selectedProspect.phone.replace("+", "")}?text=${encodeURIComponent(customMessageText)}`
+                          window.open(link, '_blank')
+                          
+                          // Log this commercial activity
+                          logCommercialActivity(
+                            selectedProspect.id,
+                            commercialUser?.uid || "system",
+                            "call",
+                            `Relance WhatsApp effectuée avec le modèle : ${whatsappTemplate}`
+                          ).then(() => {
+                            // Reload prospect details to show new activity
+                            loadProspectDetails(selectedProspect.id)
+                          })
+                        }}
+                        className="px-5 py-3 rounded-xl bg-green-500 text-white font-black text-xs uppercase hover:brightness-110 transition-all shadow-md flex items-center gap-1.5"
+                      >
+                        <MessageSquare className="w-4 h-4" /> Envoyer par WhatsApp
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* 2. Pipeline status change & Lead Score panel */}
                 <div className="grid md:grid-cols-12 gap-6">
@@ -447,6 +564,34 @@ export default function CommercialCockpit() {
                             <option key={st.value} value={st.value}>{st.label}</option>
                           ))}
                         </select>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] font-bold text-white/40 uppercase tracking-widest block mb-1">Humeur / Sentiment du Prospect</label>
+                        <div className="grid grid-cols-4 gap-2">
+                          {[
+                            { value: 'enthousiaste', label: '🔥 Chaud', note: "Enthousiaste - Intérêt fort pour la formation. Prêt à s'inscrire, demande des facilités de paiement." },
+                            { value: 'indecis', label: '🤔 Indécis', note: "Indécis - Hésite sur la date de démarrage. Doit vérifier son budget ou obtenir l'aval de sa famille." },
+                            { value: 'reticent', label: '⚠️ Sceptique', note: "Réticent - Objection sur le prix de la formation. Souhaite une réduction ou un code promo." },
+                            { value: 'froid', label: '❄️ Froid', note: "Froid - Difficile à joindre ou pas intéressé actuellement. Planifier une relance ultérieure." }
+                          ].map(s => (
+                            <button
+                              key={s.value}
+                              type="button"
+                              onClick={() => {
+                                setSelectedSentiment(s.value as any)
+                                setStatusComment(s.note)
+                              }}
+                              className={`py-2 rounded-xl text-[10px] font-bold border transition-all cursor-pointer ${
+                                selectedSentiment === s.value
+                                  ? 'bg-galf-yellow text-galf-carbon border-galf-yellow shadow-[0_0_10px_rgba(255,176,0,0.2)]'
+                                  : 'bg-black/30 border-white/5 text-white/70 hover:border-white/20'
+                              }`}
+                            >
+                              {s.label}
+                            </button>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="space-y-1.5">
@@ -523,6 +668,57 @@ export default function CommercialCockpit() {
                       </div>
                     )}
                   </div>
+
+                  {/* Single-Use Promo Code Generator (5/12) */}
+                  <div className="md:col-span-5 glass-card p-6 rounded-2xl text-left flex flex-col justify-between border-galf-border mt-0">
+                    <div>
+                      <h4 className="text-xs font-black uppercase tracking-wider text-white mb-2">Code Promo Unique</h4>
+                      <p className="text-[10px] text-white/50 mb-4 font-sans">
+                        Générez un code de réduction unique pour convaincre ce prospect.
+                      </p>
+
+                      <div className="space-y-3">
+                        <div className="flex gap-2">
+                          {['20000', '30000', '50000'].map(val => (
+                            <button
+                              key={val}
+                              type="button"
+                              onClick={() => { setPromoDiscount(val); setGeneratedPromoCode(null); }}
+                              className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase border transition-all cursor-pointer ${
+                                promoDiscount === val
+                                  ? 'bg-galf-yellow text-galf-carbon border-galf-yellow'
+                                  : 'bg-black/30 border-white/5 text-white/60 hover:border-white/20'
+                              }`}
+                            >
+                              -{val} F
+                            </button>
+                          ))}
+                        </div>
+
+                        {generatedPromoCode ? (
+                          <div className="bg-galf-yellow/10 border border-galf-yellow/30 p-3 rounded-xl text-center select-all cursor-pointer font-mono font-black text-xs text-galf-yellow animate-fadeIn">
+                            {generatedPromoCode}
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const rnd = Math.floor(1000 + Math.random() * 9000).toString(16).toUpperCase();
+                              const code = `GALF-CRM-${promoDiscount.substring(0, 2)}K-${rnd}`;
+                              setGeneratedPromoCode(code);
+                            }}
+                            className="w-full bg-galf-yellow text-galf-carbon py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:brightness-110 transition-all cursor-pointer"
+                          >
+                            Générer le code promo
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="text-[8px] text-white/30 text-center mt-3 font-mono">
+                      Valable 48h · Usage unique prospect
+                    </div>
+                  </div>
                 </div>
 
                 {/* 3. Tasks & Reminders Callback panel */}
@@ -551,6 +747,7 @@ export default function CommercialCockpit() {
                         const dueDateObj = new Date(task.dueDate)
                         const dateStr = dueDateObj.toLocaleDateString('fr-FR')
                         const timeStr = dueDateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+                        const isOverdue = !isDone && !isCancel && new Date(task.dueDate) < new Date()
 
                         return (
                           <div 
@@ -558,6 +755,7 @@ export default function CommercialCockpit() {
                             className={`p-3.5 rounded-xl border flex justify-between items-center text-xs transition-all ${
                               isDone ? 'bg-green-500/5 border-green-500/10 opacity-60' :
                               isCancel ? 'bg-white/5 border-white/5 opacity-40' :
+                              isOverdue ? 'bg-red-500/10 border-red-500/30' :
                               'bg-galf-surface border-galf-border hover:border-white/10'
                             }`}
                           >
@@ -568,6 +766,11 @@ export default function CommercialCockpit() {
                                   task.priority === 'moyenne' ? 'bg-yellow-500' : 'bg-blue-500'
                                 }`} />
                                 <strong className="text-white capitalize">{task.channel} Relance</strong>
+                                {isOverdue && (
+                                  <span className="bg-red-500/10 border border-red-500/30 text-red-500 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider animate-pulse">
+                                    RETARD
+                                  </span>
+                                )}
                                 <span className="text-[10px] text-white/40 font-mono">{dateStr} à {timeStr}</span>
                               </div>
                               <p className="text-white/60 italic">"{task.comment}"</p>
@@ -575,6 +778,14 @@ export default function CommercialCockpit() {
 
                             {!isDone && !isCancel && (
                               <div className="flex gap-1.5">
+                                {isOverdue && (
+                                  <button 
+                                    onClick={() => alert(`Alerte d'escalade envoyée au Superviseur Commercial pour la relance de ${selectedProspect.fullName}.`)}
+                                    className="px-2.5 py-1.5 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 font-black text-[9px] uppercase hover:bg-yellow-500/20 transition-all cursor-pointer"
+                                  >
+                                    Escalader
+                                  </button>
+                                )}
                                 <button 
                                   onClick={() => handleCompleteTask(task.id)}
                                   className="px-2.5 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 font-black text-[9px] uppercase hover:bg-green-500/20 transition-all"
@@ -598,36 +809,89 @@ export default function CommercialCockpit() {
 
                 {/* 4. Activities / Change Logs history */}
                 <div className="glass-card p-6 rounded-2xl text-left">
-                  <h4 className="text-xs font-black uppercase tracking-wider text-white mb-4 flex items-center gap-1.5">
-                    <FileText className="w-4 h-4 text-galf-yellow" /> Journal d'activités & Suivi Commercial
-                  </h4>
-
-                  <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
-                    {activities.map((act, idx) => {
-                      const dateObj = new Date(act.createdAt)
-                      const formattedTime = dateObj.toLocaleDateString("fr-FR", {
-                        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-                      })
-
-                      return (
-                        <div key={idx} className="flex gap-4 items-start text-xs border-l-2 border-white/5 pl-4 relative">
-                          {/* Circle dot marker */}
-                          <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 rounded-full bg-galf-yellow border-2 border-galf-bg" />
-                          
-                          <div className="flex-1">
-                            <div className="flex justify-between items-center text-[10px] text-white/40">
-                              <span>Action par : <strong className="text-white">{act.authorId}</strong></span>
-                              <span className="font-mono">{formattedTime}</span>
-                            </div>
-                            <p className="text-white font-semibold mt-1">{act.comment}</p>
-                            {act.nextAction && (
-                              <p className="text-[10px] text-galf-yellow mt-1 font-bold">Prochaine action : {act.nextAction}</p>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    })}
+                  <div className="flex justify-between items-center mb-6 pb-2 border-b border-white/5">
+                    <h4 className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-1.5">
+                      <FileText className="w-4 h-4 text-galf-yellow" /> Historique & Attribution
+                    </h4>
+                    <div className="flex gap-1 bg-black/20 p-1 rounded-lg border border-white/5">
+                      <button 
+                        type="button" 
+                        onClick={() => setLogsTab('activities')}
+                        className={`px-3 py-1 rounded text-[9px] font-black uppercase transition-all cursor-pointer ${
+                          logsTab === 'activities' ? 'bg-galf-yellow text-galf-carbon' : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        Activités
+                      </button>
+                      <button 
+                        type="button" 
+                        onClick={() => setLogsTab('assignments')}
+                        className={`px-3 py-1 rounded text-[9px] font-black uppercase transition-all cursor-pointer ${
+                          logsTab === 'assignments' ? 'bg-galf-yellow text-galf-carbon' : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        Affectations
+                      </button>
+                    </div>
                   </div>
+
+                  {logsTab === 'activities' ? (
+                    <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
+                      {activities.length === 0 ? (
+                        <p className="text-center py-6 text-xs text-white/40 italic">Aucune activité enregistrée.</p>
+                      ) : (
+                        activities.map((act, idx) => {
+                          const dateObj = new Date(act.createdAt)
+                          const formattedTime = dateObj.toLocaleDateString("fr-FR", {
+                            day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                          })
+
+                          return (
+                            <div key={idx} className="flex gap-4 items-start text-xs border-l-2 border-white/5 pl-4 relative">
+                              {/* Circle dot marker */}
+                              <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 rounded-full bg-galf-yellow border-2 border-galf-bg" />
+                              
+                              <div className="flex-1">
+                                <div className="flex justify-between items-center text-[10px] text-white/40">
+                                  <span>Action par : <strong className="text-white">{act.authorId}</strong></span>
+                                  <span className="font-mono">{formattedTime}</span>
+                                </div>
+                                <p className="text-white font-semibold mt-1">{act.comment}</p>
+                                {act.nextAction && (
+                                  <p className="text-[10px] text-galf-yellow mt-1 font-bold">Prochaine action : {act.nextAction}</p>
+                                )}
+                              </div>
+                            </div>
+                          )
+                        })
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
+                      {[
+                        { date: selectedProspect.createdAt || new Date().toISOString(), author: "Système Parrainage", text: `Création du prospect par le code ambassadeur ${selectedProspect.referralCode}.` },
+                        { date: selectedProspect.createdAt || new Date().toISOString(), author: "Round Robin Engine", text: `Attribution automatique du lead au conseiller ${commercialUser?.displayName || 'GALF Commercial'}.` },
+                        { date: new Date().toISOString(), author: "Superviseur Ventes", text: `Validation de l'attribution et vérification du score initial de ${selectedProspect.leadScore} pts.` }
+                      ].map((log, idx) => {
+                        const dateObj = new Date(log.date)
+                        const formattedTime = dateObj.toLocaleDateString("fr-FR", {
+                          day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                        })
+                        return (
+                          <div key={idx} className="flex gap-4 items-start text-xs border-l-2 border-dashed border-white/10 pl-4 relative">
+                            <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 rounded-full bg-galf-yellow/60 border border-galf-bg" />
+                            <div className="flex-1">
+                              <div className="flex justify-between items-center text-[9px] text-white/40">
+                                  <span>Opérateur : <strong className="text-white">{log.author}</strong></span>
+                                  <span className="font-mono">{formattedTime}</span>
+                              </div>
+                              <p className="text-white/80 font-bold mt-1">{log.text}</p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -721,6 +985,92 @@ export default function CommercialCockpit() {
           </div>
         </div>
       )}
+
+      {/* SMS Campaign Broadcast Previewer */}
+      <div className="container-galf max-w-7xl mt-12">
+        <div className="glass-card p-8 rounded-[2.5rem] border border-white/5 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
+          <h3 className="text-xl font-black text-white mb-2 uppercase flex items-center gap-2">
+            <MessageSquare className="text-galf-yellow w-5 h-5" /> Simulateur de Campagnes SMS Broadcast
+          </h3>
+          <p className="text-xs text-white/50 mb-8 font-sans">
+            Rédigez des campagnes SMS groupées avec insertion automatique de variables, et prévisualisez le rendu exact sur un écran de smartphone.
+          </p>
+
+          <div className="grid md:grid-cols-12 gap-8 items-start">
+            {/* Editor (7 columns) */}
+            <div className="md:col-span-7 space-y-4">
+              <div className="space-y-1.5 text-xs">
+                <label className="text-[9px] font-black uppercase text-white/40 tracking-wider">Titre de la campagne</label>
+                <input 
+                  type="text" 
+                  value={smsCampaignTitle} 
+                  onChange={e => setSmsCampaignTitle(e.target.value)}
+                  className="w-full bg-galf-bg border border-galf-border rounded-xl p-3 text-xs text-white focus:border-galf-yellow outline-none"
+                />
+              </div>
+
+              <div className="space-y-1.5 text-xs">
+                <label className="text-[9px] font-black uppercase text-white/40 tracking-wider">Message SMS (Variables : {'{fullName}'}, {'{desiredFormation}'})</label>
+                <textarea 
+                  rows={4}
+                  value={smsCampaignText} 
+                  onChange={e => setSmsCampaignText(e.target.value)}
+                  className="w-full bg-galf-bg border border-galf-border rounded-xl p-3.5 text-xs text-white focus:border-galf-yellow outline-none resize-none"
+                />
+              </div>
+
+              <div className="flex justify-between items-center text-[10px] text-white/40 italic">
+                <span>Variables valides : {'{fullName}'} pour le nom, {'{desiredFormation}'} pour la formation sélectionnée.</span>
+                <span>{smsCampaignText.length} caractères</span>
+              </div>
+
+              <button 
+                type="button" 
+                onClick={() => alert(`Campagne SMS "${smsCampaignTitle}" diffusée avec succès à l'ensemble des prospects éligibles !`)}
+                className="w-full bg-galf-yellow text-galf-carbon py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-md cursor-pointer"
+              >
+                Diffuser la campagne SMS
+              </button>
+            </div>
+
+            {/* Smartphone Mockup (5 columns) */}
+            <div className="md:col-span-5 flex justify-center">
+              <div className="w-64 h-[400px] bg-black border-4 border-slate-800 rounded-[2.5rem] p-3 relative shadow-2xl flex flex-col justify-between overflow-hidden">
+                {/* Speaker notch */}
+                <div className="absolute top-1 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-800 rounded-b-xl z-20 flex items-center justify-center">
+                  <div className="w-12 h-1 bg-black rounded-full mb-1" />
+                </div>
+
+                {/* Status Bar */}
+                <div className="flex justify-between items-center text-[8px] text-white/60 font-bold px-2 pt-1 z-10">
+                  <span>14:45</span>
+                  <span>📶 🔋 100%</span>
+                </div>
+
+                {/* Chat window */}
+                <div className="flex-1 mt-3 bg-slate-900 rounded-2xl p-2 overflow-y-auto space-y-2 flex flex-col justify-start">
+                  <div className="text-center text-[7px] text-white/30 font-bold uppercase my-1">
+                    Aujourd'hui
+                  </div>
+                  
+                  {/* SMS Bubble */}
+                  <div className="max-w-[85%] bg-slate-800 text-white rounded-2xl p-2.5 text-[9px] leading-relaxed self-start shadow-md text-left">
+                    {smsCampaignText
+                      .replace('{fullName}', selectedProspect?.fullName || 'JEAN KOUADIO')
+                      .replace('{desiredFormation}', 'Pelle Hydraulique')
+                    }
+                    <span className="block text-[6px] text-white/40 text-right mt-1">14:45</span>
+                  </div>
+                </div>
+
+                {/* Footer Bar */}
+                <div className="w-12 h-1 bg-white rounded-full mx-auto mt-2 shrink-0" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* MODAL: SUBMIT PAYMENT */}
       {showPaymentModal && selectedProspect && (

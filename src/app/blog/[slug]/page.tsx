@@ -148,9 +148,9 @@ export default function BlogDetail() {
               />
               
               {/* Comfort Controls Widget */}
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 mb-8 flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
+              <div className="p-4 rounded-2xl panel-bg mb-8 flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
                 <div className="flex items-center gap-2">
-                  <span className="text-white/40 uppercase tracking-wider text-[10px]">Thème de lecture :</span>
+                  <span className="text-adaptive-muted uppercase tracking-wider text-[10px]">Thème de lecture :</span>
                   {(['day', 'night', 'sepia'] as const).map(t => (
                     <button 
                       key={t} 
@@ -158,7 +158,7 @@ export default function BlogDetail() {
                       className={`px-3 py-1 rounded-lg uppercase text-[9px] font-black border transition-all ${
                         comfortBg === t 
                           ? 'bg-galf-yellow text-galf-carbon border-galf-yellow' 
-                          : 'bg-black/30 border-white/5 text-white/60 hover:border-white/20'
+                          : 'choice-btn hover:border-galf-yellow/30 text-adaptive-secondary'
                       }`}
                     >
                       {t === 'day' ? 'Jour' : t === 'night' ? 'Nuit' : 'Sépia'}
@@ -167,19 +167,19 @@ export default function BlogDetail() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-white/40 uppercase tracking-wider text-[10px]">Taille du texte :</span>
+                  <span className="text-adaptive-muted uppercase tracking-wider text-[10px]">Taille du texte :</span>
                   <button 
                     disabled={comfortSize <= 14}
                     onClick={() => { triggerAudioClick(); setComfortSize(prev => prev - 2); }}
-                    className="w-8 h-8 rounded-lg bg-black/30 border border-white/5 flex items-center justify-center text-white hover:border-white/20 disabled:opacity-30"
+                    className="w-8 h-8 rounded-lg choice-btn flex items-center justify-center hover:border-galf-yellow/30 text-adaptive disabled:opacity-30"
                   >
                     A-
                   </button>
-                  <span className="text-white w-6 text-center text-xs">{comfortSize}px</span>
+                  <span className="text-adaptive w-6 text-center text-xs">{comfortSize}px</span>
                   <button 
                     disabled={comfortSize >= 24}
                     onClick={() => { triggerAudioClick(); setComfortSize(prev => prev + 2); }}
-                    className="w-8 h-8 rounded-lg bg-black/30 border border-white/5 flex items-center justify-center text-white hover:border-white/20 disabled:opacity-30"
+                    className="w-8 h-8 rounded-lg choice-btn flex items-center justify-center hover:border-galf-yellow/30 text-adaptive disabled:opacity-30"
                   >
                     A+
                   </button>
@@ -213,11 +213,11 @@ export default function BlogDetail() {
 
               {/* ═══════════════════════════════════════════════
                   NEW: EMOJI REACTIONS SECTION
-                 ═══════════════════════════════════════════════ */}
-              <div className="mt-16 bg-white/5 border border-white/5 rounded-3xl p-6 flex flex-wrap items-center justify-between gap-6">
+                  ═══════════════════════════════════════════════ */}
+              <div className="mt-16 panel-bg rounded-3xl p-6 flex flex-wrap items-center justify-between gap-6">
                 <div>
-                  <h4 className="text-sm font-black text-white">Réagissez à cet article</h4>
-                  <p className="text-[11px] text-white/50">Montrez votre intérêt aux autres apprenants de la communauté.</p>
+                  <h4 className="text-sm font-black text-adaptive">Réagissez à cet article</h4>
+                  <p className="text-[11px] text-adaptive-muted">Montrez votre intérêt aux autres apprenants de la communauté.</p>
                 </div>
                 <div className="flex gap-3">
                   {(Object.keys(reactions) as Array<keyof typeof reactions>).map(key => {
@@ -226,7 +226,7 @@ export default function BlogDetail() {
                       <button
                         key={key}
                         onClick={() => handleReactionClick(key)}
-                        className="px-4 py-2 bg-black/40 border border-white/5 hover:border-galf-yellow/30 rounded-xl text-xs font-bold text-white/80 transition-all flex items-center gap-2 hover:scale-105 active:scale-95"
+                        className="px-4 py-2 choice-btn hover:border-galf-yellow/30 rounded-xl text-xs font-bold text-adaptive transition-all flex items-center gap-2 hover:scale-105 active:scale-95"
                       >
                         <span className="text-sm">{iconMap[key]}</span>
                         <span>{reactions[key]}</span>
@@ -238,28 +238,28 @@ export default function BlogDetail() {
 
               {/* ═══════════════════════════════════════════════
                   NEW: INTERACTIVE COMMENT FIL D'ACTUALITÉ
-                 ═══════════════════════════════════════════════ */}
+                  ═══════════════════════════════════════════════ */}
               <div className="mt-16 space-y-8">
-                <h3 className="text-2xl font-black text-white flex items-center gap-2">
+                <h3 className="text-2xl font-black text-adaptive flex items-center gap-2">
                   <MessageSquare className="text-galf-yellow w-6 h-6" /> Commentaires ({comments.length})
                 </h3>
 
                 {/* List */}
                 <div className="space-y-4">
                   {comments.map((comm, idx) => (
-                    <div key={idx} className="p-5 rounded-2xl bg-white/5 border border-white/5 animate-fadeIn">
+                    <div key={idx} className="p-5 rounded-2xl panel-bg animate-fadeIn">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-xs font-black text-galf-yellow">{comm.author}</span>
-                        <span className="text-[10px] text-white/40 font-mono">{comm.date}</span>
+                        <span className="text-[10px] text-adaptive-muted font-mono">{comm.date}</span>
                       </div>
-                      <p className="text-xs text-white/80 leading-relaxed">{comm.text}</p>
+                      <p className="text-xs text-adaptive-secondary leading-relaxed">{comm.text}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* Form */}
                 <form onSubmit={handleCommentSubmit} className="glass-card p-6 rounded-2xl border border-white/5 space-y-4">
-                  <h4 className="text-xs font-black uppercase text-white/50 tracking-wider">Ajouter un commentaire</h4>
+                  <h4 className="text-xs font-black uppercase text-adaptive-muted tracking-wider">Ajouter un commentaire</h4>
                   <div className="grid md:grid-cols-2 gap-4">
                     <input 
                       required
@@ -267,7 +267,7 @@ export default function BlogDetail() {
                       placeholder="Votre nom" 
                       value={newAuthor}
                       onChange={e => setNewAuthor(e.target.value)}
-                      className="bg-black/30 border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-galf-yellow"
+                      className="input-adaptive rounded-xl p-3.5 text-xs"
                     />
                   </div>
                   <textarea 
@@ -276,7 +276,7 @@ export default function BlogDetail() {
                     placeholder="Écrivez votre message..." 
                     value={newComment}
                     onChange={e => setNewComment(e.target.value)}
-                    className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-galf-yellow resize-none"
+                    className="input-adaptive w-full rounded-xl p-3.5 text-xs resize-none"
                   />
                   <button 
                     type="submit"

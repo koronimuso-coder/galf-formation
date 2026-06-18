@@ -116,7 +116,7 @@ export default function FormationsPage() {
             NEW: INTERACTIVE MACHINERY ORIENTATION QUIZ
            ═══════════════════════════════════════════════ */}
         <FadeIn>
-          <div className="glass-card p-8 rounded-[2.5rem] border border-white/5 shadow-2xl mb-16 relative overflow-hidden">
+          <div className="glass-card p-8 rounded-[2.5rem] border border-[var(--galf-border)] shadow-2xl mb-16 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
             
             {!quizActive ? (
@@ -125,8 +125,8 @@ export default function FormationsPage() {
                   <span className="text-[10px] font-black uppercase bg-galf-yellow text-galf-carbon px-2.5 py-1 rounded tracking-wider">
                     Orientation Express
                   </span>
-                  <h3 className="text-2xl font-black mt-3 text-white">Quel engin BTP est fait pour vous ?</h3>
-                  <p className="text-xs text-white/60 mt-1.5 max-w-xl">
+                  <h3 className="text-2xl font-black mt-3 text-adaptive">Quel engin BTP est fait pour vous ?</h3>
+                  <p className="text-xs text-adaptive-secondary mt-1.5 max-w-xl">
                     Faites notre test interactif en 3 questions pour découvrir quel engin correspond le mieux à votre profil technique et à vos ambitions.
                   </p>
                 </div>
@@ -140,16 +140,16 @@ export default function FormationsPage() {
             ) : recommendation ? (
               <div className="text-center py-4 animate-fadeIn">
                 <Award className="w-12 h-12 text-galf-yellow mx-auto mb-4 animate-bounce" />
-                <span className="text-[9px] font-black uppercase text-white/50 tracking-widest">Recommandation personnalisée</span>
-                <h4 className="text-2xl font-black text-white mt-1 mb-2">{recommendation.name}</h4>
-                <p className="text-xs text-white/60 max-w-md mx-auto mb-6">
+                <span className="text-[9px] font-black uppercase text-adaptive-muted tracking-widest">Recommandation personnalisée</span>
+                <h4 className="text-2xl font-black text-adaptive mt-1 mb-2">{recommendation.name}</h4>
+                <p className="text-xs text-adaptive-secondary max-w-md mx-auto mb-6">
                   {recommendation.shortDesc} Ce module offre d'excellents débouchés et convient parfaitement à vos réponses.
                 </p>
                 
                 <div className="flex justify-center gap-4">
                   <button 
                     onClick={startQuiz}
-                    className="px-6 py-3 rounded-xl border border-white/10 text-xs font-black uppercase tracking-widest text-white/70 hover:bg-white/5 transition-colors flex items-center gap-2"
+                    className="px-6 py-3 rounded-xl border border-adaptive text-xs font-black uppercase tracking-widest text-adaptive-secondary hover:bg-galf-yellow/5 transition-colors flex items-center gap-2"
                   >
                     <RefreshCcw className="w-3.5 h-3.5" /> Recommencer
                   </button>
@@ -163,16 +163,16 @@ export default function FormationsPage() {
               </div>
             ) : (
               <div className="space-y-6 animate-fadeIn">
-                <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                <div className="flex items-center justify-between pb-3 border-b border-adaptive">
                   <span className="text-[10px] font-black uppercase text-galf-yellow tracking-widest flex items-center gap-1.5">
                     <HelpCircle className="w-4 h-4" /> Question {currentStep + 1} / {questions.length}
                   </span>
-                  <button onClick={() => setQuizActive(false)} className="text-white/40 hover:text-white">
+                  <button onClick={() => setQuizActive(false)} className="text-adaptive-muted hover:text-adaptive">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
                 
-                <h4 className="text-lg font-black text-white leading-snug">
+                <h4 className="text-lg font-black text-adaptive leading-snug">
                   {questions[currentStep].q}
                 </h4>
                 
@@ -181,7 +181,7 @@ export default function FormationsPage() {
                     <button
                       key={idx}
                       onClick={() => handleAnswerSelect(opt.value)}
-                      className="w-full text-left p-4 rounded-xl text-xs font-bold border border-white/5 bg-white/5 hover:border-galf-yellow/50 hover:bg-white/10 transition-all text-white"
+                      className="w-full text-left p-4 rounded-xl text-xs font-bold choice-btn hover:border-galf-yellow/50 transition-all"
                     >
                       {opt.text}
                     </button>
@@ -270,8 +270,8 @@ export default function FormationsPage() {
 
         {filtered.length === 0 && (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4 text-white/50">🔍</div>
-            <h3 className="text-xl font-black mb-2 text-white">Aucune formation trouvée</h3>
+            <div className="text-6xl mb-4 text-adaptive-muted">🔍</div>
+            <h3 className="text-xl font-black mb-2 text-adaptive">Aucune formation trouvée</h3>
             <p style={{ color: 'var(--galf-text-secondary)' }}>Essayez un autre terme.</p>
           </div>
         )}

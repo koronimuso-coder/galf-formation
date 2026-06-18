@@ -8,6 +8,8 @@ import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck,
 import Link from 'next/link'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { getAttributionCode } from '@/lib/firebase/services/referral'
+import { registerReferredProspect } from '@/lib/firebase/services/commercial'
+import { dbGetDoc } from '@/lib/firebase/services/dbClient'
 
 export default function Inscription() {
   const [step, setStep] = useState(1)
@@ -31,6 +33,8 @@ export default function Inscription() {
   const receiptRef = useRef<HTMLDivElement>(null)
   
   const [detectedRefCode, setDetectedRefCode] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   const toggleFormation = (fId: string) => {
     try {
@@ -233,6 +237,60 @@ export default function Inscription() {
     } else {
       setPromoError('Code promotionnel invalide')
       playPromoSound('fail')
+    }
+  }
+
+  const handleConfirmEnrollment = async () => {
+    playPromoSound('click')
+    setIsSaving(true)
+    setSaveError('')
+    
+    let sponsorUserId = ""
+    let campaignId = "campagne-initiale-2026"
+    
+    if (detectedRefCode) {
+      try {
+        const codeSnap = await dbGetDoc("referral_codes", detectedRefCode)
+        if (codeSnap.exists()) {
+          const codeData = codeSnap.data()
+          sponsorUserId = codeData.userId
+          campaignId = codeData.campaignId || "campagne-initiale-2026"
+        }
+      } catch (e) {
+        console.error("Failed to retrieve sponsor code details:", e)
+      }
+    }
+    
+    try {
+      const selectedId = selectedFormations[0] || ""
+      const formation = GALF_FORMATIONS.find(f => f.id === selectedId)
+      const centerId = formation?.category === "Mines & Engins" ? "Chantier-École de Yopougon" : "Centre Pratique de Korhogo"
+      
+      await registerReferredProspect({
+        campaignId,
+        sponsorUserId,
+        referralCode: detectedRefCode || "",
+        fullName,
+        email: email || `candidat-${phone.replace(/[^0-9]/g, '')}@galf-ref.ci`,
+        city,
+        commune: city.toLowerCase() === 'abidjan' ? 'Yopougon' : '',
+        desiredFormationId: selectedId,
+        preferredCenterId: centerId,
+        currentSituation: experience || "Débutant",
+        availability: "Immédiate",
+        professionalObjective: `Obtenir la certification ${formation?.name || "BTP"} et s'insérer sur le marché de l'emploi.`,
+        source: detectedRefCode ? "ambassadeur" : "site_direct"
+      }, phone)
+      
+      const nextStep = step + 1
+      setStep(nextStep)
+      saveDraft(nextStep)
+    } catch (err: any) {
+      console.error(err)
+      setSaveError(err.message || "Erreur de connexion lors de l'enregistrement de votre dossier.")
+      playPromoSound('fail')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -944,32 +1002,53 @@ export default function Inscription() {
                >
                  <ArrowLeft className="w-4 h-4" /> Retour
                </button>
-               <button 
-                 onClick={() => {
-                   playPromoSound('click');
-                   const nextStep = step + 1;
-                   setStep(nextStep);
-                   saveDraft(nextStep);
-                 }} 
-                 disabled={
-                    (step === 1 && selectedFormations.length === 0) || 
-                    (step === 2 && (
-                      !fullName.trim() || 
-                      !phone.trim() || 
-                      !email.trim() || 
-                      !idNumber.trim() || 
-                      !birthDate || 
-                      !city.trim() || 
-                      !gender || 
-                      !education || 
-                      !experience
-                    )) || 
-                    (step === 3 && !paymentMethod)
-                  }
-                 className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-xl font-black hover:brightness-110 transition-all flex items-center gap-3 shadow-xl disabled:opacity-50"
-               >
-                 {step === 4 ? "Confirmer l'inscription" : "Étape suivante"} <ArrowRight className="w-4 h-4" />
-               </button>
+               <div className="flex flex-col items-end gap-3">
+                  {saveError && (
+                    <div className="text-[10px] font-black text-red-400 uppercase bg-red-500/5 border border-red-500/10 px-3 py-1.5 rounded-lg mb-1">
+                      ⚠️ {saveError}
+                    </div>
+                  )}
+                  <button 
+                    onClick={() => {
+                      if (step === 4) {
+                        handleConfirmEnrollment()
+                      } else {
+                        playPromoSound('click')
+                        const nextStep = step + 1
+                        setStep(nextStep)
+                        saveDraft(nextStep)
+                      }
+                    }} 
+                    disabled={
+                       isSaving ||
+                       (step === 1 && selectedFormations.length === 0) || 
+                       (step === 2 && (
+                         !fullName.trim() || 
+                         !phone.trim() || 
+                         !email.trim() || 
+                         !idNumber.trim() || 
+                         !birthDate || 
+                         !city.trim() || 
+                         !gender || 
+                         !education || 
+                         !experience
+                       )) || 
+                       (step === 3 && !paymentMethod)
+                     }
+                    className="bg-galf-yellow text-galf-carbon px-12 py-5 rounded-xl font-black hover:brightness-110 transition-all flex items-center gap-3 shadow-xl disabled:opacity-50 min-w-[200px] justify-center"
+                  >
+                    {isSaving ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4.5 h-4.5 border-2 border-galf-carbon border-t-transparent rounded-full animate-spin" />
+                        Traitement...
+                      </span>
+                    ) : (
+                      <>
+                        {step === 4 ? "Confirmer l'inscription" : "Étape suivante"} <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
             </FadeIn>
           )}
         </div>

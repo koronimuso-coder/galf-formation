@@ -18,7 +18,7 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
   const headerBg = bgImage || getPageHeaderImage(pathname)
   
   return (
-    <section className="relative h-[60vh] min-h-[500px] flex items-center overflow-hidden">
+    <section className="relative h-[50vh] md:h-[60vh] min-h-[320px] md:min-h-[500px] flex items-center overflow-hidden">
       {/* ── Background Cinematic WebP ── */}
       <div className="absolute inset-0 z-0">
         <Image 
@@ -27,9 +27,8 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
           fill 
           className="object-cover" 
           priority
-          unoptimized={headerBg.endsWith('.webp')} // Important for animated webp
+          unoptimized={headerBg.endsWith('.webp')}
         />
-        {/* Subtle overlays to keep the image clearly visible while preserving readability */}
         <div className="absolute inset-0 bg-black/10 z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-[rgba(14,14,16,0.35)] via-transparent to-transparent opacity-60 z-10" />
       </div>
@@ -38,16 +37,16 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
         <FadeIn>
           <div className={centered ? 'max-w-3xl' : 'max-w-4xl'}>
             {badge && (
-              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase mb-8 bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-full text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-5 md:mb-8 bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow">
                 <span className="w-2 h-2 rounded-full bg-galf-yellow animate-pulse" />
                 {badge}
               </div>
             )}
             <TextReveal 
               text={title} 
-              className={`text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 text-white leading-[0.9] text-shadow-premium ${centered ? 'mx-auto' : ''}`} 
+              className={`page-header-title text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-4 md:mb-8 text-white leading-[0.9] text-shadow-premium ${centered ? 'mx-auto' : ''}`} 
             />
-            <p className={`text-lg md:text-xl text-white/90 font-medium leading-relaxed text-shadow-premium ${centered ? 'mx-auto' : ''}`}>
+            <p className={`text-base md:text-xl text-white/90 font-medium leading-relaxed text-shadow-premium max-w-2xl ${centered ? 'mx-auto' : ''}`}>
               {subtitle}
             </p>
             {children}
@@ -55,7 +54,6 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
         </FadeIn>
       </div>
 
-      {/* Decorative side element */}
       {!centered && (
         <div className="absolute right-0 bottom-0 w-1/3 h-1 bg-galf-yellow opacity-50 z-20 shadow-[0_0_20px_rgba(255,176,0,0.5)]" />
       )}
