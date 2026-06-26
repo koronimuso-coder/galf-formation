@@ -3,12 +3,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { 
   Play, Image as ImageIcon, Video, Filter, Maximize2, X,
-  Sun, CloudRain, CloudFog, Wind, Volume2, VolumeX, Download, Info, Compass
+  Sun, CloudRain, CloudFog, Wind, Volume2, VolumeX, Download, Compass
 } from 'lucide-react'
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { FadeIn } from '@/components/animations/FadeIn'
+import { AdBanner } from '@/components/layout/AdBanner'
 
 export default function Mediatheque() {
   const [filter, setFilter] = useState<'all' | 'image' | 'video'>('all')
@@ -40,7 +41,7 @@ export default function Mediatheque() {
         audioCtxRef.current = null
       }
       setIsAudioPlaying(false)
-    } catch (e) {}
+    } catch {}
   }
 
   const startAudioSynth = (activeWeather: typeof weather) => {
@@ -109,7 +110,7 @@ export default function Mediatheque() {
       }
 
       setIsAudioPlaying(true)
-    } catch (e) {}
+    } catch {}
   }
 
   const toggleAudioSynth = () => {
@@ -147,7 +148,7 @@ export default function Mediatheque() {
         osc.stop(ctx.currentTime + 0.1)
         setTimeout(() => ctx.close(), 200)
       }
-    } catch(e){}
+    } catch{}
 
     const interval = setInterval(() => {
       setDownloadProgress(prev => {
@@ -170,7 +171,7 @@ export default function Mediatheque() {
               osc.stop(ctx.currentTime + 0.25)
               setTimeout(() => ctx.close(), 300)
             }
-          } catch(e){}
+          } catch{}
           alert("🎉 Brochure d'Orientation GALF Formation 2026 téléchargée avec succès !")
           return 0
         }
@@ -236,6 +237,77 @@ export default function Mediatheque() {
               </div>
               <Link href="/mediatheque/simulateur" className="bg-slate-900 dark:bg-white text-white dark:text-galf-carbon hover:bg-galf-yellow dark:hover:bg-galf-yellow px-10 py-4.5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-xl hover:shadow-galf-yellow/10 shrink-0">
                 Lancer le Simulateur →
+              </Link>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* ── Wave 6: Outils Interactifs R482 Grid ── */}
+        <FadeIn delay={0.15}>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-16">
+            <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
+              <div>
+                <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Quiz CACES</span>
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Quiz de Sécurité CACES</h3>
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>Entraînez-vous avec notre QCM réglementaire de 10 questions chronométrées pour décrocher votre badge.</p>
+              </div>
+              <Link href="/mediatheque/quiz-securite" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
+                Tester mes connaissances →
+              </Link>
+            </div>
+
+            <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
+              <div>
+                <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Inspection VGP</span>
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Inspection Visuelle VGP</h3>
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>Faites le tour de sécurité de la pelle hydraulique, identifiez les défauts et générez le rapport d'accès chantier.</p>
+              </div>
+              <Link href="/mediatheque/inspection-visuelle" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
+                Démarrer l'inspection →
+              </Link>
+            </div>
+
+            <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
+              <div>
+                <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Talkie-Walkie</span>
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Talkie-Walkie Multilingue</h3>
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>Apprenez les gestes et commandes en Français, Anglais, Dioula, Baoulé et Wolof avec notre simulateur radio.</p>
+              </div>
+              <Link href="/mediatheque/commandes-vocales" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
+                Ouvrir la radio →
+              </Link>
+            </div>
+
+            <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
+              <div>
+                <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Télémétrie Flotte B2B</span>
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Supervision Télémétrique</h3>
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>Surveillez la charge, le régime moteur, la température d'huile et le vent sur vos chantiers en Côte d'Ivoire.</p>
+              </div>
+              <Link href="/entreprise/telemetrie" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
+                Ouvrir la télémétrie →
+              </Link>
+            </div>
+
+            <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
+              <div>
+                <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Chasse aux Risques</span>
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Jeu de Vigilance HSE</h3>
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>Repérez les 5 situations de danger critiques dissimulées sur notre chantier virtuel pour décrocher votre badge.</p>
+              </div>
+              <Link href="/mediatheque/chasse-aux-risques" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
+                Lancer la chasse →
+              </Link>
+            </div>
+
+            <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
+              <div>
+                <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Inspection HSE</span>
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Fiche d'Inspection HSE</h3>
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>Remplissez la fiche d'inspection pré-opérationnelle obligatoire pour valider la conformité de votre engin.</p>
+              </div>
+              <Link href="/mediatheque/checklist-securite" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
+                Démarrer le contrôle →
               </Link>
             </div>
           </div>
@@ -329,6 +401,11 @@ export default function Mediatheque() {
             </div>
 
           </div>
+        </FadeIn>
+
+        {/* AdSense Placement */}
+        <FadeIn delay={0.25}>
+          <AdBanner slot="mediatheque_middle" format="horizontal" />
         </FadeIn>
 
         {/* Filters */}

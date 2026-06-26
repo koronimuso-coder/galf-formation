@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 import { FadeIn } from '@/components/animations/FadeIn'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -282,7 +282,7 @@ export default function ApprenantDashboard() {
     if (sirenNodeRef.current) {
       try {
         sirenNodeRef.current.stop()
-      } catch (e) {}
+      } catch {}
       sirenNodeRef.current = null
     }
     setActiveSiren(null)
@@ -357,13 +357,13 @@ export default function ApprenantDashboard() {
       osc.connect(gain)
       gain.connect(ctx.destination)
       osc.start()
-    } catch(e) {}
+    } catch {}
   }
 
   useEffect(() => {
     return () => {
       if (sirenNodeRef.current) {
-        try { sirenNodeRef.current.stop() } catch(e) {}
+        try { sirenNodeRef.current.stop() } catch {}
       }
     }
   }, [])
@@ -420,7 +420,7 @@ export default function ApprenantDashboard() {
       osc.start()
       osc.stop(ctx.currentTime + duration)
       setTimeout(() => ctx.close(), duration * 1000 + 100)
-    } catch (e) {}
+    } catch {}
   }
 
   // Load notes from localStorage on client side mount
@@ -761,7 +761,7 @@ export default function ApprenantDashboard() {
           osc2.stop(ctx.currentTime + 1.8)
         }, 150)
       }
-    } catch(e) {}
+    } catch {}
   }
 
   const handleResetInspection = () => {
@@ -1732,7 +1732,7 @@ export default function ApprenantDashboard() {
                             key={idx}
                             disabled={cacesFeedback !== null}
                             onClick={() => handleCacesOptionSelect(idx)}
-                            className="w-full text-left p-3.5 rounded-xl text-xs border transition-all flex items-center justify-between cursor-pointer border-white/5 bg-black/30 hover:border-galf-yellow/40 text-white/70 hover:text-white"
+                            className={`w-full text-left p-3.5 rounded-xl text-xs border transition-all flex items-center justify-between cursor-pointer ${btnStyle}`}
                             style={{ colorScheme: 'light dark' }}
                           >
                             <span className="flex-1 pr-4">{opt}</span>
@@ -2114,6 +2114,7 @@ export default function ApprenantDashboard() {
                              <div className="text-sm uppercase font-bold tracking-widest text-galf-yellow mb-4">Le comité pédagogique</div>
                              <div className="w-48 h-20 bg-galf-yellow/5 rounded-xl border border-dashed border-galf-yellow/20 flex items-center justify-center overflow-hidden">
                                  {signatureImg ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
                                    <img src={signatureImg} alt="Signature Digitale" className="max-w-full max-h-full object-contain" />
                                  ) : (
                                    <span className="text-galf-yellow/40 italic font-bold">Signature Digitale</span>

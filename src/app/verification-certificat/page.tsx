@@ -2,8 +2,8 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Award, ShieldAlert, CheckCircle2, Search, ArrowRight, ShieldCheck, MapPin, Calendar, Clock, RefreshCw } from 'lucide-react'
-import { FadeIn } from '@/components/animations/FadeIn'
+import { ShieldAlert, Search, ArrowRight, ShieldCheck, MapPin, RefreshCw } from 'lucide-react'
+
 
 function VerificationContent() {
   const searchParams = useSearchParams()

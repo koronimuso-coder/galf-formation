@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { GALF_FORMATIONS } from '@/lib/data'
@@ -7,6 +7,7 @@ import { FadeIn } from '@/components/animations/FadeIn'
 import { ArrowLeft, ArrowRight, Clock, MapPin, BarChart3, BookOpen, Target, Briefcase, CheckCircle2, Phone, Shield, Play, AlertCircle, Eye, ShieldAlert, ClipboardCheck, ArrowUpDown } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { useState, useEffect } from 'react'
+import { AdBanner } from '@/components/layout/AdBanner'
 
 const COMPARE_DB: { [key: string]: { name: string, weight: string, power: string, capacity: string, boom: string, caces: string } } = {
   "pelle-hydraulique": { name: "Pelle Hydraulique", weight: "22 tonnes", power: "165 ch", capacity: "1.2 m³", boom: "8.5 m", caces: "R482 Catégorie B1" },
@@ -73,7 +74,7 @@ export default function FormationDetail() {
         osc.start()
         osc.stop(ctx.currentTime + 0.35)
         setTimeout(() => ctx.close(), 400)
-      } catch (e) {}
+      } catch {}
     }, 600)
 
     return () => clearInterval(interval)
@@ -116,7 +117,7 @@ export default function FormationDetail() {
             gain2.connect(ctx.destination)
             osc2.start()
             osc2.stop(ctx.currentTime + 0.25)
-          } catch(e) {}
+          } catch {}
         }, 350)
         osc.connect(gain)
         gain.connect(ctx.destination)
@@ -155,7 +156,7 @@ export default function FormationDetail() {
         osc.start()
         osc.stop(ctx.currentTime + 0.5)
       }
-    } catch(e) {}
+    } catch {}
     
     setTimeout(() => setActiveSound(null), 1500)
   }
@@ -181,7 +182,7 @@ export default function FormationDetail() {
           osc.start()
           osc.stop(ctx.currentTime + 0.3)
         }
-      } catch(e) {}
+      } catch {}
     }
   }
 
@@ -221,7 +222,7 @@ export default function FormationDetail() {
       osc.start()
       osc.stop(ctx.currentTime + 0.1)
       setTimeout(() => ctx.close(), 200)
-    } catch(e) {}
+    } catch {}
   }
 
   const handleSelectChapter = (idx: number) => {
@@ -383,6 +384,9 @@ export default function FormationDetail() {
                 </div>
               </div>
             </FadeIn>
+
+            {/* AdSense — entre la boîte à sons et les modules de détails */}
+            <AdBanner slot="formation_detail_mid" format="horizontal" />
 
             {/* Details Grid */}
             <div className="grid md:grid-cols-2 gap-8">

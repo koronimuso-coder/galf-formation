@@ -2,14 +2,12 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Users, Gift, BarChart3, Banknote, ShieldAlert, Settings, 
-  FileSpreadsheet, FileText, CheckCircle, XCircle, Play, 
-  Trash2, RefreshCw, AlertTriangle, Eye, Calendar, Award, LogOut, Download
+import { Gift, BarChart3, Banknote, ShieldAlert, Settings, 
+  FileSpreadsheet, FileText, CheckCircle, AlertTriangle, Eye, Calendar, Download
 } from 'lucide-react'
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+
 import { getCurrentUser, signOutUser, UserProfile } from '@/lib/firebase/services/auth'
-import { dbGetDocs, dbGetDoc, dbSetDoc, dbUpdateDoc, dbDeleteDoc, dbAddDoc } from '@/lib/firebase/services/dbClient'
+import { dbGetDocs, dbUpdateDoc, dbAddDoc } from '@/lib/firebase/services/dbClient'
 import { 
   Campaign, SponsorProfile, createCampaign, getCampaigns, createNotification 
 } from '@/lib/firebase/services/referral'
@@ -36,7 +34,6 @@ export default function AdminWorkspace() {
   const [sponsors, setSponsors] = useState<SponsorProfile[]>([])
   const [prospects, setProspects] = useState<ReferredProspect[]>([])
   const [clickCount, setClickCount] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
 
   // Simulator values
   const [avgPrice, setAvgPrice] = useState(195000)
@@ -140,13 +137,12 @@ export default function AdminWorkspace() {
 
     } catch (e) {
       console.error("Failed to load admin panel data:", e)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   useEffect(() => {
     loadAdminData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Handle simulator update

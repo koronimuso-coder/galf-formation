@@ -3,7 +3,7 @@ import { FadeIn } from '@/components/animations/FadeIn'
 import Image from 'next/image'
 import { 
   ShieldCheck, Target, Users, Award, Calendar, Briefcase, Network, 
-  CheckCircle2, Scale, Lightbulb, Sparkles, UserCheck, Smile 
+  CheckCircle2, Scale, Lightbulb, Sparkles 
 } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import Link from 'next/link'
@@ -65,7 +65,7 @@ export default function About() {
         osc.stop(now + 0.05)
       }
       setTimeout(() => ctx.close(), 300)
-    } catch(e){}
+    } catch {}
   }
   return (
     <div className="min-h-screen relative overflow-hidden pb-24" style={{ background: 'var(--galf-bg)' }}>

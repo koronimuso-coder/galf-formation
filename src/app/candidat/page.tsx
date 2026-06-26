@@ -1,13 +1,38 @@
 "use client"
 import { useState } from 'react'
 import jsPDF from 'jspdf'
+import gsap from 'gsap'
 import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
-import { FileText, CheckCircle2, Clock, AlertCircle, Download, Phone, ShieldCheck, ChevronRight, Upload, Info, MapPin, Briefcase, Award } from 'lucide-react'
+import { FileText, CheckCircle2, Clock, AlertCircle, Download, Phone, ShieldCheck, ChevronRight, Upload, Info, MapPin, Briefcase } from 'lucide-react'
 import Link from 'next/link'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
 export default function CandidatDashboard() {
   const [cvStep, setCvStep] = useState(1)
+
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left - rect.width / 2
+    const y = e.clientY - rect.top - rect.height / 2
+    
+    gsap.to(card, {
+      rotateY: x * 0.05,
+      rotateX: -y * 0.05,
+      transformPerspective: 1000,
+      duration: 0.3,
+      ease: "power2.out"
+    })
+  }
+
+  const handleCardMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    gsap.to(e.currentTarget, {
+      rotateY: 0,
+      rotateX: 0,
+      duration: 0.5,
+      ease: "power3.out"
+    })
+  }
   const [cvData, setCvData] = useState({
     fullName: "Koffi Kouakou",
     phone: "+225 07 11 82 65 07",
@@ -148,7 +173,11 @@ export default function CandidatDashboard() {
 
         {/* Cinematic Timeline */}
         <FadeIn delay={0.1}>
-          <div className="glass-card p-10 rounded-[2.5rem] mb-12 relative overflow-hidden">
+          <div 
+            onMouseMove={handleCardMouseMove}
+            onMouseLeave={handleCardMouseLeave}
+            className="glass-card p-10 rounded-[2.5rem] mb-12 relative overflow-hidden transform-gpu"
+          >
             <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[5rem]" />
             <h3 className="text-xl font-black mb-10 flex items-center gap-3" style={{ color: 'var(--galf-text)' }}>
               <div className="w-1 h-6 bg-galf-yellow rounded-full" /> Progression de la candidature
@@ -183,13 +212,18 @@ export default function CandidatDashboard() {
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-8">
             <FadeIn delay={0.2}>
-              <div className="glass-card p-8 rounded-[2rem] relative overflow-hidden group">
+              <div 
+                onMouseMove={handleCardMouseMove}
+                onMouseLeave={handleCardMouseLeave}
+                className="glass-card p-8 rounded-[2rem] relative overflow-hidden group transform-gpu"
+              >
                 <div className="absolute inset-0 bg-gradient-to-r from-galf-yellow/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <h3 className="font-black text-lg mb-8 flex items-center gap-3" style={{ color: 'var(--galf-text)' }}>
                   <FileText className="w-5 h-5 text-galf-yellow" /> Détails de la formation
                 </h3>
                 <div className="flex flex-col md:flex-row gap-8 items-center">
                   <Link href="/formations/pelle-hydraulique" className="w-full md:w-48 aspect-video rounded-2xl overflow-hidden border border-galf-border shadow-2xl block">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="/images/about/candidat-check.png" alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   </Link>
                   <div className="flex-1">

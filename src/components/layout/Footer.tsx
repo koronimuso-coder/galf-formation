@@ -50,12 +50,12 @@ export function Footer() {
             <ul className="space-y-3 text-sm" style={{ color: 'var(--galf-text-secondary)' }}>
               <li><Link href="/formations" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Nos formations</Link></li>
               <li><Link href="/entreprise" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Espace Entreprise</Link></li>
+              <li><Link href="/recrutement" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Recrutement BTP</Link></li>
+              <li><Link href="/financement" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Financements</Link></li>
+              <li><Link href="/accreditations" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Accréditations & Normes</Link></li>
+              <li><Link href="/rse-impact" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Charte RSE & Impact</Link></li>
               <li><Link href="/inscription" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Inscription</Link></li>
-              <li><Link href="/connexion" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Connexion</Link></li>
               <li><Link href="/programme-ambassadeur" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Programme Ambassadeur</Link></li>
-              <li><Link href="/programme-ambassadeur/reglement" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Règlement</Link></li>
-              <li><Link href="/programme-ambassadeur#faq" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Questions fréquentes</Link></li>
-              <li><Link href="/programme-ambassadeur/connexion" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Connexion parrain</Link></li>
             </ul>
           </div>
 
@@ -66,8 +66,12 @@ export function Footer() {
               <li><Link href="/a-propos" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> À propos</Link></li>
               <li><Link href="/blog" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Actualités</Link></li>
               <li><Link href="/mediatheque" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Médiathèque</Link></li>
+              <li><Link href="/mediatheque/quiz-securite" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Quiz Sécurité CACES</Link></li>
+              <li><Link href="/mediatheque/inspection-visuelle" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Inspection VGP</Link></li>
+              <li><Link href="/mediatheque/commandes-vocales" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Talkie-Walkie</Link></li>
+              <li><Link href="/mediatheque/chasse-aux-risques" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Chasse aux Risques HSE</Link></li>
+              <li><Link href="/instructeur/train-the-trainer" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Espace Formateurs (Train-the-Trainer)</Link></li>
               <li><Link href="/faq" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> FAQ</Link></li>
-              <li><Link href="/contact" className="hover:text-galf-yellow transition-colors flex items-center gap-1"><ArrowRight className="w-3 h-3" /> Contact</Link></li>
             </ul>
           </div>
 

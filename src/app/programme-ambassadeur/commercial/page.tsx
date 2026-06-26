@@ -3,13 +3,11 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
-  Users, Phone, FileText, CheckCircle, Calendar, 
-  AlertCircle, ShieldAlert, ArrowRight, CheckCircle2, 
-  HelpCircle, MessageSquare, Plus, Clock, Info, Search, ListFilter
+  Users, FileText, Calendar, MessageSquare, Plus, Info, Search, ListFilter
 } from 'lucide-react'
-import { FadeIn } from '@/components/animations/FadeIn'
+
 import { getCurrentUser, signOutUser, UserProfile } from '@/lib/firebase/services/auth'
-import { dbGetDocs, dbGetDoc, dbSetDoc } from '@/lib/firebase/services/dbClient'
+import { dbGetDocs, dbGetDoc } from '@/lib/firebase/services/dbClient'
 import { 
   ReferredProspect, CommercialActivity, CommercialTask, 
   evaluateLeadScore, updateProspectPipelineStatus, 
@@ -118,6 +116,7 @@ export default function CommercialCockpit() {
 
   useEffect(() => {
     loadCommercialData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -272,13 +271,7 @@ export default function CommercialCockpit() {
   // Explicable Score factors calculation
   const scoreInfo = selectedProspect ? evaluateLeadScore(selectedProspect) : null
 
-  // WhatsApp Relance prefills
-  const getWhatsAppLink = (prospect: ReferredProspect) => {
-    const formation = GALF_FORMATIONS.find(f => f.id === prospect.desiredFormationId)
-    const formName = formation ? formation.name : "formation professionnelle"
-    const text = `Bonjour ${prospect.fullName}, je suis conseiller commercial chez GALF FORMATION. J'ai bien reçu votre demande d'inscription pour la formation ${formName}. Êtes-vous disponible pour que nous finalisions ensemble votre dossier d'apprentissage ?`
-    return `https://wa.me/${prospect.phone.replace("+", "")}?text=${encodeURIComponent(text)}`
-  }
+
 
   const pipelineStages = [
     { value: 'nouveau_prospect', label: '1. Nouveau Prospect', color: 'bg-blue-500' },

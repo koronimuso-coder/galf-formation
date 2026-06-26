@@ -68,7 +68,21 @@ export default function PrivacyPolicy() {
             <FadeIn delay={0.3}>
               <div className="glass-card p-10 rounded-2xl">
                 <h2 className="text-2xl font-black mb-6 flex items-center gap-3" style={{ color: 'var(--galf-text)' }}>
-                  <ShieldAlert className="text-galf-yellow w-6 h-6" /> 3. Protection des informations
+                  <ShieldAlert className="text-galf-yellow w-6 h-6" /> 3. Cookies et Publicités Google AdSense
+                </h2>
+                <p className="leading-relaxed opacity-80 mb-4" style={{ color: 'var(--galf-text)' }}>
+                  Google, en tant que prestataire tiers, utilise des cookies pour diffuser des annonces sur notre site. Grâce au cookie DART, Google adapte les annonces diffusées aux utilisateurs en fonction de leur navigation sur notre site ou d'autres sites.
+                </p>
+                <p className="leading-relaxed opacity-80" style={{ color: 'var(--galf-text)' }}>
+                  Les utilisateurs peuvent désactiver l'utilisation du cookie DART en se rendant sur la politique de confidentialité du réseau d'annonces et de contenu Google. Nous utilisons également des cookies tiers pour analyser l'efficacité de nos campagnes et optimiser la diffusion de nos ressources de formation.
+                </p>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.4}>
+              <div className="glass-card p-10 rounded-2xl">
+                <h2 className="text-2xl font-black mb-6 flex items-center gap-3" style={{ color: 'var(--galf-text)' }}>
+                  <ShieldAlert className="text-galf-yellow w-6 h-6" /> 4. Protection des informations
                 </h2>
                 <p className="leading-relaxed opacity-80" style={{ color: 'var(--galf-text)' }}>
                   Nous mettons en œuvre une variété de mesures de sécurité pour préserver la sécurité de vos informations personnelles. Nous utilisons un cryptage à la pointe de la technologie pour protéger les informations sensibles transmises en ligne. Nous protégeons également vos informations hors ligne.
@@ -76,7 +90,7 @@ export default function PrivacyPolicy() {
               </div>
             </FadeIn>
 
-            <FadeIn delay={0.4}>
+            <FadeIn delay={0.5}>
               <div className="glass-card p-10 rounded-2xl text-center">
                 <h2 className="text-2xl font-black mb-6" style={{ color: 'var(--galf-text)' }}>Consentement</h2>
                 <p className="leading-relaxed opacity-80" style={{ color: 'var(--galf-text)' }}>

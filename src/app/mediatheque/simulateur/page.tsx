@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react'
 import { InteractiveMachineSimulator } from '@/components/3d/InteractiveMachineSimulator'
-import { ArrowLeft, Play, Info, HardHat, Award } from 'lucide-react'
+import { ArrowLeft, Play, Info } from 'lucide-react'
 import Link from 'next/link'
 
 export default function SimulatorPage() {
@@ -78,6 +78,7 @@ export default function SimulatorPage() {
                 className="glass-card rounded-[2rem] overflow-hidden group hover:border-galf-yellow/40 transition-all duration-500 cursor-pointer flex flex-col h-full bg-white/5 border-white/5"
               >
                 <div className="h-48 relative overflow-hidden bg-black shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={mach.img} 
                     alt={mach.name} 

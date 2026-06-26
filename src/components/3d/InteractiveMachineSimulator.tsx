@@ -8,7 +8,7 @@ interface InteractiveMachineSimulatorProps {
   machineName: string
 }
 
-export function InteractiveMachineSimulator({ machineSlug, machineName }: InteractiveMachineSimulatorProps) {
+export function InteractiveMachineSimulator({ machineSlug }: InteractiveMachineSimulatorProps) {
   // Weather & Time of Day State
   const [weather, setWeather] = useState<'day' | 'night' | 'rain'>('day')
 
@@ -24,7 +24,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
     if (saved) {
       try {
         setLeaderboard(JSON.parse(saved))
-      } catch (e) {}
+      } catch {}
     } else {
       const defaults = [
         { name: "Yao A. (Instructeur)", time: 12, date: "12/04" },
@@ -139,7 +139,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
       osc.start()
       osc.stop(ctx.currentTime + duration)
       setTimeout(() => ctx.close(), 500)
-    } catch (e) {}
+    } catch {}
   }
 
   // Dynamic wind speed based on weather selection
@@ -363,9 +363,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
 
   const completeMission = () => {
     setMissionCompleted(true)
-    triggerAudioAlert(523.25, 0.2)
-    setTimeout(() => triggerAudioAlert(659.25, 0.2), 120)
-    setTimeout(() => triggerAudioAlert(783.99, 0.35), 240)
+    triggerSuccessChime()
     setShowNamePrompt(true)
   }
 
@@ -599,6 +597,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
       stopAudioEngine()
     }
     return () => stopAudioEngine()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [engineStarted])
 
   // Handle rain noise dynamic activation
@@ -608,11 +607,12 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
         if (!rainAudioRef.current) startRainNoise(audioContextRef.current, gainNodeRef.current)
       } else {
         if (rainAudioRef.current) {
-          try { rainAudioRef.current.stop() } catch (e) {}
+          try { rainAudioRef.current.stop() } catch {}
           rainAudioRef.current = null
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weather, engineStarted])
 
   // Handle Customizer adjustments on current nodes
@@ -708,6 +708,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
     return () => {
       if (beepTimerRef.current) clearInterval(beepTimerRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [engineStarted, soundEnabled, isOverloaded, collisionTriggered, isBulldozer, driveSpeed])
 
   // Modulate engine sound parameters on speed/load adjustments
@@ -835,6 +836,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
       const timer = setTimeout(() => updateEngineParams(0), 400)
       return () => clearTimeout(timer)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boomAngle, armAngle, bucketAngle, cabRotation, isPelle, engineStarted, missionActive, missionCompleted, collisionTriggered])
 
   // Grue Crane Effects
@@ -902,6 +904,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
       const timer = setTimeout(() => updateEngineParams(0), 450)
       return () => clearTimeout(timer)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trolleyPos, cableLength, jibRotation, isGrue, engineStarted, missionActive, missionCompleted, collisionTriggered])
 
   // Bulldozer Effects
@@ -958,6 +961,7 @@ export function InteractiveMachineSimulator({ machineSlug, machineName }: Intera
     if (engineStarted) {
       updateEngineParams(driveSpeed / 100)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bladeHeight, bladeTilt, driveSpeed, isBulldozer, engineStarted, missionActive, missionCompleted, collisionTriggered])
 
   // Web Audio Success Chime

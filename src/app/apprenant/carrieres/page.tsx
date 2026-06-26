@@ -1,6 +1,6 @@
 "use client"
 import { FadeIn } from '@/components/animations/FadeIn'
-import { Briefcase, MapPin, Building2, TrendingUp, Search, Filter, ShieldCheck, CheckCircle2, X, Download, ShieldAlert, Award } from 'lucide-react'
+import { Briefcase, MapPin, Building2, TrendingUp, Search, Filter, ShieldCheck, CheckCircle2, X, ShieldAlert, Award } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PageHeader } from '@/components/layout/PageHeader'
@@ -22,7 +22,6 @@ export default function CareerHub() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   const [applyStep, setApplyStep] = useState(1) // 1: Check credentials, 2: Sign Canvas, 3: Submit loading/success
   const [checkingCredentials, setCheckingCredentials] = useState(true)
-  const [credentialsChecked, setCredentialsChecked] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [submissionProgress, setSubmissionProgress] = useState(0)
   
@@ -115,10 +114,8 @@ export default function CareerHub() {
   useEffect(() => {
     if (selectedJob && applyStep === 1) {
       setCheckingCredentials(true)
-      setCredentialsChecked(false)
       const timer = setTimeout(() => {
         setCheckingCredentials(false)
-        setCredentialsChecked(true)
         triggerAudioAlert(523.25, 0.15) // C5 check sound
       }, 2000)
       return () => clearTimeout(timer)
@@ -177,7 +174,7 @@ export default function CareerHub() {
       osc.start()
       osc.stop(ctx.currentTime + duration)
       setTimeout(() => ctx.close(), duration * 1000 + 100)
-    } catch(e) {}
+    } catch {}
   }
 
   const triggerSuccessChime = () => {
@@ -200,7 +197,7 @@ export default function CareerHub() {
         osc.stop(now + idx * 0.12 + 0.3)
       })
       setTimeout(() => ctx.close(), 1000)
-    } catch (e) {}
+    } catch {}
   }
 
   const handleOpenApply = (job: Job) => {

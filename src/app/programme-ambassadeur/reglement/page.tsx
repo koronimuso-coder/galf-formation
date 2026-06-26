@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link'
-import { FileText, ShieldAlert, ArrowLeft, CheckCircle2 } from 'lucide-react'
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import { ShieldAlert, ArrowLeft } from 'lucide-react'
+import { FadeIn } from '@/components/animations/FadeIn'
 import { PageHeader } from '@/components/layout/PageHeader'
 
 export default function ReglementProgramme() {

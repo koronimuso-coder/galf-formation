@@ -3,10 +3,9 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
-  User, BookOpen, Lock, CheckCircle, ArrowRight, ArrowLeft, 
-  Sparkles, CheckCircle2, ShieldCheck, AlertTriangle 
+  User, BookOpen, Lock, CheckCircle, ArrowRight, ArrowLeft, CheckCircle2, ShieldCheck, AlertTriangle 
 } from 'lucide-react'
-import { FadeIn } from '@/components/animations/FadeIn'
+
 import { GALF_FORMATIONS } from '@/lib/data'
 import { registerUser } from '@/lib/firebase/services/auth'
 import { registerSponsor, getCampaigns, Campaign } from '@/lib/firebase/services/referral'
@@ -76,7 +75,7 @@ export default function InscriptionParrain() {
           if (parsed.sourceDecouverte) setSourceDecouverte(parsed.sourceDecouverte)
           
           if (parsed.step) setStep(parsed.step)
-        } catch (e) {}
+        } catch {}
       }
     }
   }, [])
@@ -94,6 +93,7 @@ export default function InscriptionParrain() {
     if (step < 4) {
       saveDraft(step)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nom, prenom, whatsapp, email, ville, commune, formationSouhaitee, centrePrefere, situationActuelle, disponibilite, objectifProfessionnel, sourceDecouverte, step])
 
   // Clear draft
@@ -119,7 +119,7 @@ export default function InscriptionParrain() {
       osc.start(now)
       osc.stop(now + 0.05)
       setTimeout(() => ctx.close(), 100)
-    } catch (e) {}
+    } catch {}
   }
 
   // Next step validation

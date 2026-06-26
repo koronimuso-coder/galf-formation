@@ -1,10 +1,11 @@
 "use client"
 import Link from 'next/link'
 import { FadeIn } from '@/components/animations/FadeIn'
-import { Calendar, User, Search, Award, Shield, Zap, CheckCircle2 } from 'lucide-react'
+import { Calendar, User, Search, Award, Zap, CheckCircle2 } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { AdBanner } from '@/components/layout/AdBanner'
 
 export default function BlogPortal() {
   // ── Wave 5: Blog Interactive Feature States ──
@@ -50,7 +51,7 @@ export default function BlogPortal() {
         osc.stop(now + 0.05)
       }
       setTimeout(() => ctx.close(), 300)
-    } catch(e){}
+    } catch{}
   }
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -175,6 +176,11 @@ export default function BlogPortal() {
 
         </div>
 
+        {/* AdSense Placement */}
+        <FadeIn delay={0.05}>
+          <AdBanner slot="blog_portal_top" format="horizontal" />
+        </FadeIn>
+
         {/* Blog Posts Grid */}
         {filteredPosts.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -184,6 +190,7 @@ export default function BlogPortal() {
                   <div className="glass-card rounded-xl overflow-hidden hover:border-galf-yellow/30 h-full flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all">
                     <div className="h-48 overflow-hidden relative shrink-0">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={post.img} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       <div className="absolute bottom-4 left-4 z-20">
                         <span className="bg-galf-yellow text-galf-carbon text-[10px] font-black px-3 py-1 uppercase tracking-wider rounded-md">{post.category}</span>

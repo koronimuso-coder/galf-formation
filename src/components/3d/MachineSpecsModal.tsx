@@ -1,6 +1,6 @@
 "use client"
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Cpu, Weight, Move, Zap, CheckCircle2, MapPin } from 'lucide-react'
+import { X, Cpu, Weight, Move, Zap, CheckCircle2 } from 'lucide-react'
 import { EQUIPMENT_SPECS } from '@/lib/data'
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
@@ -121,6 +121,7 @@ export function MachineSpecsModal({ isOpen, onClose, machineSlug, machineName, m
               <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
                 {/* Left Column: Image & Hero Title */}
                 <div className="lg:w-1/2 relative overflow-hidden group shrink-0 min-h-[250px] lg:min-h-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={machineImg} alt={machineName} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-galf-carbon via-transparent to-transparent" />
                   <div className="absolute bottom-12 left-12 right-12">

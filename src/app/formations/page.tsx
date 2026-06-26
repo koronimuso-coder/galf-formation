@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { FadeIn } from '@/components/animations/FadeIn'
 import { Search, Clock, MapPin, ArrowRight, X, HelpCircle, Award, RefreshCcw } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { AdBanner } from '@/components/layout/AdBanner'
 
 interface Question {
   q: string
@@ -190,6 +191,11 @@ export default function FormationsPage() {
               </div>
             )}
           </div>
+        </FadeIn>
+
+        {/* AdSense Placement - entre quiz orientation et liste formations */}
+        <FadeIn delay={0.15}>
+          <AdBanner slot="formations_listing_mid" format="horizontal" />
         </FadeIn>
 
         {/* Search & Filters */}

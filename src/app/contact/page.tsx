@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { 
   MapPin, Phone, Mail, Send, Clock, MessageCircle, CheckCircle2, 
-  AlertCircle, Calendar, LifeBuoy, User, Wrench, Laptop, 
-  CreditCard, Sparkles, RefreshCw, FileText, Check, TrendingUp 
+  AlertCircle, LifeBuoy, User, Wrench, Laptop, 
+  CreditCard, RefreshCw, FileText, Check, TrendingUp 
 } from 'lucide-react'
 
 // Smart diagnostic tips and technician responses for the simulator
@@ -114,7 +114,7 @@ export default function Contact() {
         osc.stop(now + 0.15)
       }
       setTimeout(() => ctx.close(), 300)
-    } catch (e) {}
+    } catch {}
   }
 
   const handleSubmit = (e: React.FormEvent) => {

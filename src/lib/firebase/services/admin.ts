@@ -1,4 +1,4 @@
-import { dbGetDoc, dbSetDoc, dbAddDoc, dbGetDocs, dbUpdateDoc, QueryFilter } from "./dbClient";
+import { dbGetDoc, dbSetDoc, dbAddDoc, dbGetDocs, dbUpdateDoc } from "./dbClient";
 import { createNotification, awardBadge } from "./referral";
 import { ReferredProspect, logCommercialActivity } from "./commercial";
 

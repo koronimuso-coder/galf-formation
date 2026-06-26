@@ -4,12 +4,13 @@ import Image from 'next/image'
 import { 
   ArrowRight, Trophy, Award, MapPin, Star, ChevronRight, Play, Clock, 
   Users, Factory, Settings, ChevronLeft, Pause, Sparkles, Shield, 
-  TrendingUp, CheckCircle2, Calendar, User, Zap, RefreshCw, AlertCircle, Gift
+  TrendingUp, CheckCircle2, Calendar, Zap, Gift
 } from 'lucide-react'
-import { FadeIn, AnimatedCounter, MagneticHover, TextReveal } from '@/components/animations/FadeIn'
+import { FadeIn, MagneticHover, TextReveal } from '@/components/animations/FadeIn'
 import { SplineHero } from '@/components/3d/SplineHero'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { MachineSpecsModal } from '@/components/3d/MachineSpecsModal'
+import Btp3dShowroom from '@/components/3d/Btp3dShowroom'
 import { useState, useEffect } from 'react'
 import { getFormationImage } from '@/lib/images'
 
@@ -47,7 +48,7 @@ export default function Home() {
       }, 4500)
     }
     return () => clearInterval(interval)
-  }, [isPlayingTestimonials])
+  }, [isPlayingTestimonials, testimonials.length])
 
   // 2. Career Path Timeline States
   const [activeTimelineStep, setActiveTimelineStep] = useState(0)
@@ -183,7 +184,7 @@ export default function Home() {
         osc.stop(now + 0.05)
       }
       setTimeout(() => ctx.close(), 400)
-    } catch (e) {}
+    } catch {}
   }
 
   const handleRecomAnswer = (key: 'env' | 'style' | 'interest', value: string) => {
@@ -286,7 +287,7 @@ export default function Home() {
         osc.stop(now + idx * 0.05 + 0.3)
       })
       setTimeout(() => ctx.close(), 500)
-    } catch (e) {}
+    } catch {}
   }
 
   const handleBookingSubmit = (e: React.FormEvent) => {
@@ -512,6 +513,29 @@ export default function Home() {
               )
             })}
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════
+          BTP 3D IMMERSIVE SHOWROOM
+         ═══════════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden bg-black/60" style={{ borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
+        <div className="container-galf relative z-10">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Expérience Virtuelle</span>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-white">
+                Showroom <span className="text-galf-yellow">3D Interactif</span>
+              </h2>
+              <p className="text-lg max-w-2xl mx-auto text-white/60">
+                Prenez le contrôle de nos machines de chantier directement depuis votre navigateur. Testez la physique de levage, le scanner laser et le bras hydraulique.
+              </p>
+            </div>
+          </FadeIn>
+          
+          <FadeIn delay={0.2}>
+            <Btp3dShowroom />
+          </FadeIn>
         </div>
       </section>
 
@@ -1489,7 +1513,6 @@ export default function Home() {
 
                     <div className="space-y-2">
                       {quizQuestions[quizIndex].options.map((opt, oIdx) => {
-                        const isSelected = quizSelected === oIdx
                         return (
                           <button
                             key={oIdx}

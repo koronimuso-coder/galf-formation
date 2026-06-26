@@ -1,19 +1,19 @@
 "use client"
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+
 import { 
-  Gift, Users, Link as LinkIcon, Download, Copy, Share2, 
-  Award, Bell, HelpCircle, User, LogOut, ShieldCheck, 
-  CheckCircle, Clock, AlertCircle, ChevronRight, CheckCircle2, Trophy, QrCode
+  Gift, Users, Link as LinkIcon, Download, Copy, 
+  Award, Bell, HelpCircle, LogOut, 
+  CheckCircle, Trophy, QrCode
 } from 'lucide-react'
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import { FadeIn } from '@/components/animations/FadeIn'
 import { getCurrentUser, signOutUser, UserProfile } from '@/lib/firebase/services/auth'
 import { 
   getSponsorProfile, getSponsorBadges, getNotifications, 
-  markNotificationAsRead, getLeaderboard, SponsorProfile, Badge, Notification, LeaderboardEntry 
+  markNotificationAsRead, getLeaderboard, SponsorProfile, Notification, LeaderboardEntry 
 } from '@/lib/firebase/services/referral'
-import { dbGetDocs, dbGetDoc } from '@/lib/firebase/services/dbClient'
+import { dbGetDocs } from '@/lib/firebase/services/dbClient'
 import { ReferredProspect } from '@/lib/firebase/services/commercial'
 import { ReferralReward } from '@/lib/firebase/services/admin'
 import { GALF_FORMATIONS } from '@/lib/data'
@@ -25,11 +25,11 @@ export default function CockpitAmbassadeur() {
   // States
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [sponsorProfile, setSponsorProfile] = useState<SponsorProfile | null>(null)
-  const [badges, setBadges] = useState<Badge[]>([])
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [referredProspects, setReferredProspects] = useState<ReferredProspect[]>([])
   const [rewards, setRewards] = useState<ReferralReward[]>([])
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+  const [badges, setBadges] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   
   // Dashboard states
@@ -96,6 +96,7 @@ export default function CockpitAmbassadeur() {
 
   useEffect(() => {
     loadDashboardData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Draw Card on Canvas
@@ -265,6 +266,7 @@ export default function CockpitAmbassadeur() {
     if (!isLoading && sponsorProfile) {
       drawAmbassadorCard()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, sponsorProfile, cardLayout])
 
   // Actions
@@ -303,7 +305,6 @@ export default function CockpitAmbassadeur() {
   
   // Progression milestone calculation
   const milestoneCount = Math.min(5, validatedCount)
-  const remainingCount = 5 - milestoneCount
 
   let milestoneMessage = "Ton aventure commence maintenant. Partage ton code autour de toi."
   if (milestoneCount === 1) milestoneMessage = "Première inscription validée. Plus que 4."

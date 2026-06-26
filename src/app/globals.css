@@ -1170,3 +1170,134 @@ img, iframe, video, svg {
   }
 }
 
+/* ═══════════════════════════════════════════════
+   ADDITIONAL BTP 3D SHOWROOM & CYBER-INDUSTRIAL STYLES
+   ═══════════════════════════════════════════════ */
+
+/* 🌌 Blueprint/BTP Grid overlay */
+.btp-blueprint-grid {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 176, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 176, 0, 0.04) 1px, transparent 1px);
+}
+
+.btp-blueprint-grid-fine {
+  background-size: 10px 10px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 176, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 176, 0, 0.02) 1px, transparent 1px);
+}
+
+/* 🟢 Laser scanning animation line */
+@keyframes laser-scan {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+.scanner-laser-line {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #22c55e, #4ade80, #22c55e, transparent);
+  box-shadow: 0 0 12px #22c55e, 0 0 24px #4ade80;
+  animation: laser-scan 4s linear infinite;
+}
+
+/* 🏗️ 3D Perspective structures (preserve-3d) */
+.scene-3d {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.object-3d {
+  transform-style: preserve-3d;
+}
+
+/* Glow shadows */
+.glow-orange {
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+}
+
+.glow-orange-strong {
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.4);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+}
+
+/* 🕹️ Scanline CRT overlay */
+.crt-overlay {
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
+}
+
+/* 📈 Animated Grid points */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.3); opacity: 0.9; }
+}
+
+.grid-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ────────────────────────────────────────────────
+   CAPSULE NAVBAR & MODERN HEADERS
+   ──────────────────────────────────────────────── */
+
+/* 💊 Navbar Capsule transition */
+.navbar-capsule {
+  margin-top: 1rem !important;
+  max-width: 80rem !important;
+  border-radius: 9999px !important;
+  border: 1px solid rgba(255, 176, 0, 0.25) !important;
+  background: rgba(14, 14, 16, 0.8) !important;
+  backdrop-filter: blur(25px) !important;
+  box-shadow: 
+    0 10px 40px -10px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 176, 0, 0.08) !important;
+  transform: translateY(0);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 🏆 Metallic Yellow Text Gradient */
+.text-metallic-yellow {
+  background: linear-gradient(135deg, #FFF 30%, #FFB000 70%, #CC8800 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 📐 Technical Blueprint overlay for headers */
+.blueprint-header-overlay {
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* 🖥️ HUD Industrial Monitor */
+.hud-monitor-card {
+  font-family: monospace;
+  background: rgba(8, 8, 10, 0.85);
+  border: 1px solid rgba(255, 176, 0, 0.15);
+  box-shadow: 
+    inset 0 0 15px rgba(255, 176, 0, 0.05),
+    0 4px 24px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+}
+
+/* Moving glow animation */
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(255, 176, 0, 0.2); }
+  50% { border-color: rgba(255, 176, 0, 0.55); }
+}
+
+.animate-glow-border {
+  animation: border-glow 4s ease-in-out infinite;
+}
+
+
+

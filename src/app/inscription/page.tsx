@@ -4,7 +4,7 @@ import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { FadeIn } from '@/components/animations/FadeIn'
 import { GALF_FORMATIONS } from '@/lib/data'
-import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck, Info, Sparkles, Smile, Shield, Download, Trophy } from 'lucide-react'
+import { User, Book, CreditCard, CheckCircle2, ArrowRight, ArrowLeft, FileCheck, Info, Sparkles, Smile, Download, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { getAttributionCode } from '@/lib/firebase/services/referral'
@@ -39,7 +39,7 @@ export default function Inscription() {
   const toggleFormation = (fId: string) => {
     try {
       playPromoSound('click')
-    } catch (e) {}
+    } catch {}
     if (selectedFormations.includes(fId)) {
       setSelectedFormations(selectedFormations.filter(id => id !== fId))
     } else {
@@ -103,7 +103,7 @@ export default function Inscription() {
         if (parsed.experience) setExperience(parsed.experience)
         if (parsed.step) setStep(parsed.step)
         setDraftRestored(true)
-      } catch (e) {}
+      } catch {}
     }
     
     // Read global referral attribution cookie
@@ -152,6 +152,7 @@ export default function Inscription() {
     if (step < 5 && (selectedFormations.length > 0 || fullName || phone || email || idNumber || birthDate || city || gender || education || experience || paymentMethod)) {
       saveDraft(step)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFormations, acompte, paymentMethod, fullName, phone, email, idNumber, birthDate, city, gender, education, experience, step])
 
   const handleDownloadReceiptPDF = async () => {
@@ -214,7 +215,7 @@ export default function Inscription() {
         osc.stop(now + 0.05)
       }
       setTimeout(() => ctx.close(), 400)
-    } catch (e) {}
+    } catch {}
   }
 
   const applyPromoCode = () => {

@@ -2,10 +2,7 @@ import { auth } from "../config";
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  signOut as fbSignOut,
-  onAuthStateChanged,
-  User as FirebaseUser
-} from "firebase/auth";
+  signOut as fbSignOut} from "firebase/auth";
 import { dbGetDoc, dbSetDoc, dbGetDocs } from "./dbClient";
 
 // Helper to check if Firebase Auth is in dummy mode

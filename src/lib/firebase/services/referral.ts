@@ -1,4 +1,4 @@
-import { dbGetDoc, dbSetDoc, dbAddDoc, dbGetDocs, dbUpdateDoc, QueryFilter } from "./dbClient";
+import { dbGetDoc, dbSetDoc, dbAddDoc, dbGetDocs, dbUpdateDoc } from "./dbClient";
 
 // Phone Normalization for Côte d'Ivoire & WhatsApp
 export const normalizeWhatsApp = (phone: string): string => {

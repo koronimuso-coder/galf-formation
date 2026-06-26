@@ -1,17 +1,33 @@
 "use client"
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { HardHat, Menu, X, ChevronRight, Sun, Moon } from 'lucide-react'
+import { HardHat, Menu, X, ChevronRight, ChevronDown, Sun, Moon } from 'lucide-react'
 import { useTheme } from '@/components/ThemeProvider'
+
+interface SubLink {
+  href: string
+  label: string
+  desc: string
+  badge?: string
+}
+
+interface NavLink {
+  href: string
+  label: string
+  subLinks?: SubLink[]
+}
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { theme, toggleTheme } = useTheme()
   const [showMarquee, setShowMarquee] = useState(false)
+  
+  // Fake latency metric for industrial HUD look
+  const [telemetryLatency, setTelemetryLatency] = useState(42)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50)
+    const handleScroll = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -30,38 +46,74 @@ export function Navbar() {
     document.documentElement.style.setProperty('--marquee-offset', '36px')
   }, [])
 
+  // Modulate fake latency just for HUD animation effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTelemetryLatency(prev => {
+        const offset = Math.floor(Math.random() * 6) - 3
+        const next = prev + offset
+        return next > 60 ? 40 : next < 20 ? 30 : next
+      })
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
+
   const handleCloseMarquee = () => {
     localStorage.setItem('galf_marquee_closed_time', Date.now().toString())
     setShowMarquee(false)
     document.documentElement.style.setProperty('--marquee-offset', '0px')
   }
 
-  const links = [
+  const links: NavLink[] = [
     { href: '/formations', label: 'Formations' },
-    { href: '/entreprise', label: 'Entreprises' },
-    { href: '/programme-ambassadeur', label: 'Ambassadeur' },
-    { href: '/mediatheque', label: 'Médiathèque' },
-    { href: '/mediatheque/simulateur', label: 'Simulateur 3D' },
-    { href: '/a-propos', label: 'À propos' },
-    { href: '/blog', label: 'Actualités' },
+    { 
+      href: '/entreprise', 
+      label: 'Entreprises',
+      subLinks: [
+        { href: '/entreprise', label: 'Portail Corporate', desc: 'Solutions sur-mesure pour PME & grands groupes.', badge: 'B2B' },
+        { href: '/entreprise/calculateur-roi', label: 'Simulateur ROI & Carburant', desc: 'Calculez le gain de consommation de vos conducteurs.', badge: 'OPTIMISEUR' }
+      ]
+    },
+    { 
+      href: '/recrutement', 
+      label: 'Recrutement BTP',
+      subLinks: [
+        { href: '/recrutement', label: 'Offres Emploi', desc: 'Consultez les postes actifs de nos partenaires chantiers.', badge: 'EMPLOIS' },
+        { href: '/recrutement/annuaire-operateurs', label: 'Annuaire Opérateurs', desc: 'Accédez à nos diplômés certifiés sur la Blockchain.', badge: 'BLOCKCHAIN' }
+      ]
+    },
+    { href: '/financement', label: 'Financement' },
+    { href: '/accreditations', label: 'Accréditations' },
+    { 
+      href: '/mediatheque', 
+      label: 'Médiathèque',
+      subLinks: [
+        { href: '/mediatheque', label: 'Ressources & Guides', desc: 'Bibliothèque de documents de sécurité HSE et tutoriels.', badge: 'DOCS' },
+        { href: '/mediatheque/checklist-securite', label: 'Fiche Inspection HSE', desc: 'Créez vos fiches de prise de poste engin en 2 min.', badge: 'HSE TOOL' },
+        { href: '/mediatheque/simulateur', label: 'Simulateur 3D', desc: 'Pilotez virtuellement une Pelle, Grue ou Bulldozer.', badge: 'IMMERSION' }
+      ]
+    },
+    { href: '/rse-impact', label: 'RSE & Impact' },
     { href: '/contact', label: 'Contact' },
   ]
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 flex flex-col w-full">
+      <div className="fixed top-0 left-0 right-0 z-50 flex flex-col w-full px-0 transition-all duration-300">
+        
+        {/* Top Info Ribbon */}
         {showMarquee && (
-          <div className="bg-galf-yellow text-galf-carbon text-[11px] uppercase tracking-wider font-extrabold h-9 flex items-center relative overflow-hidden border-b border-galf-yellow/20 select-none z-[60]">
+          <div className="bg-galf-yellow text-galf-carbon text-[10px] uppercase tracking-wider font-black h-9 flex items-center relative overflow-hidden border-b border-galf-yellow/20 select-none z-[60]">
             <div className="flex-1 overflow-hidden relative h-full flex items-center pr-12">
               <div className="animate-marquee whitespace-nowrap flex gap-16 absolute pl-4">
-                <span className="flex items-center gap-2">🎁 Nouveau : Gagnez votre formation 100% offerte en parrainant vos proches ! Cliquez sur le lien &apos;Ambassadeur&apos; dans la barre.</span>
+                <span className="flex items-center gap-2">🎁 Nouveau : Gagnez votre formation 100% offerte en parrainant vos proches ! Rendez-vous sur votre espace Ambassadeur.</span>
                 <span className="flex items-center gap-2">⚡ Offre Exceptionnelle : -15% sur toutes les formations Grue et Pelle jusqu&apos;à la fin du mois !</span>
                 <span className="flex items-center gap-2">🏗️ Nouveau : Ouverture de notre centre de pratique à San Pedro ! Réservez vite.</span>
                 
                 {/* Duplicated for infinite effect */}
-                <span className="flex items-center gap-2">⚡ Offre Exceptionnelle : -15% sur toutes les formations Grue et Pelle jusqu'à la fin du mois !</span>
+                <span className="flex items-center gap-2">⚡ Offre Exceptionnelle : -15% sur toutes les formations Grue et Pelle jusqu&apos;à la fin du mois !</span>
                 <span className="flex items-center gap-2">🏗️ Nouveau : Ouverture de notre centre de pratique à San Pedro ! Réservez vite.</span>
-                <span className="flex items-center gap-2">🎓 Conformité : Certifications BTP de pointe en Côte d'Ivoire.</span>
+                <span className="flex items-center gap-2">🎓 Conformité : Certifications BTP de pointe en Côte d&apos;Ivoire.</span>
               </div>
             </div>
             
@@ -77,86 +129,202 @@ export function Navbar() {
           </div>
         )}
 
-        <nav className={`w-full transition-all duration-500 ${
-          scrolled
-            ? 'shadow-lg border-b border-[var(--galf-border)]'
-            : 'border-b border-transparent'
-        }`} style={{ background: scrolled ? 'var(--galf-surface)' : 'transparent' }}>
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between max-w-7xl">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-lg bg-galf-yellow flex items-center justify-center group-hover:scale-105 transition-transform shadow-md">
-              <HardHat className="text-galf-carbon w-6 h-6" />
-            </div>
-            <div className="font-black text-xl tracking-tighter" style={{ color: 'var(--galf-text)' }}>
-              GALF<span className="text-galf-yellow">.</span>
-            </div>
-          </Link>
-
-          {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-7">
-            {links.map(link => (
-              <Link 
-                key={link.href} 
-                href={link.href} 
-                className="text-[13px] font-semibold uppercase tracking-[0.12em] transition-colors hover:text-galf-yellow flex items-center gap-1.5" 
-                style={{ color: link.label === 'Simulateur 3D' ? 'rgb(255, 176, 0)' : 'var(--galf-text-secondary)' }}
-              >
-                {link.label}
-                {link.label === 'Simulateur 3D' && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-galf-yellow animate-pulse shadow-[0_0_8px_#ffb000]" />
-                )}
+        {/* Outer container adjusting margins when scrolled (forming the capsule) */}
+        <div className={`w-full flex justify-center transition-all duration-500 ${
+          scrolled ? 'px-4 md:px-8 pt-4' : 'px-0 pt-0'
+        }`}>
+          
+          <nav 
+            className={`w-full transition-all duration-500 overflow-visible ${
+              scrolled
+                ? 'navbar-capsule animate-glow-border'
+                : 'border-b border-white/5 bg-black/45 backdrop-blur-md'
+            }`}
+          >
+            <div className="container mx-auto px-6 h-18 md:h-20 flex items-center justify-between max-w-7xl">
+              
+              {/* Logo block */}
+              <Link href="/" className="flex items-center gap-3 group shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-galf-yellow to-orange-500 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-galf-yellow/10">
+                  <HardHat className="text-galf-carbon w-5.5 h-5.5 fill-current" />
+                </div>
+                <div className="font-black text-xl tracking-tighter text-white">
+                  GALF<span className="text-galf-yellow font-extrabold animate-pulse">.</span>
+                </div>
               </Link>
-            ))}
 
-            {/* Theme toggle */}
-            <button
-              onClick={toggleTheme}
-              className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors hover:bg-galf-yellow/10"
-              style={{ color: 'var(--galf-text-secondary)', border: '1px solid var(--galf-border)' }}
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
+              {/* Desktop links */}
+              <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+                {links.map(link => {
+                  if (link.subLinks) {
+                    return (
+                      <div key={link.href} className="relative group py-6">
+                        <button 
+                          className="text-[11px] font-black uppercase tracking-[0.15em] text-white/70 group-hover:text-galf-yellow flex items-center gap-1.5 cursor-pointer focus:outline-none transition-colors"
+                        >
+                          {link.label}
+                          <ChevronDown className="w-3.5 h-3.5 opacity-50 transition-transform group-hover:rotate-180" />
+                        </button>
+                        
+                        {/* PREMIUM INDUSTRIAL MEGA DROPDOWN */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[380px] rounded-2xl border border-white/10 bg-zinc-950/95 p-4 shadow-2xl opacity-0 translate-y-3 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50 backdrop-blur-xl bg-[radial-gradient(ellipse_at_top,rgba(255,176,0,0.04),transparent)]">
+                          <div className="absolute inset-0 btp-blueprint-grid opacity-10 rounded-2xl pointer-events-none" />
+                          
+                          <div className="relative z-10 space-y-3">
+                            <div className="text-[9px] font-mono text-galf-yellow/60 font-black uppercase tracking-[0.25em] border-b border-white/5 pb-2 mb-2">
+                              {link.label} · Accès Direct
+                            </div>
+                            
+                            {link.subLinks.map(sub => (
+                              <Link
+                                key={sub.href}
+                                href={sub.href}
+                                className="block p-3 rounded-xl bg-white/0 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all text-left group/item"
+                              >
+                                <div className="flex items-center justify-between gap-2 mb-1">
+                                  <span className="text-xs font-black uppercase tracking-wider text-white group-hover/item:text-galf-yellow transition-colors">
+                                    {sub.label}
+                                  </span>
+                                  {sub.badge && (
+                                    <span className="px-2 py-0.5 rounded text-[8px] font-black tracking-widest uppercase bg-galf-yellow/10 border border-galf-yellow/20 text-galf-yellow">
+                                      {sub.badge}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-[10px] text-white/50 leading-relaxed font-semibold">
+                                  {sub.desc}
+                                </p>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  }
+                  return (
+                    <Link 
+                      key={link.href} 
+                      href={link.href} 
+                      className="text-[11px] font-black uppercase tracking-[0.15em] text-white/70 hover:text-galf-yellow transition-colors" 
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                })}
+              </div>
 
-            <Link href="/connexion" className="text-[13px] font-bold uppercase tracking-[0.12em] transition-colors hover:text-galf-yellow" style={{ color: 'var(--galf-text)' }}>
-              Connexion
-            </Link>
-            <Link href="/inscription" className="bg-galf-yellow text-galf-carbon px-6 py-2.5 rounded-lg font-black text-sm uppercase tracking-wider hover:brightness-110 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
-              S'inscrire
-            </Link>
-          </div>
+              {/* Action buttons & HUD status */}
+              <div className="hidden lg:flex items-center gap-4 xl:gap-6 shrink-0">
+                {/* HUD Latency telemetre */}
+                <div className="flex items-center gap-2 font-mono text-[9px] text-emerald-400 bg-emerald-500/5 border border-emerald-500/10 px-3 py-1.5 rounded-lg">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                  <span>LATENCY: {telemetryLatency}ms</span>
+                </div>
 
-          {/* Mobile */}
-          <div className="flex items-center gap-3 lg:hidden">
-            <button onClick={toggleTheme} className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ color: 'var(--galf-text-secondary)', border: '1px solid var(--galf-border)' }}>
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-            <button onClick={() => setIsOpen(!isOpen)} className="w-12 h-12 flex items-center justify-center -mr-2" style={{ color: 'var(--galf-text)' }}>
-              {isOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
-            </button>
-          </div>
+                {/* Theme toggle */}
+                <button
+                  onClick={toggleTheme}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors border border-white/10 hover:bg-white/5 text-white/70 hover:text-white"
+                  aria-label="Toggle theme"
+                >
+                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                </button>
+
+                <Link href="/connexion" className="text-[11px] font-black uppercase tracking-[0.15em] text-white hover:text-galf-yellow transition-colors">
+                  Connexion
+                </Link>
+                <Link href="/inscription" className="bg-gradient-to-r from-galf-yellow to-orange-500 text-galf-carbon px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-md shadow-galf-yellow/10">
+                  S&apos;inscrire
+                </Link>
+              </div>
+
+              {/* Mobile controls */}
+              <div className="flex items-center gap-3 lg:hidden shrink-0">
+                <button 
+                  onClick={toggleTheme} 
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-white/10 text-white/70"
+                >
+                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                </button>
+                <button 
+                  onClick={() => setIsOpen(!isOpen)} 
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white border border-white/10"
+                >
+                  {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                </button>
+              </div>
+
+            </div>
+          </nav>
         </div>
-      </nav>
       </div>
 
-      {/* Mobile menu */}
-      <div className={`fixed inset-0 z-40 transition-all duration-500 lg:hidden ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-        style={{ background: 'var(--galf-bg)' }}>
-        <div className="flex flex-col justify-center items-center h-full gap-6">
-          {links.map(link => (
-            <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}
-              className="text-2xl font-black uppercase tracking-wider flex items-center gap-2 hover:text-galf-yellow transition-colors"
-              style={{ color: 'var(--galf-text)' }}>
-              {link.label} <ChevronRight className="w-5 h-5" style={{ color: 'var(--galf-text-secondary)' }} />
-            </Link>
-          ))}
-          <div className="w-16 my-4" style={{ borderTop: '1px solid var(--galf-border)' }} />
-          <Link href="/connexion" onClick={() => setIsOpen(false)} className="text-lg font-bold transition-colors hover:text-galf-yellow" style={{ color: 'var(--galf-text-secondary)' }}>
-            Connexion
-          </Link>
-          <Link href="/inscription" onClick={() => setIsOpen(false)} className="bg-galf-yellow text-galf-carbon px-10 py-4 rounded-lg font-black text-lg mt-4 hover:brightness-110 transition-all shadow-lg">
-            S'inscrire maintenant
-          </Link>
+      {/* MOBILE FULLSCREEN MENU OVERLAY */}
+      <div 
+        className={`fixed inset-0 z-40 transition-all duration-500 lg:hidden overflow-y-auto ${
+          isOpen ? 'opacity-100 pointer-events-auto scale-100' : 'opacity-0 pointer-events-none scale-105'
+        }`}
+        style={{ background: '#08080a' }}
+      >
+        {/* Decorative Grid Overlay */}
+        <div className="absolute inset-0 btp-blueprint-grid opacity-15 pointer-events-none z-0" />
+        <div className="absolute inset-0 btp-blueprint-grid-fine opacity-15 pointer-events-none z-0" />
+        
+        <div className="relative z-10 flex flex-col justify-start items-center min-h-screen py-28 px-6 gap-8">
+          <div className="w-full max-w-md space-y-6">
+            {links.map((link) => {
+              if (link.subLinks) {
+                return (
+                  <div key={link.href} className="space-y-2 border-l border-white/10 pl-4 py-1">
+                    <span className="text-[10px] font-mono text-galf-yellow font-black uppercase tracking-[0.2em]">
+                      {link.label}
+                    </span>
+                    <div className="flex flex-col gap-3 pt-1">
+                      {link.subLinks.map(sub => (
+                        <Link 
+                          key={sub.href} 
+                          href={sub.href} 
+                          onClick={() => setIsOpen(false)}
+                          className="text-sm font-black uppercase text-white/80 hover:text-galf-yellow flex items-center gap-1.5 transition-colors"
+                        >
+                          {sub.label} <ChevronRight className="w-3.5 h-3.5 text-galf-yellow" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
+              return (
+                <Link 
+                  key={link.href} 
+                  href={link.href} 
+                  onClick={() => setIsOpen(false)}
+                  className="block text-xl font-black uppercase text-white hover:text-galf-yellow transition-colors border-b border-white/5 pb-2"
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
+            
+            <div className="w-full h-[1px] bg-white/10 pt-4" />
+            
+            <div className="flex flex-col gap-4">
+              <Link 
+                href="/connexion" 
+                onClick={() => setIsOpen(false)} 
+                className="w-full py-4 rounded-xl border border-white/10 text-center font-bold text-sm uppercase tracking-wider text-white"
+              >
+                Connexion
+              </Link>
+              <Link 
+                href="/inscription" 
+                onClick={() => setIsOpen(false)} 
+                className="w-full py-4 rounded-xl bg-galf-yellow text-galf-carbon text-center font-black text-sm uppercase tracking-widest"
+              >
+                S&apos;inscrire maintenant
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </>

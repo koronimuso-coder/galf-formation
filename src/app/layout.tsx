@@ -10,6 +10,7 @@ import { ScrollProgress } from '@/components/animations/ScrollProgress';
 import { PageTransition } from '@/components/animations/PageTransition';
 import { CookieBanner } from '@/components/layout/CookieBanner';
 import { GlobalReferralTracker } from '@/components/layout/GlobalReferralTracker';
+import { GoogleAdSense } from '@/components/layout/GoogleAdSense';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,6 +41,7 @@ export default function RootLayout({
     <html lang="fr" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen flex flex-col antialiased`}>
         <ThemeProvider>
+          <GoogleAdSense />
           <GlobalReferralTracker />
           <ScrollProgress />
           <Loader />

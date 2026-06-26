@@ -1,9 +1,10 @@
 "use client"
 import { FadeIn } from '@/components/animations/FadeIn'
-import { Plus, Minus, MessageSquare, Send, X, Bot, CheckCircle2, Search, Sparkles } from 'lucide-react'
+import { Plus, Minus, MessageSquare, Send, X, Bot, Search, Sparkles } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { AdBanner } from '@/components/layout/AdBanner'
 
 interface Message {
   sender: 'user' | 'bot'
@@ -46,7 +47,7 @@ export default function FAQ() {
     if (savedVotes) {
       try {
         setVotes(JSON.parse(savedVotes))
-      } catch (e) {}
+      } catch {}
     }
   }, [])
 
@@ -118,7 +119,7 @@ export default function FAQ() {
       osc.start()
       osc.stop(ctx.currentTime + 0.08)
       setTimeout(() => ctx.close(), 150)
-    } catch(e) {}
+    } catch {}
   }
 
   const handleSendMessage = (text: string) => {
@@ -322,6 +323,11 @@ export default function FAQ() {
             </FadeIn>
           )}
         </div>
+
+        {/* AdSense Placement */}
+        <FadeIn delay={0.1}>
+          <AdBanner slot="faq_middle_banner" format="horizontal" />
+        </FadeIn>
 
         {/* ═══════════════════════════════════════════════
             NEW: GLOSSAIRE INTERACTIF DES TERMES BTP & MINES

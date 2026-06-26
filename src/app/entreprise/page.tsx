@@ -1,15 +1,16 @@
-﻿"use client"
+"use client"
 import { FadeIn } from '@/components/animations/FadeIn'
+import Link from 'next/link'
+import gsap from 'gsap'
 import { 
-  Briefcase, Users, FileText, Send, TrendingUp, CheckCircle2, Shield, 
-  ArrowRight, Star, Calculator, Download, Calendar, Search, Upload, 
+  Briefcase, Users, FileText, Send, TrendingUp, CheckCircle2, Shield, Star, Calculator, Download, Calendar, Search, Upload, 
   FileSpreadsheet, AlertTriangle, Check, MapPin, ShieldAlert
 } from 'lucide-react'
 import { useState } from 'react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { jsPDF } from 'jspdf'
-import Link from 'next/link'
+
 
 // Graduate database for Recruiting Express matching (Extended with CACES & Experience)
 const GRADUATES_DB = [
@@ -34,6 +35,30 @@ const MOCK_FLEET_COMPLIANCE = [
 
 export default function EntreprisePortal() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left - rect.width / 2
+    const y = e.clientY - rect.top - rect.height / 2
+    
+    gsap.to(card, {
+      rotateY: x * 0.05,
+      rotateX: -y * 0.05,
+      transformPerspective: 1000,
+      duration: 0.3,
+      ease: "power2.out"
+    })
+  }
+
+  const handleCardMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    gsap.to(e.currentTarget, {
+      rotateY: 0,
+      rotateX: 0,
+      duration: 0.5,
+      ease: "power3.out"
+    })
+  }
   const [submitted, setSubmitted] = useState(false)
   
   // Interactive Devis B2B state
@@ -376,7 +401,12 @@ export default function EntreprisePortal() {
               { icon: Shield, t: "Normes HSE", d: "Toutes nos formations intègrent les normes HSE en vigueur, réduisant vos risques juridiques." },
               { icon: Users, t: "Sur-mesure", d: "Programmes adaptés à vos chantiers, votre parc d'engins et vos objectifs de performance." },
             ].map((adv, i) => (
-              <div key={i} className="glass-card p-6 rounded-xl hover:border-galf-yellow/30 transition-colors border-galf-border">
+              <div 
+                key={i} 
+                onMouseMove={handleCardMouseMove}
+                onMouseLeave={handleCardMouseLeave}
+                className="glass-card p-6 rounded-xl hover:border-galf-yellow/30 transition-colors border-galf-border transform-gpu"
+              >
                 <adv.icon className="w-8 h-8 text-galf-yellow mb-4" />
                 <h3 className="font-black text-lg mb-2" style={{ color: 'var(--galf-text)' }}>{adv.t}</h3>
                 <p className="text-sm" style={{ color: 'var(--galf-text-secondary)' }}>{adv.d}</p>
@@ -394,7 +424,12 @@ export default function EntreprisePortal() {
                 { icon: FileText, t: "Devis Groupé", d: "Tarification dégressive pour l'inscription de plusieurs collaborateurs à nos sessions." },
                 { icon: Briefcase, t: "Partenariat Recrutement", d: "Accédez en priorité aux profils les mieux formés de nos promotions pour vos recrutements." },
               ].map((b, i) => (
-                <div key={i} className="glass-card p-6 rounded-xl flex gap-4 hover:border-galf-yellow/30 transition-colors border-galf-border">
+                <div 
+                  key={i} 
+                  onMouseMove={handleCardMouseMove}
+                  onMouseLeave={handleCardMouseLeave}
+                  className="glass-card p-6 rounded-xl flex gap-4 hover:border-galf-yellow/30 transition-colors border-galf-border transform-gpu"
+                >
                   <div className="w-12 h-12 rounded-xl bg-galf-yellow/10 border border-galf-yellow/20 text-galf-yellow flex items-center justify-center shrink-0">
                     <b.icon className="w-6 h-6" />
                   </div>
@@ -408,7 +443,11 @@ export default function EntreprisePortal() {
           </FadeIn>
 
           <FadeIn delay={0.3}>
-            <div className="glass-card p-8 rounded-xl relative overflow-hidden border border-galf-yellow/20">
+            <div 
+              onMouseMove={handleCardMouseMove}
+              onMouseLeave={handleCardMouseLeave}
+              className="glass-card p-8 rounded-xl relative overflow-hidden border border-galf-yellow/20 transform-gpu"
+            >
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-galf-border">
                 <h2 className="text-2xl font-black flex items-center gap-3 text-white">
                   <Briefcase className="text-galf-yellow" /> Espace Corporate
@@ -444,16 +483,18 @@ export default function EntreprisePortal() {
               ) : viewMode === 'contact' ? (
                 <form className="space-y-5" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-2 gap-4">
-                    {[{ l: "Entreprise", p: "Nom de l'entreprise" }, { l: "Contact", p: "Votre nom" }].map((f, i) => (
-                      <div key={i} className="space-y-2">
-                        <label className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--galf-text-muted)' }}>{f.l}</label>
-                        <input required type="text" placeholder={f.p} className="w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-galf-yellow" style={inputStyle} />
-                      </div>
-                    ))}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--galf-text-muted)' }}>Entreprise</label>
+                      <input required type="text" placeholder="Nom de l'entreprise" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-galf-yellow" style={inputStyle} />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--galf-text-muted)' }}>Contact</label>
+                      <input required type="text" placeholder="Votre nom" value={contactName} onChange={(e) => setContactName(e.target.value)} className="w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-galf-yellow" style={inputStyle} />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--galf-text-muted)' }}>Email professionnel</label>
-                    <input required type="email" placeholder="email@entreprise.com" className="w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-galf-yellow" style={inputStyle} />
+                    <input required type="email" placeholder="email@entreprise.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-galf-yellow" style={inputStyle} />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--galf-text-muted)' }}>Nombre de collaborateurs</label>
@@ -720,6 +761,13 @@ export default function EntreprisePortal() {
                             Ajustez les curseurs pour modéliser le retour sur investissement.
                           </div>
                         )}
+
+                        <Link 
+                          href="/entreprise/calculateur-roi"
+                          className="w-full border border-galf-yellow text-galf-yellow hover:bg-galf-yellow/15 font-black py-4 rounded-xl text-center transition-all block text-xs uppercase tracking-widest text-center"
+                        >
+                          Simulateur Complet & Audit PDF →
+                        </Link>
 
                         <a 
                           href="https://wa.me/2250711826507" 

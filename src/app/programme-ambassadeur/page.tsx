@@ -3,13 +3,12 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { 
-  Users, Gift, Award, HelpCircle, CheckCircle, ChevronDown, 
-  ArrowRight, ShieldCheck, HelpCircle as HelpIcon, Sparkles, 
-  BookOpen, Heart, Landmark, CheckCircle2, ChevronRight
+  Users, Gift, Award, CheckCircle, ChevronDown, 
+  ArrowRight, ShieldCheck, HelpCircle as HelpIcon, Sparkles, Heart, CheckCircle2, ChevronRight
 } from 'lucide-react'
-import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
+import { FadeIn } from '@/components/animations/FadeIn'
 import { GALF_FORMATIONS } from '@/lib/data'
-import { logReferralClick, setAttributionCookie, getCampaigns, Campaign } from '@/lib/firebase/services/referral'
+import { logReferralClick, setAttributionCookie, getCampaigns } from '@/lib/firebase/services/referral'
 import { PageHeader } from '@/components/layout/PageHeader'
 
 function ReferralTracker() {
@@ -48,9 +47,6 @@ function ReferralTracker() {
 }
 
 export default function ProgrammeAmbassadeur() {
-  // Campaign state
-  const [activeCampaign, setActiveCampaign] = useState<Campaign | null>(null)
-  
   // Simulation states
   const [recommendCount, setRecommendCount] = useState(15)
   const [convRate, setConvRate] = useState(33) // default ~33%
@@ -61,28 +57,10 @@ export default function ProgrammeAmbassadeur() {
 
   useEffect(() => {
     const fetchCampaigns = async () => {
-      const list = await getCampaigns()
-      const active = list.find(c => c.status === 'active')
-      if (active) {
-        setActiveCampaign(active)
-      } else {
-        // Fallback default campaign mock
-        setActiveCampaign({
-          id: "campagne-initiale-2026",
-          name: "Campagne Initiale 2026",
-          slug: "ambassadeur-2026",
-          title: "Programme Ambassadeur GALF",
-          slogan: "Ne sois pas le sorcier de ta famille !",
-          description: "Partagez l'opportunité d'une formation professionnelle d'excellence.",
-          image: "/images/formations/carte-operateur.jpg",
-          startDate: "2026-01-01",
-          endDate: "2026-12-31",
-          status: "active",
-          threshold: 5,
-          rewardDescription: "Une formation 100% offerte au choix",
-          rules: "Participation réservée aux personnes physiques résidant en Côte d'Ivoire...",
-          faq: [],
-        })
+      try {
+        await getCampaigns()
+      } catch (e) {
+        console.error(e)
       }
     }
     fetchCampaigns()
@@ -374,6 +352,7 @@ export default function ProgrammeAmbassadeur() {
                 <div className="glass-card rounded-2xl overflow-hidden border border-white/5 group hover:border-galf-yellow/20 transition-all flex flex-col justify-between h-full bg-black/20">
                   <div>
                     <div className="h-44 overflow-hidden relative border-b border-white/5 bg-slate-800">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src="/images/about/candidat-check.png" alt={f.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       <div className="absolute top-4 left-4 px-2 py-0.5 rounded bg-galf-yellow text-galf-carbon text-[9px] font-black uppercase tracking-wider">
                         {f.category}

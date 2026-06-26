@@ -1,4 +1,4 @@
-import { dbGetDoc, dbSetDoc, dbAddDoc, dbGetDocs, dbUpdateDoc, QueryFilter } from "./dbClient";
+import { dbGetDoc, dbSetDoc, dbAddDoc, dbGetDocs, dbUpdateDoc } from "./dbClient";
 import { normalizeWhatsApp } from "./referral";
 
 export interface ReferredProspect {

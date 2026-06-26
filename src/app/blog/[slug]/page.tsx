@@ -1,13 +1,13 @@
 "use client";
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
-import { Calendar, ArrowLeft, Share2, MessageSquare, Tag, Bookmark, Heart, Send } from 'lucide-react'
-import Link from 'next/link'
+import { Calendar, ArrowLeft, Share2, MessageSquare, Bookmark, Send } from 'lucide-react'
+
 import { useState, useEffect } from 'react'
+import { AdBanner } from '@/components/layout/AdBanner'
 
 export default function BlogDetail() {
-  const { slug } = useParams()
   const router = useRouter()
 
   // Comfort Reader States
@@ -75,7 +75,7 @@ export default function BlogDetail() {
       osc.start()
       osc.stop(ctx.currentTime + 0.08)
       setTimeout(() => ctx.close(), 150)
-    } catch(e) {}
+    } catch {}
   }
 
   const handleReactionClick = (key: keyof typeof reactions) => {
@@ -187,6 +187,7 @@ export default function BlogDetail() {
               </div>
               
               <div className="aspect-video rounded-3xl overflow-hidden mb-12 relative border border-galf-border shadow-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={post.img} alt={post.title} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               </div>
@@ -210,6 +211,9 @@ export default function BlogDetail() {
                   </span>
                 ))}
               </div>
+
+              {/* AdSense Placement */}
+              <AdBanner slot="blog_detail_bottom" format="horizontal" />
 
               {/* ═══════════════════════════════════════════════
                   NEW: EMOJI REACTIONS SECTION

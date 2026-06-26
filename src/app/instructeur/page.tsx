@@ -2,9 +2,7 @@
 import { useState, useEffect } from 'react'
 import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import { 
-  Users, Video, Calendar, Upload, Settings, Check, X, Clock, 
-  AlertTriangle, Send, Bell, Plus, Trash2, Award, Printer, 
-  Share2, UserCheck, Shield, ChevronRight, FileText
+  Users, Video, Calendar, Upload, Settings, X, Clock, Send, Bell, Plus, Trash2, Award, Printer, UserCheck, FileText
 } from 'lucide-react'
 import { AnimatedMachineHeader } from '@/components/animations/AnimatedMachineHeader'
 
@@ -64,11 +62,11 @@ export default function InstructeurDashboard() {
   useEffect(() => {
     const savedStudents = localStorage.getItem('galf_instructor_students')
     if (savedStudents) {
-      try { setStudents(JSON.parse(savedStudents)) } catch (e) {}
+      try { setStudents(JSON.parse(savedStudents)) } catch {}
     }
     const savedExams = localStorage.getItem('galf_instructor_exams')
     if (savedExams) {
-      try { setExams(JSON.parse(savedExams)) } catch (e) {}
+      try { setExams(JSON.parse(savedExams)) } catch {}
     } else {
       const defaultExams = [
         { id: 1, studentName: "Jean Kouadio", date: "2026-06-15", time: "10:30", machine: "Grue à Tour" },
@@ -79,7 +77,7 @@ export default function InstructeurDashboard() {
     }
     const savedSubs = localStorage.getItem('galf_instructor_subs')
     if (savedSubs) {
-      try { setAssignedSubs(JSON.parse(savedSubs)) } catch (e) {}
+      try { setAssignedSubs(JSON.parse(savedSubs)) } catch {}
     }
   }, [])
 
@@ -213,7 +211,7 @@ export default function InstructeurDashboard() {
       gain.connect(ctx.destination)
       osc.start()
       osc.stop(ctx.currentTime + duration)
-    } catch (err) {}
+    } catch {}
   }
 
   // Calculate average notes

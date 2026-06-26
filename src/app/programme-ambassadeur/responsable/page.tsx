@@ -3,11 +3,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
-  Users, BarChart3, ShieldCheck, CheckCircle, RefreshCw, 
-  UserPlus, UserCheck, AlertTriangle, ArrowRight, BookOpen, 
-  MapPin, PieChart, TrendingUp, LogOut, ChevronRight 
-} from 'lucide-react'
-import { FadeIn } from '@/components/animations/FadeIn'
+  Users, BarChart3, CheckCircle, TrendingUp} from 'lucide-react'
+
 import { getCurrentUser, signOutUser, UserProfile } from '@/lib/firebase/services/auth'
 import { dbGetDocs, dbGetDoc, dbUpdateDoc } from '@/lib/firebase/services/dbClient'
 import { ReferredProspect, logCommercialActivity } from '@/lib/firebase/services/commercial'
@@ -32,7 +29,6 @@ export default function ResponsableWorkspace() {
   const [teamProspects, setTeamProspects] = useState<ReferredProspect[]>([])
   const [commercials, setCommercials] = useState<UserProfile[]>([])
   const [teamPerformance, setTeamPerformance] = useState<CommercialPerformance[]>([])
-  const [isLoading, setIsLoading] = useState(true)
 
   // Re-assignment modal state
   const [selectedProspect, setSelectedProspect] = useState<ReferredProspect | null>(null)
@@ -83,13 +79,12 @@ export default function ResponsableWorkspace() {
 
     } catch (e) {
       console.error("Failed to load supervisor workspace:", e)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   useEffect(() => {
     loadSupervisorData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleReassignLead = async (e: React.FormEvent) => {
