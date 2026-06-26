@@ -4,7 +4,7 @@ import { FadeIn, TextReveal } from '@/components/animations/FadeIn'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { getPageHeaderImage } from '@/lib/images'
-import { Compass, ShieldCheck } from 'lucide-react'
+import { Compass, ShieldCheck, Activity, Target } from 'lucide-react'
 
 interface PageHeaderProps {
   title: string
@@ -15,16 +15,28 @@ interface PageHeaderProps {
   children?: React.ReactNode
 }
 
+interface ScanPoint {
+  x: number
+  y: number
+  originX: number
+  originY: number
+  speed: number
+  radius: number
+  intensity: number
+}
+
 export function PageHeader({ title, subtitle, badge, bgImage, centered = false, children }: PageHeaderProps) {
   const pathname = usePathname()
   const headerBg = bgImage || getPageHeaderImage(pathname)
   
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const hudCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [mousePos, setMousePos] = useState({ rx: 0, ry: 0, canvasX: -9999, canvasY: -9999 })
   
   // HUD Telemetry States
   const [elevation, setElevation] = useState(105)
   const [gpsCoords, setGpsCoords] = useState("5°19'11\"N 4°01'36\"W") // Abidjan default
+  const [activeScanIndex, setActiveScanIndex] = useState(0)
   
   // Set regional telemetry depending on the page path
   useEffect(() => {
@@ -37,15 +49,33 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
     }
   }, [pathname])
 
-  // Mouse move listener to add slight interactive tilt to canvas points
+  // Oscillating elevation & scan counter in HUD to simulate live tracking
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setElevation(prev => {
+        const delta = (Math.random() - 0.5) * 0.16
+        return parseFloat((prev + delta).toFixed(2))
+      })
+      setActiveScanIndex(prev => (prev + 1) % 1000)
+    }, 1200)
+    return () => clearInterval(timer)
+  }, [])
+
+  // Mouse move listener to update mouse offsets & canvas coordinates
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / rect.width - 0.5
-    const y = (e.clientY - rect.top) / rect.height - 0.5
-    setMousePos({ x, y })
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const rx = (e.clientX - rect.left) / rect.width - 0.5
+    const ry = (e.clientY - rect.top) / rect.height - 0.5
+    setMousePos({ rx, ry, canvasX: x, canvasY: y })
   }
 
-  // --- Dynamic Triangulation Canvas Grid ---
+  const handleMouseLeave = () => {
+    setMousePos({ rx: 0, ry: 0, canvasX: -9999, canvasY: -9999 })
+  }
+
+  // --- Dynamic Triangulation Canvas Grid (with LIDAR Sweep) ---
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -53,64 +83,142 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
     if (!ctx) return
     
     let frameId: number
-    canvas.width = canvas.parentElement?.clientWidth || 800
-    canvas.height = canvas.parentElement?.clientHeight || 450
     
-    const w = canvas.width
-    const h = canvas.height
+    const initCanvasSize = () => {
+      canvas.width = canvas.parentElement?.clientWidth || 800
+      canvas.height = canvas.parentElement?.clientHeight || 450
+    }
+    
+    initCanvasSize()
     
     // Generate triangulation point coordinates
-    const pointsCount = 28
-    const points: { x: number; y: number; originX: number; originY: number; speed: number; radius: number }[] = []
+    const pointsCount = 32
+    const points: ScanPoint[] = []
     
     for (let i = 0; i < pointsCount; i++) {
-      const rx = Math.random() * w
-      const ry = Math.random() * h
+      const rx = Math.random() * canvas.width
+      const ry = Math.random() * canvas.height
       points.push({
         x: rx,
         y: ry,
         originX: rx,
         originY: ry,
         speed: 0.2 + Math.random() * 0.4,
-        radius: 1 + Math.random() * 2
+        radius: 1.5 + Math.random() * 2,
+        intensity: 0
       })
     }
 
     let time = 0
+    let sweepY = 0
+    let sweepDirection = 1
+
     const draw = () => {
+      const w = canvas.width
+      const h = canvas.height
       ctx.clearRect(0, 0, w, h)
-      time += 0.005
+      time += 0.004
+      
+      // 1. Move LIDAR Sweep line
+      sweepY += 2.2 * sweepDirection
+      if (sweepY > h) {
+        sweepY = h
+        sweepDirection = -1
+      } else if (sweepY < 0) {
+        sweepY = 0
+        sweepDirection = 1
+      }
+
+      // Draw Sweep Line and Glow
+      ctx.strokeStyle = 'rgba(255, 176, 0, 0.2)'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(0, sweepY)
+      ctx.lineTo(w, sweepY)
+      ctx.stroke()
+
+      const sweepGrad = ctx.createLinearGradient(0, sweepY - 30, 0, sweepY + 30)
+      sweepGrad.addColorStop(0, 'rgba(255, 176, 0, 0)')
+      sweepGrad.addColorStop(0.5, 'rgba(255, 176, 0, 0.08)')
+      sweepGrad.addColorStop(1, 'rgba(255, 176, 0, 0)')
+      ctx.fillStyle = sweepGrad
+      ctx.fillRect(0, sweepY - 30, w, 60)
       
       // Calculate dynamic mouse offsets
-      const mouseOffsetX = mousePos.x * 60
-      const mouseOffsetY = mousePos.y * 60
+      const mouseOffsetX = mousePos.rx * 50
+      const mouseOffsetY = mousePos.ry * 50
       
-      // Update & Draw points
+      // 2. Update & Draw points
       points.forEach((p, idx) => {
         // Natural floating movement + Mouse tilt
-        const targetX = p.originX + Math.sin(time + idx) * 12 + mouseOffsetX
-        const targetY = p.originY + Math.cos(time + idx) * 12 + mouseOffsetY
+        const targetX = p.originX + Math.sin(time + idx) * 14 + mouseOffsetX
+        const targetY = p.originY + Math.cos(time + idx) * 14 + mouseOffsetY
         
         // Linear ease towards targets
         p.x += (targetX - p.x) * 0.08
         p.y += (targetY - p.y) * 0.08
         
-        ctx.fillStyle = 'rgba(255, 176, 0, 0.25)'
+        // Decaying intensity from sweep/hover
+        p.intensity *= 0.96
+
+        // Check LIDAR line intersection
+        if (Math.abs(p.y - sweepY) < 18) {
+          p.intensity = Math.max(p.intensity, 1.0)
+        }
+
+        // Check mouse proximity intersection
+        if (mousePos.canvasX > 0) {
+          const dx = p.x - mousePos.canvasX
+          const dy = p.y - mousePos.canvasY
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < 130) {
+            p.intensity = Math.max(p.intensity, 1 - (dist / 130))
+            
+            // Connect to mouse with dashed laser
+            ctx.strokeStyle = `rgba(255, 176, 0, ${(1 - dist/130) * 0.25})`
+            ctx.lineWidth = 0.5
+            ctx.setLineDash([2, 4])
+            ctx.beginPath()
+            ctx.moveTo(mousePos.canvasX, mousePos.canvasY)
+            ctx.lineTo(p.x, p.y)
+            ctx.stroke()
+            ctx.setLineDash([])
+          }
+        }
+        
+        // Draw coordinate tags for scanned points
+        if (p.intensity > 0.4) {
+          ctx.fillStyle = `rgba(255, 176, 0, ${(p.intensity - 0.4) * 0.8})`
+          ctx.font = '6px monospace'
+          ctx.fillText(`[x:${Math.round(p.x)} y:${Math.round(p.y)}]`, p.x + 8, p.y - 4)
+        }
+
+        // Draw Point Circle
+        ctx.fillStyle = `rgba(255, 176, 0, ${0.15 + p.intensity * 0.6})`
         ctx.beginPath()
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
+        ctx.arc(p.x, p.y, p.radius + p.intensity * 1.5, 0, Math.PI * 2)
         ctx.fill()
+
+        if (p.intensity > 0.6) {
+          ctx.strokeStyle = `rgba(255, 176, 0, ${(p.intensity - 0.6) * 0.5})`
+          ctx.lineWidth = 0.7
+          ctx.beginPath()
+          ctx.arc(p.x, p.y, p.radius + 6, 0, Math.PI * 2)
+          ctx.stroke()
+        }
       })
       
-      // Connect points within distance threshold (forming BTP triangulation mesh)
+      // Connect points (forming BTP triangulation mesh)
       ctx.lineWidth = 0.5
-      ctx.strokeStyle = 'rgba(255, 176, 0, 0.06)'
       for (let i = 0; i < points.length; i++) {
         for (let j = i + 1; j < points.length; j++) {
           const dx = points[i].x - points[j].x
           const dy = points[i].y - points[j].y
           const dist = Math.sqrt(dx * dx + dy * dy)
           
-          if (dist < 140) {
+          if (dist < 150) {
+            const meanIntensity = (points[i].intensity + points[j].intensity) / 2
+            ctx.strokeStyle = `rgba(255, 176, 0, ${0.05 + meanIntensity * 0.2})`
             ctx.beginPath()
             ctx.moveTo(points[i].x, points[i].y)
             ctx.lineTo(points[j].x, points[j].y)
@@ -123,16 +231,82 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
     }
     
     draw()
+
+    const handleResize = () => {
+      initCanvasSize()
+    }
+    window.addEventListener('resize', handleResize)
     
     return () => {
       cancelAnimationFrame(frameId)
+      window.removeEventListener('resize', handleResize)
     }
   }, [mousePos])
+
+  // --- Dynamic HUD Oscillograph Canvas ---
+  useEffect(() => {
+    const hudCanvas = hudCanvasRef.current
+    if (!hudCanvas) return
+    const hCtx = hudCanvas.getContext('2d')
+    if (!hCtx) return
+    
+    let hudFrameId: number
+    hudCanvas.width = 160
+    hudCanvas.height = 36
+    
+    let hudTime = 0
+    const drawHud = () => {
+      const w = hudCanvas.width
+      const h = hudCanvas.height
+      hCtx.clearRect(0, 0, w, h)
+      
+      // Grid lines in HUD chart
+      hCtx.strokeStyle = 'rgba(255, 176, 0, 0.05)'
+      hCtx.lineWidth = 0.5
+      for (let i = 0; i < w; i += 20) {
+        hCtx.beginPath()
+        hCtx.moveTo(i, 0)
+        hCtx.lineTo(i, h)
+        hCtx.stroke()
+      }
+      for (let j = 0; j < h; j += 10) {
+        hCtx.beginPath()
+        hCtx.moveTo(0, j)
+        hCtx.lineTo(w, j)
+        hCtx.stroke()
+      }
+
+      // Signal wave
+      hCtx.strokeStyle = 'rgba(255, 176, 0, 0.75)'
+      hCtx.shadowColor = '#FFB000'
+      hCtx.shadowBlur = 4
+      hCtx.lineWidth = 1
+      hCtx.beginPath()
+      
+      hudTime += 0.08
+      for (let x = 0; x < w; x++) {
+        // Compose two sine waves for complex radar frequency telemetry
+        const y = (h / 2) + Math.sin(x * 0.08 + hudTime * 2) * 8 + Math.cos(x * 0.15 - hudTime) * 3 + (Math.random() - 0.5) * 1.5
+        if (x === 0) hCtx.moveTo(x, y)
+        else hCtx.lineTo(x, y)
+      }
+      hCtx.stroke()
+      hCtx.shadowBlur = 0 // reset
+      
+      hudFrameId = requestAnimationFrame(drawHud)
+    }
+    drawHud()
+    
+    return () => {
+      cancelAnimationFrame(hudFrameId)
+    }
+  }, [])
 
   return (
     <section 
       onMouseMove={handleMouseMove}
-      className="relative h-[55vh] md:h-[65vh] min-h-[360px] md:min-h-[520px] flex items-center overflow-hidden bg-zinc-950"
+      onMouseLeave={handleMouseLeave}
+      className="relative h-[55vh] md:h-[65vh] min-h-[420px] md:min-h-[560px] flex items-center overflow-hidden bg-zinc-950"
     >
       {/* ── Background Image & Cinematic Overlays ── */}
       <div className="absolute inset-0 z-0">
@@ -140,25 +314,37 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
           src={headerBg} 
           alt={title} 
           fill 
-          className="object-cover opacity-60 filter brightness-[0.7]" 
+          className="object-cover opacity-50 filter brightness-[0.6] transition-transform duration-700 ease-out" 
           priority
           unoptimized={headerBg.endsWith('.webp')}
         />
         
         {/* Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e10] via-black/45 to-transparent z-10" />
-        <div className="absolute inset-0 blueprint-header-overlay opacity-30 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e10] via-black/55 to-transparent z-10" />
+        <div className="absolute inset-0 blueprint-header-overlay opacity-25 z-10" />
         
         {/* Dynamic Canvas Triangulation Grid */}
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-60" />
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-70" />
       </div>
 
-      <div className="container-galf relative z-20 w-full flex flex-col lg:flex-row lg:items-end justify-between gap-8 pt-12">
+      <div className="container-galf relative z-20 w-full flex flex-col lg:flex-row lg:items-center justify-between gap-8 pt-16">
         <div className={centered ? 'max-w-3xl mx-auto text-center flex flex-col items-center' : 'max-w-4xl'}>
           <FadeIn>
-            <div>
+            {/* Glassmorphic main text container with CAD crosshair brackets */}
+            <div className="relative p-6 md:p-10 rounded-3xl backdrop-blur-md bg-black/45 border border-white/10 shadow-2xl overflow-hidden group hover:border-galf-yellow/20 transition-all duration-300">
+              {/* CAD styling crosshairs */}
+              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-galf-yellow/80 rounded-tl-lg" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-galf-yellow/80 rounded-tr-lg" />
+              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-galf-yellow/80 rounded-bl-lg" />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-galf-yellow/80 rounded-br-lg" />
+              
+              {/* Faint crosshair center lines on background */}
+              <div className="absolute top-2 right-6 text-[8px] font-mono text-white/10 uppercase tracking-widest pointer-events-none select-none">
+                GRID SCAN // REF-04
+              </div>
+
               {badge && (
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-xl text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-6 bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow shadow-inner">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-xl text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-5 bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow shadow-inner">
                   <span className="w-2 h-2 rounded-full bg-galf-yellow animate-pulse" />
                   {badge}
                 </div>
@@ -166,50 +352,61 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
               
               <TextReveal 
                 text={title} 
-                className={`page-header-title text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tighter mb-4 md:mb-6 leading-[0.95] text-metallic-yellow text-glow-yellow ${centered ? 'mx-auto' : ''}`} 
+                className={`page-header-title text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tighter mb-4 md:mb-5 leading-[0.95] text-metallic-yellow text-glow-yellow ${centered ? 'mx-auto' : ''}`} 
               />
               
-              <p className={`text-sm md:text-base text-white/75 font-semibold leading-relaxed max-w-2xl ${centered ? 'mx-auto' : ''}`}>
+              <p className={`text-sm md:text-base text-white/80 font-medium leading-relaxed max-w-2xl ${centered ? 'mx-auto' : ''}`}>
                 {subtitle}
               </p>
             </div>
             
-            {children}
+            {children && <div className="mt-6">{children}</div>}
           </FadeIn>
         </div>
 
-        {/* HUD TELEMETRY INFO PANEL (Unprecedented / Inédit) */}
+        {/* HUD TELEMETRY INFO PANEL (Cyber-Industrial screen) */}
         {!centered && (
-          <FadeIn delay={0.2} className="shrink-0 w-full lg:w-72">
-            <div className="hud-monitor-card p-5 rounded-2xl border border-white/10 text-white font-mono text-[10px] space-y-3 animate-glow-border transform lg:translate-y-[-10px]">
-              <div className="flex justify-between items-center border-b border-white/10 pb-2 text-galf-yellow font-black uppercase tracking-wider">
-                <span className="flex items-center gap-1"><Compass className="w-3.5 h-3.5 animate-spin-slow" /> HUD Telemetry</span>
-                <span>ONLINE</span>
+          <FadeIn delay={0.2} className="shrink-0 w-full lg:w-80">
+            <div className="hud-monitor-card p-6 rounded-2xl border border-white/10 text-white font-mono text-[10px] space-y-4 animate-glow-border transform lg:translate-y-[-10px] bg-black/65 backdrop-blur-md relative overflow-hidden">
+              <div className="flex justify-between items-center border-b border-white/10 pb-2.5 text-galf-yellow font-black uppercase tracking-wider">
+                <span className="flex items-center gap-1.5"><Compass className="w-3.5 h-3.5 animate-spin-slow text-galf-yellow" /> HUD Telemetry</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" /> ONLINE</span>
               </div>
               
-              <div className="space-y-2">
+              {/* Ticking oscilloscope waves */}
+              <div className="bg-zinc-950/80 border border-white/5 rounded-lg p-2.5 flex items-center justify-between">
+                <div>
+                  <span className="text-[7px] text-white/30 uppercase tracking-widest block">TELEMETRY SIGNAL</span>
+                  <span className="text-white/60 text-[8px] flex items-center gap-1"><Activity className="w-2.5 h-2.5 text-galf-yellow" /> LIDAR OSC: {activeScanIndex}Hz</span>
+                </div>
+                <canvas ref={hudCanvasRef} className="w-32 h-9 opacity-80" />
+              </div>
+
+              <div className="space-y-2 border-t border-white/5 pt-2">
                 <div className="flex justify-between">
                   <span className="opacity-45">COORDS:</span>
-                  <span className="font-bold">{gpsCoords}</span>
+                  <span className="font-bold text-white/95">{gpsCoords}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="opacity-45">ELEVATION:</span>
-                  <span className="font-bold">{elevation} m</span>
+                  <span className="font-bold text-white/95">{elevation} m</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="opacity-45">GRID SCAN:</span>
-                  <span className="font-bold text-emerald-400">ACTIVE</span>
+                  <span className="font-bold text-emerald-400 flex items-center gap-1">
+                    <Target className="w-3 h-3 text-emerald-400 animate-pulse" /> ACTIVE
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="opacity-45">SECURE:</span>
                   <span className="font-bold text-emerald-400 flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3 text-emerald-400" /> HSE OK
+                    <ShieldCheck className="w-3 h-3 text-emerald-400" /> HSE APPROVED
                   </span>
                 </div>
               </div>
               
               <div className="pt-2 border-t border-white/10 text-white/30 text-[8px] uppercase tracking-widest text-center">
-                GALF Connect Portal CI
+                GALF CONNECT PORTAL CI
               </div>
             </div>
           </FadeIn>
