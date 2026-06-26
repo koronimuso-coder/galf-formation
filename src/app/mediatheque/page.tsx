@@ -244,7 +244,7 @@ export default function Mediatheque() {
 
         {/* ── Wave 6: Outils Interactifs R482 Grid ── */}
         <FadeIn delay={0.15}>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-16">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
             <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
               <div>
                 <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Quiz CACES</span>
@@ -308,6 +308,17 @@ export default function Mediatheque() {
               </div>
               <Link href="/mediatheque/checklist-securite" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
                 Démarrer le contrôle →
+              </Link>
+            </div>
+
+            <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
+              <div>
+                <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Abaques de charge</span>
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Abaques de Charge</h3>
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>Simulez les limites physiques de levage des grues et calculez la stabilité pour éditer un Plan de Levage.</p>
+              </div>
+              <Link href="/mediatheque/abaque-grue" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
+                Simuler la charge →
               </Link>
             </div>
           </div>
