@@ -175,7 +175,7 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
             p.intensity = Math.max(p.intensity, 1 - (dist / 130))
             
             // Connect to mouse with dashed laser
-            ctx.strokeStyle = `rgba(255, 176, 0, ${(1 - dist/130) * 0.25})`
+            ctx.strokeStyle = `rgba(0, 242, 254, ${(1 - dist/130) * 0.35})`
             ctx.lineWidth = 0.5
             ctx.setLineDash([2, 4])
             ctx.beginPath()
@@ -188,19 +188,19 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
         
         // Draw coordinate tags for scanned points
         if (p.intensity > 0.4) {
-          ctx.fillStyle = `rgba(255, 176, 0, ${(p.intensity - 0.4) * 0.8})`
+          ctx.fillStyle = `rgba(255, 215, 0, ${(p.intensity - 0.4) * 0.9})`
           ctx.font = '6px monospace'
           ctx.fillText(`[x:${Math.round(p.x)} y:${Math.round(p.y)}]`, p.x + 8, p.y - 4)
         }
 
         // Draw Point Circle
-        ctx.fillStyle = `rgba(255, 176, 0, ${0.15 + p.intensity * 0.6})`
+        ctx.fillStyle = `rgba(0, 242, 254, ${0.2 + p.intensity * 0.6})`
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.radius + p.intensity * 1.5, 0, Math.PI * 2)
         ctx.fill()
 
         if (p.intensity > 0.6) {
-          ctx.strokeStyle = `rgba(255, 176, 0, ${(p.intensity - 0.6) * 0.5})`
+          ctx.strokeStyle = `rgba(0, 242, 254, ${(p.intensity - 0.6) * 0.6})`
           ctx.lineWidth = 0.7
           ctx.beginPath()
           ctx.arc(p.x, p.y, p.radius + 6, 0, Math.PI * 2)
@@ -218,7 +218,7 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
           
           if (dist < 150) {
             const meanIntensity = (points[i].intensity + points[j].intensity) / 2
-            ctx.strokeStyle = `rgba(255, 176, 0, ${0.05 + meanIntensity * 0.2})`
+            ctx.strokeStyle = `rgba(0, 242, 254, ${0.05 + meanIntensity * 0.25})`
             ctx.beginPath()
             ctx.moveTo(points[i].x, points[i].y)
             ctx.lineTo(points[j].x, points[j].y)
@@ -277,9 +277,9 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
       }
 
       // Signal wave
-      hCtx.strokeStyle = 'rgba(255, 176, 0, 0.75)'
-      hCtx.shadowColor = '#FFB000'
-      hCtx.shadowBlur = 4
+      hCtx.strokeStyle = 'rgba(0, 242, 254, 0.85)'
+      hCtx.shadowColor = '#00f2fe'
+      hCtx.shadowBlur = 5
       hCtx.lineWidth = 1
       hCtx.beginPath()
       
@@ -331,12 +331,12 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
         <div className={centered ? 'max-w-3xl mx-auto text-center flex flex-col items-center' : 'max-w-4xl'}>
           <FadeIn>
             {/* Glassmorphic main text container with CAD crosshair brackets */}
-            <div className="relative p-6 md:p-10 rounded-3xl backdrop-blur-md bg-black/45 border border-white/10 shadow-2xl overflow-hidden group hover:border-galf-yellow/20 transition-all duration-300">
+            <div className="relative p-6 md:p-10 rounded-3xl backdrop-blur-md bg-black/45 border border-white/10 shadow-2xl overflow-hidden group hover:border-[#00f2fe]/20 transition-all duration-300 stitch-hud-corner">
               {/* CAD styling crosshairs */}
-              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-galf-yellow/80 rounded-tl-lg" />
-              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-galf-yellow/80 rounded-tr-lg" />
-              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-galf-yellow/80 rounded-bl-lg" />
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-galf-yellow/80 rounded-br-lg" />
+              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-[#00f2fe]/80 rounded-tl-lg" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-[#00f2fe]/80 rounded-tr-lg" />
+              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-[#00f2fe]/80 rounded-bl-lg" />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-[#00f2fe]/80 rounded-br-lg" />
               
               {/* Faint crosshair center lines on background */}
               <div className="absolute top-2 right-6 text-[8px] font-mono text-white/10 uppercase tracking-widest pointer-events-none select-none">
@@ -344,8 +344,8 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
               </div>
 
               {badge && (
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-xl text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-5 bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow shadow-inner">
-                  <span className="w-2 h-2 rounded-full bg-galf-yellow animate-pulse" />
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-xl text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-5 bg-[#00f2fe]/10 border border-[#00f2fe]/30 text-[#00f2fe] shadow-inner">
+                  <span className="w-2 h-2 rounded-full bg-[#00f2fe] animate-pulse" />
                   {badge}
                 </div>
               )}
@@ -367,16 +367,16 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
         {/* HUD TELEMETRY INFO PANEL (Cyber-Industrial screen) */}
         {!centered && (
           <FadeIn delay={0.2} className="shrink-0 w-full lg:w-80">
-            <div className="hud-monitor-card p-6 rounded-2xl border border-white/10 text-white font-mono text-[10px] space-y-4 animate-glow-border transform lg:translate-y-[-10px] bg-black/65 backdrop-blur-md relative overflow-hidden">
-              <div className="flex justify-between items-center border-b border-white/10 pb-2.5 text-galf-yellow font-black uppercase tracking-wider">
-                <span className="flex items-center gap-1.5"><Compass className="w-3.5 h-3.5 animate-spin-slow text-galf-yellow" /> HUD Telemetry</span>
+            <div className="hud-monitor-card p-6 rounded-2xl border border-[#00f2fe]/20 text-white font-mono text-[10px] space-y-4 animate-glow-border transform lg:translate-y-[-10px] bg-black/65 backdrop-blur-md relative overflow-hidden stitch-hud-corner">
+              <div className="flex justify-between items-center border-b border-[#00f2fe]/10 pb-2.5 text-[#00f2fe] font-black uppercase tracking-wider">
+                <span className="flex items-center gap-1.5"><Compass className="w-3.5 h-3.5 animate-spin-slow text-[#00f2fe]" /> HUD Telemetry</span>
                 <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" /> ONLINE</span>
               </div>
               
               {/* Ticking oscilloscope waves */}
               <div className="bg-zinc-950/80 border border-white/5 rounded-lg p-2.5 flex items-center justify-between">
                 <div>
-                  <span className="text-[7px] text-white/30 uppercase tracking-widest block">TELEMETRY SIGNAL</span>
+                  <span className="text-[7px] text-[#00f2fe]/50 uppercase tracking-widest block">TELEMETRY SIGNAL</span>
                   <span className="text-white/60 text-[8px] flex items-center gap-1"><Activity className="w-2.5 h-2.5 text-galf-yellow" /> LIDAR OSC: {activeScanIndex}Hz</span>
                 </div>
                 <canvas ref={hudCanvasRef} className="w-32 h-9 opacity-80" />
@@ -414,7 +414,7 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
       </div>
 
       {!centered && (
-        <div className="absolute right-0 bottom-0 w-1/3 h-1.5 bg-gradient-to-r from-transparent via-galf-yellow to-orange-500 z-20 shadow-[0_0_20px_rgba(255,176,0,0.6)]" />
+        <div className="absolute right-0 bottom-0 w-1/3 h-1.5 bg-gradient-to-r from-transparent via-[#00f2fe] to-orange-500 z-20 shadow-[0_0_20px_rgba(0,242,254,0.4)]" />
       )}
     </section>
   )

@@ -1299,5 +1299,166 @@ img, iframe, video, svg {
   animation: border-glow 4s ease-in-out infinite;
 }
 
+/* ────────────────────────────────────────────────
+   STITCH CYBER-INDUSTRIEL BTP & MINES DESIGN SYSTEM
+   ──────────────────────────────────────────────── */
+
+:root {
+  --neon-teal: #00f2fe;
+  --neon-gold: #ffd700;
+  --neon-orange: #f97316;
+  --neon-glow-teal: rgba(0, 242, 254, 0.35);
+  --neon-glow-gold: rgba(255, 215, 0, 0.25);
+  --neon-glow-orange: rgba(249, 115, 22, 0.25);
+}
+
+/* 📐 Technical blueprint grid overlay */
+.stitch-blueprint-grid {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 242, 254, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 242, 254, 0.04) 1px, transparent 1px);
+}
+
+/* 🛡️ Toguna Glass & Cyber-Industrial Card */
+.stitch-card {
+  background: rgba(14, 14, 16, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stitch-card:hover {
+  border-color: rgba(0, 242, 254, 0.4);
+  box-shadow: 
+    0 0 25px rgba(0, 242, 254, 0.15),
+    0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* 🌟 Neon Glowing Icon Halo */
+.stitch-icon-glow {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.stitch-icon-glow::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--neon-glow-teal) 0%, transparent 70%);
+  opacity: 0.5;
+  z-index: -1;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.stitch-icon-glow:hover::before {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* 🔄 Rotating Constellation Orbits */
+@keyframes stitch-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes stitch-rotate-reverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.stitch-orbit {
+  animation: stitch-rotate 25s linear infinite;
+}
+
+.stitch-orbit-reverse {
+  animation: stitch-rotate-reverse 35s linear infinite;
+}
+
+/* ⚡ Telemetry laser-sweep scanline */
+@keyframes laser-sweep-anim {
+  0% { top: -10%; }
+  50% { top: 110%; }
+  100% { top: -10%; }
+}
+
+.stitch-laser-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.stitch-laser-sweep::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--neon-teal), var(--neon-gold), var(--neon-teal), transparent);
+  box-shadow: 
+    0 0 8px var(--neon-teal),
+    0 0 16px var(--neon-gold);
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.stitch-laser-sweep:hover::after {
+  opacity: 1;
+  animation: laser-sweep-anim 3s ease-in-out infinite;
+}
+
+/* 📍 CAD Brackets (HUD corner anchors) */
+.stitch-hud-corner::before,
+.stitch-hud-corner::after,
+.stitch-hud-corner > :first-child::before,
+.stitch-hud-corner > :first-child::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--neon-teal);
+  border-style: solid;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.stitch-hud-corner::before { top: 8px; left: 8px; border-width: 1.5px 0 0 1.5px; }
+.stitch-hud-corner::after { top: 8px; right: 8px; border-width: 1.5px 1.5px 0 0; }
+.stitch-hud-corner > :first-child::before { bottom: 8px; left: 8px; border-width: 0 0 1.5px 1.5px; }
+.stitch-hud-corner > :first-child::after { bottom: 8px; right: 8px; border-width: 0 1.5px 1.5px 0; }
+
+.stitch-hud-corner:hover::before,
+.stitch-hud-corner:hover::after,
+.stitch-hud-corner:hover > :first-child::before,
+.stitch-hud-corner:hover > :first-child::after {
+  opacity: 1;
+  border-color: var(--neon-gold);
+}
+
+/* ⚡ Dotted traveling telemetry light pulse */
+@keyframes border-pulse {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -100; }
+}
+
+.stitch-light-pulse {
+  stroke-dasharray: 8, 12;
+  animation: border-pulse 10s linear infinite;
+}
+
+/* 🏆 Gradient Text Teal-to-Gold */
+.stitch-gradient-text {
+  background: linear-gradient(135deg, #ffffff 10%, var(--neon-teal) 60%, var(--neon-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
 
 
