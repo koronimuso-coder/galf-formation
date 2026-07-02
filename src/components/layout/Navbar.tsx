@@ -65,7 +65,17 @@ export function Navbar() {
   }
 
   const links: NavLink[] = [
-    { href: '/formations', label: 'Formations' },
+    { 
+      href: '/formations', 
+      label: 'Formations',
+      subLinks: [
+        { href: '/formations/pelle-hydraulique', label: 'Pelle Hydraulique', desc: 'Terrassement, excavation de masse et chargement.', badge: 'POPULAIRE' },
+        { href: '/formations/grue-tour', label: 'Grue à Tour / Mobile', desc: 'Manœuvre de charges lourdes et levage en hauteur.', badge: 'RECRUTE' },
+        { href: '/formations/forage-minier', label: 'Foreuse de Mine', desc: 'Conduite de foreuses sur chantiers extractifs.', badge: 'HAUT SALAIRE' },
+        { href: '/formations/chariot-elevateur', label: 'Chariot Élévateur (Cariste)', desc: 'Manutention, stockage et logistique d\'entrepôt.', badge: 'CACES' },
+        { href: '/formations', label: 'Toutes les Formations', desc: 'Parcourez notre catalogue complet de machines lourdes.', badge: 'VOIR TOUT' }
+      ]
+    },
     { 
       href: '/entreprise', 
       label: 'Entreprises',
@@ -272,8 +282,7 @@ export function Navbar() {
         style={{ background: '#08080a' }}
       >
         {/* Decorative Grid Overlay */}
-        <div className="absolute inset-0 btp-blueprint-grid opacity-15 pointer-events-none z-0" />
-        <div className="absolute inset-0 btp-blueprint-grid-fine opacity-15 pointer-events-none z-0" />
+        <div className="absolute inset-0 stitch-blueprint-grid opacity-5 pointer-events-none z-0" />
         
         <div className="relative z-10 flex flex-col justify-start items-center min-h-screen py-28 px-6 gap-8">
           <div className="w-full max-w-md space-y-6">
