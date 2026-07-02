@@ -13,6 +13,7 @@ import { BlocDebouches } from '@/components/sections/BlocDebouches'
 import { FormationsSimilaires } from '@/components/sections/FormationsSimilaires'
 import { FormulaireBrochure } from '@/components/sections/FormulaireBrochure'
 import { StickyMobileCTA } from '@/components/layout/StickyMobileCTA'
+import { SeatTimeTracker } from '@/components/sections/SeatTimeTracker'
 
 const COMPARE_DB: { [key: string]: { name: string, weight: string, power: string, capacity: string, boom: string, caces: string } } = {
   "pelle-hydraulique": { name: "Pelle Hydraulique", weight: "22 tonnes", power: "165 ch", capacity: "1.2 m³", boom: "8.5 m", caces: "R482 Catégorie B1" },
@@ -913,6 +914,10 @@ export default function FormationDetail() {
           </div>
       </div>
     </div>
+
+      <div className="container-galf mt-12 mb-16 relative z-10">
+        <SeatTimeTracker slug={formation.slug} />
+      </div>
       
       <FormationsSimilaires currentSlug={formation.slug} />
       

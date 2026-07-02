@@ -8,6 +8,7 @@ import {
 import { PageHeader } from '@/components/layout/PageHeader'
 import Link from 'next/link'
 import { useState } from 'react'
+import { InstructorTeam } from '@/components/sections/InstructorTeam'
 
 export default function About() {
   // ── Wave 5: About Us Interactive Feature States ──
@@ -631,6 +632,8 @@ export default function About() {
 
         </div>
       </section>
+
+      <InstructorTeam />
 
       {/* CTA */}
       <div className="py-20 bg-galf-carbon">
