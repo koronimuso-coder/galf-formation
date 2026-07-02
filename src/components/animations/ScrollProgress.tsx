@@ -22,7 +22,6 @@ export function ScrollProgress() {
 
     return () => {
       tl.kill()
-      ScrollTrigger.getAll().forEach(t => t.kill())
     }
   }, [])
 

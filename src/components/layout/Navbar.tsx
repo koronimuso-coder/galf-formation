@@ -146,13 +146,13 @@ export function Navbar() {
               {/* Logo block */}
               <Link href="/" className="flex items-center gap-3 group shrink-0">
                 <div className="relative flex items-center justify-center">
-                  <div className="absolute inset-[-4px] rounded-full border border-dashed border-[#00f2fe]/40 stitch-orbit pointer-events-none" />
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00f2fe] to-orange-500 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-[#00f2fe]/20">
+                  <div className="absolute inset-[-4px] rounded-full border border-dashed border-galf-yellow/40 stitch-orbit pointer-events-none" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-galf-yellow to-orange-500 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-galf-yellow/20">
                     <HardHat className="text-galf-carbon w-5.5 h-5.5 fill-current" />
                   </div>
                 </div>
                 <div className="font-black text-xl tracking-tighter text-white">
-                  GALF<span className="text-[#00f2fe] font-extrabold animate-pulse">.</span>
+                  GALF<span className="text-galf-yellow font-extrabold animate-pulse">.</span>
                 </div>
               </Link>
 
@@ -170,14 +170,14 @@ export function Navbar() {
                         </button>
                         
                         {/* PREMIUM INDUSTRIAL MEGA DROPDOWN */}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[380px] rounded-2xl border border-[#00f2fe]/20 bg-zinc-950/90 p-4 shadow-2xl opacity-0 translate-y-3 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50 backdrop-blur-xl bg-[radial-gradient(ellipse_at_top,rgba(0,242,254,0.06),transparent)] stitch-hud-corner">
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[380px] rounded-2xl border border-galf-yellow/20 bg-zinc-950/90 p-4 shadow-2xl opacity-0 translate-y-3 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50 backdrop-blur-xl bg-[radial-gradient(ellipse_at_top,rgba(255,176,0,0.06),transparent)] stitch-hud-corner">
                           <div className="absolute inset-0 stitch-blueprint-grid opacity-15 rounded-2xl pointer-events-none" />
-                          <div className="absolute inset-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00f2fe]/40 to-transparent" />
+                          <div className="absolute inset-0 w-full h-[1px] bg-gradient-to-r from-transparent via-galf-yellow/40 to-transparent" />
                           
                           <div className="relative z-10 space-y-3">
                             <div className="text-[9px] font-mono text-galf-yellow/60 font-black uppercase tracking-[0.25em] border-b border-white/5 pb-2 mb-2 flex justify-between items-center">
                               <span>{link.label} · Accès Direct</span>
-                              <span className="text-[7px] text-[#00f2fe]/60">SYS-SCAN // ON</span>
+                              <span className="text-[7px] text-galf-yellow/60">SYS-SCAN // ON</span>
                             </div>
                             
                             {link.subLinks.map(sub => (
@@ -187,11 +187,11 @@ export function Navbar() {
                                 className="block p-3 rounded-xl bg-white/0 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all text-left group/item"
                               >
                                 <div className="flex items-center justify-between gap-2 mb-1">
-                                  <span className="text-xs font-black uppercase tracking-wider text-white group-hover/item:text-[#00f2fe] transition-colors">
+                                  <span className="text-xs font-black uppercase tracking-wider text-white group-hover/item:text-galf-yellow transition-colors">
                                     {sub.label}
                                   </span>
                                   {sub.badge && (
-                                    <span className="px-2 py-0.5 rounded text-[8px] font-black tracking-widest uppercase bg-[#00f2fe]/10 border border-[#00f2fe]/20 text-[#00f2fe]">
+                                    <span className="px-2 py-0.5 rounded text-[8px] font-black tracking-widest uppercase bg-galf-yellow/10 border border-galf-yellow/20 text-galf-yellow">
                                       {sub.badge}
                                     </span>
                                   )}
@@ -221,8 +221,8 @@ export function Navbar() {
               {/* Action buttons & HUD status */}
               <div className="hidden lg:flex items-center gap-4 xl:gap-6 shrink-0">
                 {/* HUD Latency telemetre */}
-                <div className="flex items-center gap-2 font-mono text-[9px] text-[#00f2fe] bg-[#00f2fe]/5 border border-[#00f2fe]/10 px-3 py-1.5 rounded-lg shadow-[0_0_10px_rgba(0,242,254,0.05)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00f2fe] animate-ping" />
+                <div className="flex items-center gap-2 font-mono text-[9px] text-emerald-400 bg-emerald-500/5 border border-emerald-500/10 px-3 py-1.5 rounded-lg shadow-[0_0_10px_rgba(16,185,129,0.05)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                   <span>HUD // SYS: {telemetryLatency}ms</span>
                 </div>
 
@@ -238,7 +238,7 @@ export function Navbar() {
                 <Link href="/connexion" className="text-[11px] font-black uppercase tracking-[0.15em] text-white hover:text-galf-yellow transition-colors">
                   Connexion
                 </Link>
-                <Link href="/inscription" className="bg-gradient-to-r from-[#00f2fe] to-orange-500 text-galf-carbon px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-md shadow-[#00f2fe]/10">
+                <Link href="/inscription" className="bg-gradient-to-r from-galf-yellow to-orange-500 text-galf-carbon px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:brightness-110 transition-all shadow-md shadow-galf-yellow/10">
                   S&apos;inscrire
                 </Link>
               </div>

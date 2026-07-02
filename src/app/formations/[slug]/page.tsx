@@ -8,6 +8,11 @@ import { ArrowLeft, ArrowRight, Clock, MapPin, BarChart3, BookOpen, Target, Brie
 import { PageHeader } from '@/components/layout/PageHeader'
 import { useState, useEffect } from 'react'
 import { AdBanner } from '@/components/layout/AdBanner'
+import { BlocDocuments } from '@/components/sections/BlocDocuments'
+import { BlocDebouches } from '@/components/sections/BlocDebouches'
+import { FormationsSimilaires } from '@/components/sections/FormationsSimilaires'
+import { FormulaireBrochure } from '@/components/sections/FormulaireBrochure'
+import { StickyMobileCTA } from '@/components/layout/StickyMobileCTA'
 
 const COMPARE_DB: { [key: string]: { name: string, weight: string, power: string, capacity: string, boom: string, caces: string } } = {
   "pelle-hydraulique": { name: "Pelle Hydraulique", weight: "22 tonnes", power: "165 ch", capacity: "1.2 m³", boom: "8.5 m", caces: "R482 Catégorie B1" },
@@ -799,6 +804,10 @@ export default function FormationDetail() {
                 </div>
               </div>
             </FadeIn>
+            <div className="grid md:grid-cols-2 gap-6">
+              <BlocDocuments />
+              <BlocDebouches slug={formation.slug} />
+            </div>
           </div>
 
           {/* Price & Registration Sidebar */}
@@ -902,8 +911,16 @@ export default function FormationDetail() {
               </div>
             </FadeIn>
           </div>
-        </div>
       </div>
+    </div>
+      
+      <FormationsSimilaires currentSlug={formation.slug} />
+      
+      <div id="formulaire-brochure-section">
+        <FormulaireBrochure initialSlug={formation.slug} />
+      </div>
+
+      <StickyMobileCTA slug={formation.slug} price={formation.price} pricePromo={formation.pricePromo} />
     </div>
   )
 }

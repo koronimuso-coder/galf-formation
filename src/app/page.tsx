@@ -6,13 +6,22 @@ import {
   Users, Factory, Settings, ChevronLeft, Pause, Sparkles, Shield, 
   TrendingUp, CheckCircle2, Calendar, Zap, Gift
 } from 'lucide-react'
-import { FadeIn, MagneticHover, TextReveal } from '@/components/animations/FadeIn'
+import { FadeIn, MagneticHover, TextReveal, AnimatedCounter } from '@/components/animations/FadeIn'
 import { SplineHero } from '@/components/3d/SplineHero'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { MachineSpecsModal } from '@/components/3d/MachineSpecsModal'
 import Btp3dShowroom from '@/components/3d/Btp3dShowroom'
 import { useState, useEffect } from 'react'
 import { getFormationImage } from '@/lib/images'
+
+// Import new sections
+import { BandeauReassurance } from '@/components/sections/BandeauReassurance'
+import { AccreditationBlock } from '@/components/sections/AccreditationBlock'
+import { FormulaireBrochure } from '@/components/sections/FormulaireBrochure'
+import { ComparateurFormations } from '@/components/sections/ComparateurFormations'
+import { EspaceMembrePreview } from '@/components/sections/EspaceMembrePreview'
+import { BlocEntreprises } from '@/components/sections/BlocEntreprises'
+import { FAQAccordion } from '@/components/sections/FAQAccordion'
 
 export default function Home() {
   const [activeMachine, setActiveMachine] = useState<{slug: string, name: string, img: string} | null>(null)
@@ -98,7 +107,7 @@ export default function Home() {
   ]
 
   // 3. Live Stats Data & Activity Feed
-  const [liveStudents, setLiveStudents] = useState(1534)
+  const [liveStudents, setLiveStudents] = useState(15432)
   const [liveEventText, setLiveEventText] = useState("Un nouvel opérateur vient d'être diplômé à Abidjan (Grue)")
 
   useEffect(() => {
@@ -313,7 +322,7 @@ export default function Home() {
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="heroLaser" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00f2fe" />
+                <stop offset="0%" stopColor="var(--primary)" />
                 <stop offset="100%" stopColor="#ffd700" />
               </linearGradient>
             </defs>
@@ -330,7 +339,7 @@ export default function Home() {
         <div className="container-galf relative z-50 pt-24 pb-20">
           <div className="max-w-4xl">
             <FadeIn delay={0.6}>
-              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase mb-8 bg-[#00f2fe]/10 border border-[#00f2fe]/30 text-[#00f2fe] backdrop-blur-md shadow-inner shadow-[#00f2fe]/5">
+              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase mb-8 bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow backdrop-blur-md shadow-inner shadow-galf-yellow/5">
                 <Factory className="w-4 h-4 animate-pulse" />
                 L&apos;Élite de la Formation BTP &amp; Mines — Afrique de l&apos;Ouest
               </div>
@@ -350,12 +359,12 @@ export default function Home() {
 
             <FadeIn delay={1.3} className="flex flex-col sm:flex-row gap-6">
               <MagneticHover>
-                <Link href="/inscription" className="hero-cta-primary bg-gradient-to-r from-[#00f2fe] to-orange-500 text-galf-carbon px-12 py-5 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#00f2fe]/10 hover:shadow-[#00f2fe]/20">
+                <Link href="/inscription" className="hero-cta-primary bg-gradient-to-r from-galf-yellow to-orange-500 text-galf-carbon px-12 py-5 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-lg shadow-galf-yellow/10 hover:shadow-galf-yellow/20">
                   Propulsez votre carrière <ArrowRight className="w-5 h-5" />
                 </Link>
               </MagneticHover>
               <Link href="/formations" className="hero-cta-secondary px-12 py-5 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2">
-                <Settings className="w-5 h-5 text-[#00f2fe]" />
+                <Settings className="w-5 h-5 text-galf-yellow" />
                 Nos parcours certifiants
               </Link>
             </FadeIn>
@@ -396,6 +405,8 @@ export default function Home() {
         </div>
       </section>
 
+      <BandeauReassurance />
+
       {/* ═══════════════════════════════════════════════
           3. LIVE SVG STATS DASHBOARD (NEW FEATURE 19)
          ═══════════════════════════════════════════════ */}
@@ -427,7 +438,7 @@ export default function Home() {
                 <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
                   <defs>
                     <linearGradient id="successGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#00f2fe" />
+                      <stop offset="0%" stopColor="var(--primary)" />
                       <stop offset="100%" stopColor="#ffd700" />
                     </linearGradient>
                   </defs>
@@ -435,25 +446,25 @@ export default function Home() {
                   <path stroke="url(#successGrad)" strokeDasharray="98, 100" strokeWidth="3.5" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-black text-[var(--galf-text)]">98%</span>
+                  <span className="text-2xl font-black text-[var(--galf-text)]"><AnimatedCounter target={98} suffix="%" /></span>
                 </div>
               </div>
               <h3 className="text-sm font-black uppercase tracking-wider mb-1 flex items-center gap-1.5 text-[var(--galf-text)]">
-                <span className="stitch-icon-glow flex items-center justify-center w-6 h-6"><Trophy className="w-4 h-4 text-[#00f2fe]" /></span> Taux de réussite
+                <span className="stitch-icon-glow flex items-center justify-center w-6 h-6"><Trophy className="w-4 h-4 text-galf-yellow" /></span> Taux de réussite
               </h3>
               <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Sur examen de conduite et théorie réglementaire.</p>
             </FadeIn>
 
-            {/* Stat 2: 1530+ Certifies */}
+            {/* Stat 2: 15000+ Certifies */}
             <FadeIn delay={0.2} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group stitch-hud-corner">
-              <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-[#00f2fe]/5 rounded-full border border-[#00f2fe]/15 group-hover:scale-105 transition-transform overflow-visible">
-                <div className="absolute inset-[-4px] rounded-full border border-dashed border-[#00f2fe]/30 stitch-orbit pointer-events-none" />
-                <Users className="w-10 h-10 text-[#00f2fe] animate-pulse" />
+              <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-galf-yellow/5 rounded-full border border-galf-yellow/15 group-hover:scale-105 transition-transform overflow-visible">
+                <div className="absolute inset-[-4px] rounded-full border border-dashed border-galf-yellow/30 stitch-orbit pointer-events-none" />
+                <Users className="w-10 h-10 text-galf-yellow animate-pulse" />
               </div>
               <h3 className="text-2xl font-black mb-1 text-[var(--galf-text)]">
-                {liveStudents}
+                <AnimatedCounter target={liveStudents} />
               </h3>
-              <p className="text-xs font-black text-[#00f2fe] uppercase tracking-widest mb-1 flex items-center gap-1">
+              <p className="text-xs font-black text-galf-yellow uppercase tracking-widest mb-1 flex items-center gap-1">
                 <Zap className="w-3.5 h-3.5 text-orange-500 animate-bounce" /> Opérateurs Formés
               </p>
               <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Compteur live actualisé en direct.</p>
@@ -465,7 +476,7 @@ export default function Home() {
                 <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
                   <defs>
                     <linearGradient id="specGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#00f2fe" />
+                      <stop offset="0%" stopColor="var(--primary)" />
                       <stop offset="100%" stopColor="#ffd700" />
                     </linearGradient>
                   </defs>
@@ -473,7 +484,7 @@ export default function Home() {
                   <path stroke="url(#specGrad)" strokeDasharray="75, 100" strokeWidth="3" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-black text-[var(--galf-text)]">19</span>
+                  <span className="text-2xl font-black text-[var(--galf-text)]"><AnimatedCounter target={19} /></span>
                 </div>
               </div>
               <h3 className="text-sm font-black uppercase tracking-wider mb-1 flex items-center gap-1.5 text-[var(--galf-text)]">
@@ -488,7 +499,7 @@ export default function Home() {
                 <div className="absolute inset-[-4px] rounded-full border border-dashed border-[#ffd700]/30 stitch-orbit-reverse pointer-events-none" />
                 <TrendingUp className="w-10 h-10 text-[#ffd700]" />
               </div>
-              <h3 className="text-2xl font-black mb-1 text-[var(--galf-text)]">50+</h3>
+              <h3 className="text-2xl font-black mb-1 text-[var(--galf-text)]"><AnimatedCounter target={50} suffix="+" /></h3>
               <p className="text-xs font-black text-[#ffd700] uppercase tracking-widest mb-1 flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 fill-[#ffd700] text-[#ffd700]" /> Entreprises
               </p>
@@ -520,7 +531,7 @@ export default function Home() {
               return (
                 <FadeIn key={i} delay={0.1 * i}>
                   <div className="perspective-container" onClick={() => setActiveMachine({ slug: eq.slug, name: eq.name, img: eq.img })}>
-                    <div className="card-3d group relative h-[340px] rounded-xl overflow-hidden cursor-pointer stitch-hud-corner border border-white/5 bg-zinc-950/40 hover:border-[#00f2fe]/40 hover:shadow-[0_0_20px_rgba(0,242,254,0.15)] transition-all duration-500 stitch-laser-sweep">
+                    <div className="card-3d group relative h-[340px] rounded-xl overflow-hidden cursor-pointer stitch-hud-corner border border-white/5 bg-zinc-950/40 hover:border-galf-yellow/40 hover:shadow-[0_0_20px_rgba(255,176,0,0.15)] transition-all duration-500 stitch-laser-sweep">
                       <Image 
                         src={eq.img} 
                         alt={eq.name} 
@@ -532,7 +543,7 @@ export default function Home() {
                       <div className="absolute inset-0 stitch-blueprint-grid opacity-0 group-hover:opacity-15 transition-opacity duration-500 pointer-events-none" />
                       
                       {/* HUD dimensions reading on hover */}
-                      <div className="absolute top-4 left-4 z-20 font-mono text-[8px] text-[#00f2fe] opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-2.5 py-1.5 rounded border border-[#00f2fe]/20">
+                      <div className="absolute top-4 left-4 z-20 font-mono text-[8px] text-galf-yellow opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-2.5 py-1.5 rounded border border-galf-yellow/20">
                         {eq.cat === "Excavation" ? "DIM: 9.5 x 3.2m | WT: 24T" :
                          eq.cat === "Levage" ? "HG: 48m | CAP: 16T" :
                          eq.cat === "Terrassement" ? "DIM: 6.8 x 3.6m | WT: 21T" :
@@ -543,18 +554,18 @@ export default function Home() {
                       
                       {/* Targeting crosshair in center on hover */}
                       <div className="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <div className="w-12 h-12 border border-[#00f2fe]/30 rounded-full flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 bg-[#00f2fe] rounded-full animate-ping" />
+                        <div className="w-12 h-12 border border-galf-yellow/30 rounded-full flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 bg-galf-yellow rounded-full animate-ping" />
                         </div>
                       </div>
 
                       <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
-                        <div className="text-[10px] text-[#00f2fe] font-bold uppercase tracking-[0.3em] mb-1">{eq.cat}</div>
+                        <div className="text-[10px] text-galf-yellow font-bold uppercase tracking-[0.3em] mb-1">{eq.cat}</div>
                         <h3 className="text-xl font-black text-white mb-1">{eq.name}</h3>
                         <p className="text-xs text-white/70">{eq.desc}</p>
                       </div>
-                      <div className="absolute inset-0 bg-[#00f2fe]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#00f2fe] to-orange-500 flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-500 shadow-xl shadow-[#00f2fe]/20">
+                      <div className="absolute inset-0 bg-galf-yellow/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-galf-yellow to-orange-500 flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-500 shadow-xl shadow-galf-yellow/20">
                           <Play className="w-6 h-6 text-galf-carbon ml-1" />
                         </div>
                       </div>
@@ -657,6 +668,8 @@ export default function Home() {
         </div>
       </section>
 
+      <ComparateurFormations />
+
       {/* ═══════════════════════════════════════════════
           2. CAREER TIMELINE EXPLORER (NEW FEATURE 18)
          ═══════════════════════════════════════════════ */}
@@ -683,13 +696,13 @@ export default function Home() {
                   onClick={() => setActiveTimelineStep(idx)}
                   className={`w-full text-left p-5 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
                     activeTimelineStep === idx 
-                      ? 'bg-[#00f2fe]/10 border-[#00f2fe]/40 shadow-lg shadow-[#00f2fe]/5'
-                      : 'bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 hover:border-[#00f2fe]/20'
+                      ? 'bg-galf-yellow/10 border-galf-yellow/40 shadow-lg shadow-galf-yellow/5'
+                      : 'bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 hover:border-galf-yellow/20'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-mono font-black text-sm transition-colors ${
-                      activeTimelineStep === idx ? 'bg-[#00f2fe] text-galf-carbon' : 'bg-black/10 dark:bg-white/10 text-[var(--galf-text-secondary)]'
+                      activeTimelineStep === idx ? 'bg-galf-yellow text-galf-carbon' : 'bg-black/10 dark:bg-white/10 text-[var(--galf-text-secondary)]'
                     }`}>
                       {idx + 1}
                     </span>
@@ -699,7 +712,7 @@ export default function Home() {
                     </div>
                   </div>
                   <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border ${
-                    activeTimelineStep === idx ? 'bg-[#00f2fe]/20 text-[#00f2fe] border-[#00f2fe]/30' : 'bg-black/5 dark:bg-white/5 text-[var(--galf-text-muted)] border-black/5 dark:border-white/5'
+                    activeTimelineStep === idx ? 'bg-galf-yellow/20 text-galf-yellow border-galf-yellow/30' : 'bg-black/5 dark:bg-white/5 text-[var(--galf-text-muted)] border-black/5 dark:border-white/5'
                   }`}>
                     {step.badge}
                   </span>
@@ -709,13 +722,13 @@ export default function Home() {
 
             {/* Step Detail Display Panel */}
             <div className="lg:col-span-7">
-              <div className="stitch-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between bg-zinc-950/80 border border-[#00f2fe]/20 stitch-hud-corner shadow-2xl bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,242,254,0.05),transparent)]">
+              <div className="stitch-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between bg-zinc-950/80 border border-galf-yellow/20 stitch-hud-corner shadow-2xl bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,176,0,0.05),transparent)]">
                 <div className="absolute inset-0 stitch-blueprint-grid opacity-15 rounded-[2.5rem] pointer-events-none" />
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f2fe]/5 rounded-bl-[8rem]" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[8rem]" />
                 
                 <div className="relative z-10">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase text-[#00f2fe] tracking-widest mb-4">
-                    <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#00f2fe]" />
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase text-galf-yellow tracking-widest mb-4">
+                    <Sparkles className="w-3.5 h-3.5 animate-pulse text-galf-yellow" />
                     <span>Focus Étape {activeTimelineStep + 1} / {careerSteps.length}</span>
                   </div>
 
@@ -867,19 +880,19 @@ export default function Home() {
         <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--galf-yellow) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
         
         <div className="container-galf relative z-10">
-          <div className="stitch-card p-8 md:p-16 rounded-[3rem] border border-[#00f2fe]/20 bg-zinc-950/40 hover:border-[#00f2fe]/40 relative overflow-hidden flex flex-col lg:flex-row items-center gap-12 text-left stitch-hud-corner shadow-2xl">
+          <div className="stitch-card p-8 md:p-16 rounded-[3rem] border border-galf-yellow/20 bg-zinc-950/40 hover:border-galf-yellow/40 relative overflow-hidden flex flex-col lg:flex-row items-center gap-12 text-left stitch-hud-corner shadow-2xl">
             <div className="absolute inset-0 stitch-blueprint-grid opacity-[0.05] pointer-events-none" />
-            <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-[#00f2fe]/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-galf-yellow/5 rounded-full blur-3xl pointer-events-none" />
             
             {/* Left Col: Text & Promise */}
             <div className="flex-1 space-y-6 relative z-10">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase bg-[#00f2fe]/10 text-[#00f2fe] border border-[#00f2fe]/20 tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#00f2fe]" /> Croissance &amp; Parrainage
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase bg-galf-yellow/10 text-galf-yellow border border-galf-yellow/20 tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 animate-pulse text-galf-yellow" /> Croissance &amp; Parrainage
               </span>
               
               <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight">
                 Ne gardez pas <br className="hidden md:inline" />
-                l&apos;information pour <span className="text-[#00f2fe] text-glow-yellow">vous</span> !
+                l&apos;information pour <span className="text-galf-yellow text-glow-yellow">vous</span> !
               </h2>
               
               <p className="text-sm md:text-base text-white/70 leading-relaxed font-medium max-w-xl">
@@ -888,14 +901,14 @@ export default function Home() {
 
               <div className="grid grid-cols-2 gap-6 pt-4 max-w-md">
                 <div className="flex items-start gap-3">
-                  <span className="text-[#00f2fe] text-lg font-black">✓</span>
+                  <span className="text-galf-yellow text-lg font-black">✓</span>
                   <div>
                     <h4 className="text-xs font-black text-white uppercase">Inscription 100% Gratuite</h4>
                     <p className="text-[10px] text-white/50">Générez votre code personnel en 1 minute.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-[#00f2fe] text-lg font-black">✓</span>
+                  <span className="text-galf-yellow text-lg font-black">✓</span>
                   <div>
                     <h4 className="text-xs font-black text-white uppercase">Seuil Récompense (5 Filleuls)</h4>
                     <p className="text-[10px] text-white/50">Inscriptions confirmées = formation offerte.</p>
@@ -906,9 +919,9 @@ export default function Home() {
 
             {/* Right Col: CTA Action Box */}
             <div className="w-full lg:w-96 bg-zinc-950/60 border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col justify-between items-center text-center relative overflow-hidden stitch-hud-corner">
-              <div className="absolute inset-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00f2fe]/30 to-transparent" />
-              <div className="w-12 h-12 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/20 flex items-center justify-center mb-6 stitch-icon-glow">
-                <Gift className="w-6 h-6 text-[#00f2fe]" />
+              <div className="absolute inset-0 w-full h-[1px] bg-gradient-to-r from-transparent via-galf-yellow/30 to-transparent" />
+              <div className="w-12 h-12 rounded-2xl bg-galf-yellow/10 border border-galf-yellow/20 flex items-center justify-center mb-6 stitch-icon-glow">
+                <Gift className="w-6 h-6 text-galf-yellow" />
               </div>
               <h3 className="text-lg font-black text-white mb-2 uppercase">Devenez Ambassadeur</h3>
               <p className="text-xs text-white/60 mb-6 leading-relaxed">
@@ -916,10 +929,10 @@ export default function Home() {
               </p>
               
               <div className="w-full space-y-3 relative z-10">
-                <Link href="/programme-ambassadeur" className="w-full bg-gradient-to-r from-[#00f2fe] to-orange-500 text-galf-carbon py-4 rounded-xl font-black text-xs uppercase tracking-wider block hover:brightness-110 transition-all shadow-md shadow-[#00f2fe]/10">
+                <Link href="/programme-ambassadeur" className="w-full bg-gradient-to-r from-galf-yellow to-orange-500 text-galf-carbon py-4 rounded-xl font-black text-xs uppercase tracking-wider block hover:brightness-110 transition-all shadow-md shadow-galf-yellow/10">
                   Découvrir le programme
                 </Link>
-                <Link href="/programme-ambassadeur/inscription" className="w-full bg-transparent text-white border border-white/10 hover:border-[#00f2fe]/30 py-4 rounded-xl font-bold text-xs uppercase tracking-wider block transition-all">
+                <Link href="/programme-ambassadeur/inscription" className="w-full bg-transparent text-white border border-white/10 hover:border-galf-yellow/30 py-4 rounded-xl font-bold text-xs uppercase tracking-wider block transition-all">
                   Créer mon compte parrain
                 </Link>
               </div>
@@ -929,48 +942,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ FAQ ═══ */}
-      <section className="py-32 relative overflow-hidden bg-diagonal" style={{ background: 'var(--galf-bg)', borderTop: '1px solid var(--galf-border)' }}>
-        <div className="container-galf relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
-            <FadeIn>
-              <div className="sticky top-32">
-                <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Questions fréquentes</div>
-                <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-6" style={{ color: 'var(--galf-text)' }}>
-                  Tout ce qu'il faut <span className="text-galf-yellow">savoir</span>
-                </h2>
-                <p className="max-w-md mb-8" style={{ color: 'var(--galf-text-secondary)' }}>
-                  Vous avez des questions sur nos formations, les tarifs ou les certificats ? Retrouvez les réponses ici ou contactez-nous directement.
-                </p>
-                <Link href="/faq" className="inline-flex items-center gap-2 text-galf-yellow font-black uppercase tracking-widest text-sm hover:gap-4 transition-all">
-                  Consulter le centre d'aide <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </FadeIn>
+      <BlocEntreprises />
 
-            <FadeIn delay={0.2}>
-              <div className="space-y-4">
-                {[
-                  { q: "Quelles sont les conditions d'admission ?", a: "Il n'y a pas de prérequis académique strict pour la plupart de nos formations. Cependant, savoir lire et écrire est essentiel pour la partie théorique. Un test d'aptitude médicale est requis." },
-                  { q: "Comment se déroule le paiement ?", a: "Nous proposons des facilités de paiement flexibles. Un acompte de 30% est requis à l'inscription, et le solde peut être versé en 2 ou 3 mensualités." },
-                  { q: "Le certificat GALF est-il reconnu ?", a: "Oui, GALF est un centre agréé par l'État. Nos certificats sont reconnus par les grandes entreprises du BTP et des Mines en Côte d'Ivoire et dans la sous-région." },
-                  { q: "Proposez-vous des stages après la formation ?", a: "Grâce à notre réseau de plus de 50 partenaires, nous facilitons l'insertion de nos apprenants. Les meilleurs noms de chaque promotion sont souvent recommandés." },
-                ].map((item, i) => (
-                  <div key={i} className="glass-card p-6 rounded-xl hover:border-galf-yellow/30 transition-all cursor-pointer group">
-                    <div className="flex items-center justify-between mb-2">
-                       <h3 className="font-black text-sm" style={{ color: 'var(--galf-text)' }}>{item.q}</h3>
-                       <ChevronRight className="w-4 h-4 text-galf-yellow group-hover:rotate-90 transition-transform" />
-                    </div>
-                    <p className="text-xs leading-relaxed opacity-0 group-hover:opacity-100 max-h-0 group-hover:max-h-20 transition-all duration-500 overflow-hidden" style={{ color: 'var(--galf-text-secondary)' }}>
-                      {item.a}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
+      <FAQAccordion />
 
       {/* ═══════════════════════════════════════════════
           4. PLANIFICATEUR DE VISITE DE CENTRE (FEATURE 20)
@@ -1655,6 +1629,14 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <EspaceMembrePreview />
+      
+      <div id="formulaire-brochure-section">
+        <FormulaireBrochure />
+      </div>
+      
+      <AccreditationBlock />
 
       {/* ═══ CTA FINAL ═══ */}
       <section className="py-40 relative overflow-hidden text-center noise-overlay" style={{ background: 'var(--galf-bg)' }}>

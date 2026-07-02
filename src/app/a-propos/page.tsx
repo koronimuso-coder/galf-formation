@@ -27,7 +27,7 @@ export default function About() {
   const [valueTestAnswer, setValueTestAnswer] = useState<boolean | null>(null)
 
   // Feature 92: Impact Simulator
-  const [simApprenants, setSimApprenants] = useState(1500)
+  const [simApprenants, setSimApprenants] = useState(15000)
   const [simFeminin, setSimFeminin] = useState(15) // 15% women
   const [simHeures, setSimHeures] = useState(40) // average safety hours
 
@@ -561,9 +561,9 @@ export default function About() {
                       </div>
                       <input
                         type="range"
-                        min="500"
-                        max="5000"
-                        step="100"
+                        min="5000"
+                        max="25000"
+                        step="500"
                         value={simApprenants}
                         onChange={(e) => { playSynthBeep('click'); setSimApprenants(Number(e.target.value)); }}
                         className="w-full h-1 rounded-lg appearance-none cursor-pointer accent-galf-yellow"

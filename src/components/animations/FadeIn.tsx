@@ -48,16 +48,30 @@ export function FadeIn({ children, delay = 0, direction = 'up', className = '', 
 export function AnimatedCounter({ target, suffix = '', prefix = '' }: { target: number; suffix?: string; prefix?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
   const [hasAnimated, setHasAnimated] = useState(false)
+  const prevTargetRef = useRef(0)
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
 
-    ScrollTrigger.create({
+    if (hasAnimated) {
+      const obj = { val: prevTargetRef.current }
+      const anim = gsap.to(obj, {
+        val: target,
+        duration: 0.5,
+        ease: "power1.out",
+        onUpdate: () => {
+          if (el) el.textContent = prefix + Math.floor(obj.val).toLocaleString('fr-FR') + suffix
+        }
+      })
+      prevTargetRef.current = target
+      return () => { anim.kill() }
+    }
+
+    const trigger = ScrollTrigger.create({
       trigger: el,
       start: "top 85%",
       onEnter: () => {
-        if (hasAnimated) return
         setHasAnimated(true)
         const obj = { val: 0 }
         gsap.to(obj, {
@@ -68,8 +82,11 @@ export function AnimatedCounter({ target, suffix = '', prefix = '' }: { target: 
             if (el) el.textContent = prefix + Math.floor(obj.val).toLocaleString('fr-FR') + suffix
           }
         })
+        prevTargetRef.current = target
       }
     })
+
+    return () => { trigger.kill() }
   }, [target, suffix, prefix, hasAnimated])
 
   return <span ref={ref}>0</span>
