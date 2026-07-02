@@ -1673,6 +1673,33 @@ export default function Home() {
           machineImg={activeMachine.img}
         />
       )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            "name": "GALF FORMATION",
+            "url": "https://galf-formation.com",
+            "logo": "https://galf-formation.com/logo.png",
+            "sameAs": [
+              "https://facebook.com/galfformation",
+              "https://linkedin.com/company/galf-formation"
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Zone Industrielle Yopougon",
+              "addressLocality": "Abidjan",
+              "addressCountry": "CI"
+            },
+            "description": "Leader de la formation professionnelle d'opérateurs d'engins lourds, mines et BTP en Côte d'Ivoire.",
+            "numberOfEmployees": {
+              "@type": "QuantitativeValue",
+              "value": 45
+            }
+          })
+        }}
+      />
     </div>
   )
 }

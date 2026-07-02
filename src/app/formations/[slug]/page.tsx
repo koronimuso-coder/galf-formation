@@ -926,6 +926,28 @@ export default function FormationDetail() {
       </div>
 
       <StickyMobileCTA slug={formation.slug} price={formation.price} pricePromo={formation.pricePromo} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": formation.name,
+            "description": formation.shortDesc,
+            "provider": {
+              "@type": "EducationalOrganization",
+              "name": "GALF FORMATION",
+              "sameAs": "https://galf-formation.com"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": formation.pricePromo || formation.price,
+              "priceCurrency": "XOF",
+              "category": "Vocational Training"
+            }
+          })
+        }}
+      />
     </div>
   )
 }
