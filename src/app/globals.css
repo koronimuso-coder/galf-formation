@@ -1264,12 +1264,13 @@ img, iframe, video, svg {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* 🏆 Metallic Yellow Text Gradient */
-.text-metallic-yellow {
-  background: linear-gradient(135deg, #FFF 30%, #FFB000 70%, #CC8800 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.text-metallic-yellow,
+.text-metallic-yellow .word {
+  background: linear-gradient(135deg, #FFF 30%, #FFB000 70%, #CC8800 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  display: inline-block;
 }
 
 /* 📐 Technical Blueprint overlay for headers */
@@ -1453,12 +1454,13 @@ img, iframe, video, svg {
   animation: border-pulse 10s linear infinite;
 }
 
-/* 🏆 Gradient Text Teal-to-Gold */
-.stitch-gradient-text {
-  background: linear-gradient(135deg, #ffffff 10%, var(--neon-teal) 60%, var(--neon-gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.stitch-gradient-text,
+.stitch-gradient-text .word {
+  background: linear-gradient(135deg, #ffffff 10%, var(--neon-teal) 60%, var(--neon-gold) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  display: inline-block;
 }
 
 
