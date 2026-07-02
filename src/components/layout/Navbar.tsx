@@ -100,6 +100,7 @@ export function Navbar() {
       subLinks: [
         { href: '/mediatheque', label: 'Ressources & Guides', desc: 'Bibliothèque de documents de sécurité HSE et tutoriels.', badge: 'DOCS' },
         { href: '/mediatheque/checklist-securite', label: 'Fiche Inspection HSE', desc: 'Créez vos fiches de prise de poste engin en 2 min.', badge: 'HSE TOOL' },
+        { href: '/mediatheque/observatoire-metiers', label: 'Observatoire Métiers', desc: 'Salaires réels et recruteurs BTP/Mines par pays.', badge: 'SALAIRES' },
         { href: '/mediatheque/simulateur', label: 'Simulateur 3D', desc: 'Pilotez virtuellement une Pelle, Grue ou Bulldozer.', badge: 'IMMERSION' }
       ]
     },

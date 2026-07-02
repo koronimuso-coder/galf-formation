@@ -321,6 +321,17 @@ export default function Mediatheque() {
                 Simuler la charge →
               </Link>
             </div>
+
+            <div className="glass-card p-6 rounded-[2rem] border-white/5 flex flex-col justify-between h-[240px] text-left" style={{ background: 'var(--galf-bg-alt)', border: '1px solid var(--galf-border)' }}>
+              <div>
+                <span className="text-[9px] font-black text-galf-yellow uppercase tracking-widest bg-galf-yellow/10 px-2.5 py-1 rounded border border-galf-yellow/20 inline-block mb-4">Mines &amp; BTP</span>
+                <h3 className="text-lg font-black" style={{ color: 'var(--galf-text)' }}>Observatoire Métiers &amp; Salaires</h3>
+                <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--galf-text-secondary)' }}>Consultez la tension du marché de l'emploi, les salaires et les recruteurs par pays en Afrique de l'Ouest.</p>
+              </div>
+              <Link href="/mediatheque/observatoire-metiers" className="text-xs font-bold text-galf-yellow uppercase tracking-widest flex items-center gap-1 hover:underline mt-4">
+                Consulter l'observatoire →
+              </Link>
+            </div>
           </div>
         </FadeIn>
 
