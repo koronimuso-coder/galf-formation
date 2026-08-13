@@ -40,7 +40,7 @@ export function BlocDocuments() {
   const allReady = Object.values(checkedDocs).every(v => v === true)
 
   return (
-    <div className="stitch-card p-6 md:p-8 rounded-3xl relative overflow-hidden stitch-hud-corner shadow-2xl">
+    <div className="stitch-card p-6 md:p-8 rounded-3xl relative overflow-hidden shadow-2xl">
       <div className="absolute inset-0 stitch-blueprint-grid opacity-[0.03] pointer-events-none" />
       <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[6rem] pointer-events-none" />
       

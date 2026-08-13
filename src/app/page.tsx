@@ -442,16 +442,16 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Stat 1: 98% Success */}
-            <FadeIn delay={0.1} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group stitch-hud-corner">
+            <FadeIn delay={0.1} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group">
               <div className="relative w-24 h-24 mb-4">
                 <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
                   <defs>
                     <linearGradient id="successGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="var(--primary)" />
-                      <stop offset="100%" stopColor="#ffd700" />
+                      <stop offset="0%" stopColor="#D97706" />
+                      <stop offset="100%" stopColor="#F59E0B" />
                     </linearGradient>
                   </defs>
-                  <path className="text-black/5 dark:text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path className="text-slate-200 dark:text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   <path stroke="url(#successGrad)" strokeDasharray="98, 100" strokeWidth="3.5" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -459,37 +459,36 @@ export default function Home() {
                 </div>
               </div>
               <h3 className="text-sm font-black uppercase tracking-wider mb-1 flex items-center gap-1.5 text-[var(--galf-text)]">
-                <span className="stitch-icon-glow flex items-center justify-center w-6 h-6"><Trophy className="w-4 h-4 text-galf-yellow" /></span> Taux de réussite
+                <span className="flex items-center justify-center w-6 h-6"><Trophy className="w-4 h-4 text-amber-500" /></span> Taux de réussite
               </h3>
               <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Sur examen de conduite et théorie réglementaire.</p>
             </FadeIn>
 
             {/* Stat 2: 15000+ Certifies */}
-            <FadeIn delay={0.2} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group stitch-hud-corner">
-              <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-galf-yellow/5 rounded-full border border-galf-yellow/15 group-hover:scale-105 transition-transform overflow-visible">
-                <div className="absolute inset-[-4px] rounded-full border border-dashed border-galf-yellow/30 stitch-orbit pointer-events-none" />
-                <Users className="w-10 h-10 text-galf-yellow animate-pulse" />
+            <FadeIn delay={0.2} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group">
+              <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-amber-500/10 rounded-full border border-amber-500/20 group-hover:scale-105 transition-transform">
+                <Users className="w-10 h-10 text-amber-600 dark:text-amber-400" />
               </div>
               <h3 className="text-2xl font-black mb-1 text-[var(--galf-text)]">
                 <AnimatedCounter target={liveStudents} />
               </h3>
-              <p className="text-xs font-black text-galf-yellow uppercase tracking-widest mb-1 flex items-center gap-1">
-                <Zap className="w-3.5 h-3.5 text-orange-500 animate-bounce" /> Opérateurs Formés
+              <p className="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                <Zap className="w-3.5 h-3.5 text-orange-500" /> Opérateurs Formés
               </p>
               <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Compteur live actualisé en direct.</p>
             </FadeIn>
 
             {/* Stat 3: 19 Parcours */}
-            <FadeIn delay={0.3} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group stitch-hud-corner">
+            <FadeIn delay={0.3} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group">
               <div className="relative w-24 h-24 mb-4">
                 <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
                   <defs>
                     <linearGradient id="specGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="var(--primary)" />
-                      <stop offset="100%" stopColor="#ffd700" />
+                      <stop offset="0%" stopColor="#D97706" />
+                      <stop offset="100%" stopColor="#F59E0B" />
                     </linearGradient>
                   </defs>
-                  <path className="text-black/5 dark:text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path className="text-slate-200 dark:text-white/5" stroke="currentColor" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   <path stroke="url(#specGrad)" strokeDasharray="75, 100" strokeWidth="3" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -497,20 +496,19 @@ export default function Home() {
                 </div>
               </div>
               <h3 className="text-sm font-black uppercase tracking-wider mb-1 flex items-center gap-1.5 text-[var(--galf-text)]">
-                <span className="stitch-icon-glow flex items-center justify-center w-6 h-6"><Award className="w-4 h-4 text-[#ffd700]" /></span> Spécialités
+                <span className="flex items-center justify-center w-6 h-6"><Award className="w-4 h-4 text-amber-500" /></span> Spécialités
               </h3>
               <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Formations certifiantes reconnues par l'État.</p>
             </FadeIn>
 
             {/* Stat 4: 50+ Partners */}
-            <FadeIn delay={0.4} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group stitch-hud-corner">
-              <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-[#ffd700]/5 rounded-full border border-[#ffd700]/15 group-hover:rotate-12 transition-transform overflow-visible">
-                <div className="absolute inset-[-4px] rounded-full border border-dashed border-[#ffd700]/30 stitch-orbit-reverse pointer-events-none" />
-                <TrendingUp className="w-10 h-10 text-[#ffd700]" />
+            <FadeIn delay={0.4} className="stitch-card p-6 rounded-2xl flex flex-col items-center text-center relative group">
+              <div className="relative w-24 h-24 mb-4 flex items-center justify-center bg-amber-500/10 rounded-full border border-amber-500/20 group-hover:scale-105 transition-transform">
+                <TrendingUp className="w-10 h-10 text-amber-600 dark:text-amber-400" />
               </div>
               <h3 className="text-2xl font-black mb-1 text-[var(--galf-text)]"><AnimatedCounter target={50} suffix="+" /></h3>
-              <p className="text-xs font-black text-[#ffd700] uppercase tracking-widest mb-1 flex items-center gap-1">
-                <Star className="w-3.5 h-3.5 fill-[#ffd700] text-[#ffd700]" /> Entreprises
+              <p className="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+                <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" /> Entreprises
               </p>
               <p className="text-[11px] leading-relaxed text-[var(--galf-text-secondary)]">Partenariats actifs de recrutement.</p>
             </FadeIn>
@@ -525,9 +523,9 @@ export default function Home() {
         <div className="container-galf relative z-10">
           <FadeIn>
             <div className="text-center mb-20">
-              <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Parc de machines</div>
+              <div className="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-[0.3em] mb-4">Parc de machines</div>
               <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6" style={{ color: 'var(--galf-text)' }}>
-                Nos engins <span className="text-galf-yellow">BTP en 3D</span>
+                Nos engins <span className="text-amber-500">BTP en 3D</span>
               </h2>
               <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--galf-text-secondary)' }}>
                 Formez-vous sur des machines professionnelles dans des conditions réelles de chantier.
@@ -540,42 +538,34 @@ export default function Home() {
               return (
                 <FadeIn key={i} delay={0.1 * i}>
                   <div className="perspective-container" onClick={() => setActiveMachine({ slug: eq.slug, name: eq.name, img: eq.img })}>
-                    <div className="card-3d group relative h-[340px] rounded-xl overflow-hidden cursor-pointer stitch-hud-corner border border-white/5 bg-zinc-950/40 hover:border-galf-yellow/40 hover:shadow-[0_0_20px_rgba(255,176,0,0.15)] transition-all duration-500 stitch-laser-sweep">
+                    <div className="group relative h-[340px] rounded-2xl overflow-hidden cursor-pointer border border-slate-200 dark:border-white/10 bg-slate-900 dark:bg-slate-950/60 hover:border-amber-500/40 hover:shadow-xl transition-all duration-500">
                       <Image 
                         src={eq.img} 
                         alt={eq.name} 
                         fill 
-                        className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" 
+                        className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" 
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                      <div className="absolute inset-0 stitch-blueprint-grid opacity-0 group-hover:opacity-15 transition-opacity duration-500 pointer-events-none" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                       
-                      {/* HUD dimensions reading on hover */}
-                      <div className="absolute top-4 left-4 z-20 font-mono text-[8px] text-galf-yellow opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-2.5 py-1.5 rounded border border-galf-yellow/20">
+                      {/* Specifications badge on hover */}
+                      <div className="absolute top-4 left-4 z-20 font-mono text-[8px] text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-950/80 px-2.5 py-1.5 rounded-lg border border-amber-500/30">
                         {eq.cat === "Excavation" ? "DIM: 9.5 x 3.2m | WT: 24T" :
                          eq.cat === "Levage" ? "HG: 48m | CAP: 16T" :
                          eq.cat === "Terrassement" ? "DIM: 6.8 x 3.6m | WT: 21T" :
                          eq.cat === "Manutention" ? "CAP: 3.5T | HT: 4.5m" :
                          eq.cat === "Mines" ? "DP: 22m | DIA: 110mm" :
-                         "SYS: OK // CALIBRATED"}
-                      </div>
-                      
-                      {/* Targeting crosshair in center on hover */}
-                      <div className="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <div className="w-12 h-12 border border-galf-yellow/30 rounded-full flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 bg-galf-yellow rounded-full animate-ping" />
-                        </div>
+                         "SPÉCIFICATIONS HOMOLOGUÉES"}
                       </div>
 
                       <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
-                        <div className="text-[10px] text-galf-yellow font-bold uppercase tracking-[0.3em] mb-1">{eq.cat}</div>
+                        <div className="text-[10px] text-amber-400 font-bold uppercase tracking-[0.3em] mb-1">{eq.cat}</div>
                         <h3 className="text-xl font-black text-white mb-1">{eq.name}</h3>
                         <p className="text-xs text-white/70">{eq.desc}</p>
                       </div>
-                      <div className="absolute inset-0 bg-galf-yellow/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-galf-yellow to-orange-500 flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-500 shadow-xl shadow-galf-yellow/20">
-                          <Play className="w-6 h-6 text-galf-carbon ml-1" />
+                      <div className="absolute inset-0 bg-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-500 shadow-xl">
+                          <Play className="w-6 h-6 text-slate-950 ml-1 fill-current" />
                         </div>
                       </div>
                     </div>
@@ -771,13 +761,12 @@ export default function Home() {
 
             {/* Step Detail Display Panel */}
             <div className="lg:col-span-7">
-              <div className="stitch-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between stitch-hud-corner shadow-2xl">
-                <div className="absolute inset-0 stitch-blueprint-grid opacity-15 rounded-[2.5rem] pointer-events-none" />
-                <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[8rem]" />
+              <div className="p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between shadow-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-[8rem]" />
                 
                 <div className="relative z-10">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase text-galf-yellow tracking-widest mb-4">
-                    <Sparkles className="w-3.5 h-3.5 animate-pulse text-galf-yellow" />
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-widest mb-4">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                     <span>Focus Étape {activeTimelineStep + 1} / {careerSteps.length}</span>
                   </div>
 
@@ -793,7 +782,7 @@ export default function Home() {
                 <div className="pt-6 border-t border-[var(--galf-border)] flex flex-wrap items-center justify-between gap-6 relative z-10">
                   <div>
                     <span className="text-[10px] text-[var(--galf-text-muted)] font-black uppercase tracking-wider block mb-1">Récompense / Jalon débloqué :</span>
-                    <span className="text-sm font-black text-[#ffd700] flex items-center gap-2">
+                    <span className="text-sm font-black text-amber-600 dark:text-amber-400 flex items-center gap-2">
                       {careerSteps[activeTimelineStep].reward}
                     </span>
                   </div>
@@ -819,20 +808,20 @@ export default function Home() {
         <div className="container-galf relative z-10">
           <FadeIn>
             <div className="text-center mb-16">
-              <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Avis certifiés</span>
+              <span className="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-[0.3em] mb-4 block">Avis certifiés</span>
               <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-[var(--galf-text)]">
-                Ils ont <span className="text-galf-yellow">réussi avec nous</span>
+                Ils ont <span className="text-amber-500">réussi avec nous</span>
               </h2>
             </div>
           </FadeIn>
 
           <div className="max-w-4xl mx-auto relative">
-            <div className="glass-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden transition-all duration-500 glow-yellow min-h-[320px] flex flex-col justify-between">
+            <div className="glass-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden transition-all duration-500 min-h-[320px] flex flex-col justify-between shadow-xl border border-slate-200 dark:border-white/10">
               
               <div className="flex items-start justify-between gap-6 mb-8">
                 <div className="flex gap-1.5">
                   {[...Array(testimonials[activeSlide].rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-galf-yellow fill-galf-yellow" />
+                    <Star key={i} className="w-5 h-5 text-amber-500 fill-amber-500" />
                   ))}
                 </div>
                 
@@ -860,7 +849,7 @@ export default function Home() {
               {/* Avatar and company metadata */}
               <div className="pt-6 border-t border-[var(--galf-border)] flex flex-wrap items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-galf-yellow text-galf-carbon flex items-center justify-center font-black text-lg">
+                  <div className="w-12 h-12 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center font-black text-lg">
                     {testimonials[activeSlide].initial}
                   </div>
                   <div>
@@ -873,7 +862,7 @@ export default function Home() {
                   <span className="text-xs font-bold bg-black/5 dark:bg-black/40 border border-black/5 dark:border-white/5 px-3 py-1.5 rounded-lg text-[var(--galf-text-secondary)]">
                     {testimonials[activeSlide].company}
                   </span>
-                  <span className="text-xs font-black text-galf-yellow bg-galf-yellow/10 border border-galf-yellow/20 px-3 py-1.5 rounded-lg">
+                  <span className="text-xs font-black text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-lg">
                     {testimonials[activeSlide].salary}
                   </span>
                 </div>
@@ -902,7 +891,7 @@ export default function Home() {
                       setIsPlayingTestimonials(false)
                     }}
                     className={`w-2.5 h-2.5 rounded-full transition-all ${
-                      activeSlide === idx ? 'bg-galf-yellow w-8' : 'bg-black/20 dark:bg-white/20'
+                      activeSlide === idx ? 'bg-amber-500 w-8' : 'bg-black/20 dark:bg-white/20'
                     }`}
                   />
                 ))}
@@ -926,22 +915,19 @@ export default function Home() {
           AMBASSADOR PROGRAM CTA (NEW FEATURE)
          ═══════════════════════════════════════════════ */}
       <section className="py-24 relative overflow-hidden" style={{ background: 'var(--galf-bg)', borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--galf-yellow) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
-        
         <div className="container-galf relative z-10">
-          <div className="stitch-card p-8 md:p-16 rounded-[3rem] border border-galf-yellow/20 relative overflow-hidden flex flex-col lg:flex-row items-center gap-12 text-left stitch-hud-corner shadow-2xl">
-            <div className="absolute inset-0 stitch-blueprint-grid opacity-[0.05] pointer-events-none" />
-            <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-galf-yellow/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="p-8 md:p-16 rounded-[3rem] border border-amber-500/20 relative overflow-hidden flex flex-col lg:flex-row items-center gap-12 text-left shadow-xl bg-white dark:bg-slate-900">
+            <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
             
             {/* Left Col: Text & Promise */}
             <div className="flex-1 space-y-6 relative z-10">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase bg-galf-yellow/10 text-galf-yellow border border-galf-yellow/20 tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse text-galf-yellow" /> Croissance &amp; Parrainage
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Croissance &amp; Parrainage
               </span>
               
               <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-tight">
                 Ne gardez pas <br className="hidden md:inline" />
-                l&apos;information pour <span className="text-galf-yellow text-glow-yellow">vous</span> !
+                l&apos;information pour <span className="text-amber-500">vous</span> !
               </h2>
               
               <p className="text-sm md:text-base text-slate-600 dark:text-white/70 leading-relaxed font-medium max-w-xl">
@@ -950,14 +936,14 @@ export default function Home() {
 
               <div className="grid grid-cols-2 gap-6 pt-4 max-w-md">
                 <div className="flex items-start gap-3">
-                  <span className="text-galf-yellow text-lg font-black">✓</span>
+                  <span className="text-amber-500 text-lg font-black">✓</span>
                   <div>
                     <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase">Inscription 100% Gratuite</h4>
                     <p className="text-[10px] text-slate-500 dark:text-white/50">Générez votre code personnel en 1 minute.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-galf-yellow text-lg font-black">✓</span>
+                  <span className="text-amber-500 text-lg font-black">✓</span>
                   <div>
                     <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase">Seuil Récompense (5 Filleuls)</h4>
                     <p className="text-[10px] text-slate-500 dark:text-white/50">Inscriptions confirmées = formation offerte.</p>
@@ -967,21 +953,20 @@ export default function Home() {
             </div>
 
             {/* Right Col: CTA Action Box */}
-            <div className="w-full lg:w-96 bg-slate-100/90 dark:bg-zinc-950/60 border border-slate-200 dark:border-white/5 rounded-3xl p-6 md:p-8 flex flex-col justify-between items-center text-center relative overflow-hidden stitch-hud-corner">
-              <div className="absolute inset-0 w-full h-[1px] bg-gradient-to-r from-transparent via-galf-yellow/30 to-transparent" />
-              <div className="w-12 h-12 rounded-2xl bg-galf-yellow/10 border border-galf-yellow/20 flex items-center justify-center mb-6 stitch-icon-glow">
-                <Gift className="w-6 h-6 text-galf-yellow" />
+            <div className="w-full lg:w-96 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 rounded-3xl p-6 md:p-8 flex flex-col justify-between items-center text-center relative overflow-hidden">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-6">
+                <Gift className="w-6 h-6 text-amber-500" />
               </div>
-              <h3 className="text-lg font-black text-white mb-2 uppercase">Devenez Ambassadeur</h3>
-              <p className="text-xs text-white/60 mb-6 leading-relaxed">
+              <h3 className="text-lg font-black text-slate-900 dark:text-white mb-2 uppercase">Devenez Ambassadeur</h3>
+              <p className="text-xs text-slate-600 dark:text-white/60 mb-6 leading-relaxed">
                 Partagez votre lien de parrainage et suivez votre progression en direct.
               </p>
               
               <div className="w-full space-y-3 relative z-10">
-                <Link href="/programme-ambassadeur" className="w-full bg-gradient-to-r from-galf-yellow to-orange-500 text-galf-carbon py-4 rounded-xl font-black text-xs uppercase tracking-wider block hover:brightness-110 transition-all shadow-md shadow-galf-yellow/10">
+                <Link href="/programme-ambassadeur" className="btn-galf-gold w-full py-4 rounded-xl font-black text-xs uppercase tracking-wider block text-slate-950 shadow-md">
                   Découvrir le programme
                 </Link>
-                <Link href="/programme-ambassadeur/inscription" className="w-full bg-transparent text-white border border-white/10 hover:border-galf-yellow/30 py-4 rounded-xl font-bold text-xs uppercase tracking-wider block transition-all">
+                <Link href="/programme-ambassadeur/inscription" className="w-full bg-slate-200/60 dark:bg-transparent text-slate-900 dark:text-white border border-slate-300 dark:border-white/10 hover:border-amber-500/40 py-4 rounded-xl font-bold text-xs uppercase tracking-wider block transition-all">
                   Créer mon compte parrain
                 </Link>
               </div>

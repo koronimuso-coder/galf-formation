@@ -48,7 +48,7 @@ export function InstructorTeam() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {instructors.map((ins, idx) => (
-            <FadeIn key={idx} delay={idx * 0.1} className="stitch-card p-6 md:p-8 rounded-3xl relative overflow-hidden flex flex-col justify-between h-full stitch-hud-corner group">
+            <FadeIn key={idx} delay={idx * 0.1} className="stitch-card p-6 md:p-8 rounded-3xl relative overflow-hidden flex flex-col justify-between h-full group">
               <div className="space-y-4">
                 {/* Header info */}
                 <div className="flex justify-between items-start gap-4">

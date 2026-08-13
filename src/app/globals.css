@@ -123,11 +123,11 @@ html { scroll-behavior: smooth; }
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
-/* ── Glow ── */
-.glow-yellow { box-shadow: 0 0 30px var(--galf-yellow-glow); }
-.glow-yellow-strong { box-shadow: 0 4px 20px rgba(255, 176, 0, 0.2); }
+/* ── Clean Card Shadows ── */
+.glow-yellow { box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06); }
+.glow-yellow-strong { box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08); }
 .text-glow-yellow { text-shadow: none; }
-.dark .text-glow-yellow { text-shadow: 0 0 40px rgba(255, 176, 0, 0.3); }
+.dark .text-glow-yellow { text-shadow: none; }
 
 /* ── 3D Card perspective ── */
 .perspective-container { perspective: 1200px; }
@@ -342,13 +342,9 @@ html { scroll-behavior: smooth; }
 /* ── Hero Title — Industrial Steel/Gold Gradient ── */
 .hero-title-industrial {
   color: #0F172A;
-  text-shadow: none;
-  filter: none;
 }
 .dark .hero-title-industrial {
   color: #FFFFFF;
-  text-shadow: 0 0 40px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.8);
-  filter: drop-shadow(0 0 30px rgba(255, 176, 0, 0.6));
 }
 
 @keyframes shimmerTitle {
@@ -928,9 +924,7 @@ img, iframe, video, svg {
   border: 1px solid var(--galf-border) !important;
   background: var(--navbar-capsule-bg) !important;
   backdrop-filter: blur(25px) !important;
-  box-shadow: 
-    0 10px 40px -10px rgba(0, 0, 0, 0.1),
-    0 0 20px rgba(255, 176, 0, 0.08) !important;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08) !important;
   transform: translateY(0);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -945,99 +939,56 @@ img, iframe, video, svg {
 }
 .dark .text-metallic-yellow,
 .dark .text-metallic-yellow .word {
-  background: linear-gradient(135deg, #FFF 30%, #FFB000 70%, #CC8800 100%) !important;
+  background: linear-gradient(135deg, #FFFFFF 30%, #F59E0B 70%, #D97706 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
 }
 
-/* 📐 Technical Blueprint overlay for headers */
-.blueprint-header-overlay {
-  background-size: 20px 20px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-}
-
-/* 🖥️ HUD Industrial Monitor */
+/* 🖥️ Clean Telemetry Monitor Card */
 .hud-monitor-card {
   font-family: monospace;
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(255, 176, 0, 0.3);
+  border: 1px solid #E2E8F0;
   color: #0F172A;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
   backdrop-filter: blur(12px);
 }
 .dark .hud-monitor-card {
-  background: rgba(8, 8, 10, 0.85);
-  border: 1px solid rgba(255, 176, 0, 0.15);
+  background: rgba(16, 20, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #FFFFFF;
-  box-shadow: 
-    inset 0 0 15px rgba(255, 176, 0, 0.05),
-    0 4px 24px rgba(0, 0, 0, 0.5);
-}
-
-/* Moving glow animation */
-@keyframes border-glow {
-  0%, 100% { border-color: rgba(255, 176, 0, 0.2); }
-  50% { border-color: rgba(255, 176, 0, 0.55); }
-}
-
-.animate-glow-border {
-  animation: border-glow 4s ease-in-out infinite;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 /* ────────────────────────────────────────────────
-   STITCH CYBER-INDUSTRIEL BTP & MINES DESIGN SYSTEM
+   GALF BTP & MINES DESIGN SYSTEM — CLEAN CARDS & BUTTONS
    ──────────────────────────────────────────────── */
 
-:root {
-  --neon-teal: #FFB000;
-  --neon-gold: #ffd700;
-  --neon-orange: #f97316;
-  --neon-glow-teal: rgba(255, 176, 0, 0.25);
-  --neon-glow-gold: rgba(255, 215, 0, 0.25);
-  --neon-glow-orange: rgba(249, 115, 22, 0.25);
-}
-
-/* 📐 Technical blueprint grid overlay */
-.stitch-blueprint-grid {
-  background-size: 24px 24px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 176, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 176, 0, 0.03) 1px, transparent 1px);
-}
-
-/* 🛡️ Toguna Glass & Cyber-Industrial Card */
+/* 🛡️ Clean Card Component */
 .stitch-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
   color: #0F172A;
-  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(226, 232, 240, 0.6);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .dark .stitch-card {
   background: rgba(16, 20, 30, 0.80);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: #F8FAFC;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 12px 36px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
 }
 
 .stitch-card:hover {
-  border-color: rgba(245, 158, 11, 0.5);
-  box-shadow: 
-    0 0 30px rgba(245, 158, 11, 0.16),
-    0 20px 40px -10px rgba(15, 23, 42, 0.1);
+  border-color: rgba(217, 119, 6, 0.4);
+  box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.1);
   transform: translateY(-2px);
 }
 .dark .stitch-card:hover {
-  border-color: rgba(255, 176, 0, 0.45);
-  box-shadow: 
-    0 0 30px rgba(255, 176, 0, 0.18),
-    0 20px 45px rgba(0, 0, 0, 0.7);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
   transform: translateY(-2px);
 }
 
@@ -1048,137 +999,24 @@ img, iframe, video, svg {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.2);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-galf-gold:hover {
   background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 50%, #EAB308 100%);
-  box-shadow: 0 12px 35px rgba(245, 158, 11, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.3);
   transform: translateY(-2px);
 }
 
 .badge-galf-accent {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(249, 115, 22, 0.10));
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
   color: #D97706;
 }
 .dark .badge-galf-accent {
-  background: linear-gradient(135deg, rgba(255, 176, 0, 0.15), rgba(249, 115, 22, 0.10));
-  border: 1px solid rgba(255, 176, 0, 0.3);
-  color: #FFB000;
-}
-
-/* 🌟 Neon Glowing Icon Halo */
-.stitch-icon-glow {
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.stitch-icon-glow::before {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--neon-glow-teal) 0%, transparent 70%);
-  opacity: 0.5;
-  z-index: -1;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.stitch-icon-glow:hover::before {
-  opacity: 1;
-  transform: scale(1.2);
-}
-
-/* 🔄 Rotating Constellation Orbits */
-@keyframes stitch-rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes stitch-rotate-reverse {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
-}
-
-.stitch-orbit {
-  animation: stitch-rotate 25s linear infinite;
-}
-
-.stitch-orbit-reverse {
-  animation: stitch-rotate-reverse 35s linear infinite;
-}
-
-/* ⚡ Telemetry laser-sweep scanline */
-@keyframes laser-sweep-anim {
-  0% { top: -10%; }
-  50% { top: 110%; }
-  100% { top: -10%; }
-}
-
-.stitch-laser-sweep {
-  position: relative;
-  overflow: hidden;
-}
-
-.stitch-laser-sweep::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--neon-teal), var(--neon-gold), var(--neon-teal), transparent);
-  box-shadow: 
-    0 0 8px var(--neon-teal),
-    0 0 16px var(--neon-gold);
-  opacity: 0;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.stitch-laser-sweep:hover::after {
-  opacity: 1;
-  animation: laser-sweep-anim 3s ease-in-out infinite;
-}
-
-/* 📍 CAD Brackets (HUD corner anchors) */
-.stitch-hud-corner::before,
-.stitch-hud-corner::after,
-.stitch-hud-corner > :first-child::before,
-.stitch-hud-corner > :first-child::after {
-  content: '';
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-color: var(--neon-teal);
-  border-style: solid;
-  pointer-events: none;
-  opacity: 0.6;
-  transition: opacity 0.3s ease, border-color 0.3s ease;
-}
-
-.stitch-hud-corner::before { top: 8px; left: 8px; border-width: 1.5px 0 0 1.5px; }
-.stitch-hud-corner::after { top: 8px; right: 8px; border-width: 1.5px 1.5px 0 0; }
-.stitch-hud-corner > :first-child::before { bottom: 8px; left: 8px; border-width: 0 0 1.5px 1.5px; }
-.stitch-hud-corner > :first-child::after { bottom: 8px; right: 8px; border-width: 0 1.5px 1.5px 0; }
-
-.stitch-hud-corner:hover::before,
-.stitch-hud-corner:hover::after,
-.stitch-hud-corner:hover > :first-child::before,
-.stitch-hud-corner:hover > :first-child::after {
-  opacity: 1;
-  border-color: var(--neon-gold);
-}
-
-/* ⚡ Dotted traveling telemetry light pulse */
-@keyframes border-pulse {
-  0% { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -100; }
-}
-
-.stitch-light-pulse {
-  stroke-dasharray: 8, 12;
-  animation: border-pulse 10s linear infinite;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: #F59E0B;
 }
 
 .stitch-gradient-text,
@@ -1191,7 +1029,7 @@ img, iframe, video, svg {
 }
 .dark .stitch-gradient-text,
 .dark .stitch-gradient-text .word {
-  background: linear-gradient(135deg, #ffffff 10%, var(--neon-teal) 60%, var(--neon-gold) 100%) !important;
+  background: linear-gradient(135deg, #FFFFFF 10%, #F59E0B 60%, #D97706 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;

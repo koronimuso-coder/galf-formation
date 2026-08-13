@@ -154,7 +154,7 @@ export default function ObservatoireMetiers() {
 
           {/* Right panel: Data Display */}
           <div className="lg:col-span-8 space-y-6">
-            <FadeIn className="stitch-card p-8 rounded-3xl border border-white/5 bg-zinc-950/40 relative overflow-hidden stitch-hud-corner shadow-2xl">
+            <FadeIn className="stitch-card p-8 rounded-3xl border border-white/5 bg-zinc-950/40 relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[8rem] pointer-events-none" />
               
               <div className="relative z-10 space-y-8">

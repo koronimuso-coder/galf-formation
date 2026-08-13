@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react'
-import { Download, CheckCircle2, Loader2, FileText } from 'lucide-react'
+import { Download, CheckCircle2, Loader2 } from 'lucide-react'
 import { GALF_FORMATIONS } from '@/lib/data'
 
 export function FormulaireBrochure({ initialSlug = '' }: { initialSlug?: string }) {
@@ -30,22 +30,23 @@ export function FormulaireBrochure({ initialSlug = '' }: { initialSlug?: string 
     <section className="py-24 border-t border-slate-200 dark:border-white/5 relative overflow-hidden bg-slate-50/60 dark:bg-zinc-950/40">
       <div className="absolute inset-0 stitch-blueprint-grid opacity-[0.03] pointer-events-none" />
       <div className="container-galf max-w-4xl relative z-10">
-        <div className="stitch-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden flex flex-col md:flex-row items-center gap-12 stitch-hud-corner shadow-2xl">
+        <div className="stitch-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden flex flex-col md:flex-row items-center gap-12 shadow-2xl">
           <div className="absolute top-0 right-0 w-48 h-48 bg-galf-yellow/5 rounded-bl-[12rem] pointer-events-none" />
           
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 space-y-6">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase bg-galf-yellow/10 text-galf-yellow border border-galf-yellow/20 tracking-wider">
-              <FileText className="w-3.5 h-3.5 animate-pulse" /> Documentations
+              <Download className="w-3.5 h-3.5 text-galf-yellow" /> Documentation Officielle
             </span>
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-tight">
-              Brochure <span className="text-galf-yellow">Complète</span>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-tight">
+              Téléchargez le <br className="hidden md:inline" />
+              Programme <span className="text-galf-yellow">Complet</span>
             </h2>
-            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed font-sans">
-              Téléchargez notre brochure officielle contenant les fiches techniques détaillées de nos engins, le planning des prochaines sessions, le programme complet des cours théoriques/pratiques et le détail des modalités de paiement.
+            <p className="text-sm md:text-base text-slate-600 dark:text-white/70 leading-relaxed font-medium">
+              Obtenez la brochure détaillée comprenant le calendrier des sessions, le détail des modules théoriques/pratiques, et les modalités de prise en charge financière.
             </p>
           </div>
 
-          <div className="w-full md:w-[400px] bg-slate-100/90 dark:bg-black/60 border border-slate-200 dark:border-white/5 rounded-3xl p-6 relative overflow-hidden stitch-hud-corner">
+          <div className="w-full md:w-[400px] bg-slate-100/90 dark:bg-black/60 border border-slate-200 dark:border-white/5 rounded-3xl p-6 relative overflow-hidden">
             {success ? (
               <div className="text-center py-8 space-y-4 animate-fadeIn">
                 <div className="w-12 h-12 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto text-green-500">

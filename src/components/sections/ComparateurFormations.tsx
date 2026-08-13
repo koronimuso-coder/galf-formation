@@ -44,7 +44,7 @@ export function ComparateurFormations() {
 
         <div className="grid md:grid-cols-2 gap-8 items-start">
           {/* Left Selection */}
-          <div className="stitch-card p-6 md:p-8 rounded-3xl relative overflow-hidden stitch-hud-corner">
+          <div className="stitch-card p-6 md:p-8 rounded-3xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[6rem] pointer-events-none" />
             <div className="space-y-4">
               <div className="flex flex-col gap-1.5 font-sans">
@@ -92,7 +92,7 @@ export function ComparateurFormations() {
           </div>
 
           {/* Right Selection */}
-          <div className="stitch-card p-6 md:p-8 rounded-3xl relative overflow-hidden stitch-hud-corner">
+          <div className="stitch-card p-6 md:p-8 rounded-3xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-galf-yellow/5 rounded-bl-[6rem] pointer-events-none" />
             <div className="space-y-4">
               <div className="flex flex-col gap-1.5 font-sans">
