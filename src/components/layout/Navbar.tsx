@@ -1,8 +1,9 @@
 "use client"
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { 
-  HardHat, Menu, X, ChevronDown, Sun, Moon,
+  Home, HardHat, Menu, X, ChevronDown, Sun, Moon,
   GraduationCap, Wrench, Flame, Calculator, ShieldAlert, Users, Newspaper,
   Award, FileText, CheckCircle2, BookOpen, FileCheck, Play, Info, PhoneCall
 } from 'lucide-react'
@@ -18,6 +19,7 @@ interface SubLink {
 interface NavLink {
   href: string
   label: string
+  isHome?: boolean
   subLinks?: SubLink[]
 }
 
@@ -29,6 +31,7 @@ export function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [openMobileSection, setOpenMobileSection] = useState<string | null>(null)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30)
@@ -72,6 +75,11 @@ export function Navbar() {
   }
 
   const links: NavLink[] = [
+    {
+      href: '/',
+      label: 'Accueil',
+      isHome: true
+    },
     { 
       href: '/formations', 
       label: 'Formations',
@@ -164,7 +172,7 @@ export function Navbar() {
             className={`w-full transition-all duration-300 ${
               scrolled
                 ? 'max-w-7xl rounded-2xl bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-xl shadow-slate-950/5 dark:shadow-slate-950/40'
-                : 'bg-white/85 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-white/10'
+                : 'bg-white/90 dark:bg-slate-950/85 backdrop-blur-md border-b border-slate-200 dark:border-white/10'
             }`}
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
@@ -180,9 +188,28 @@ export function Navbar() {
               </Link>
 
               {/* Desktop Nav Links */}
-              <div className="hidden lg:flex items-center gap-1 xl:gap-2">
+              <div className="hidden lg:flex items-center gap-1.5 xl:gap-2">
                 {links.map(link => {
                   const isOpenDropdown = activeDropdown === link.label
+                  const isActive = link.isHome ? pathname === '/' : (pathname.startsWith(link.href) && link.href !== '/')
+
+                  // Dedicated "Accueil" Button
+                  if (link.isHome) {
+                    return (
+                      <Link
+                        key={link.href}
+                        href="/"
+                        className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs xl:text-sm font-black transition-all ${
+                          isActive 
+                            ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 shadow-md shadow-amber-500/20 scale-[1.02]' 
+                            : 'bg-amber-500/10 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400 hover:bg-amber-500 hover:text-slate-950 border border-amber-500/25'
+                        }`}
+                      >
+                        <Home className="w-4 h-4" />
+                        <span>ACCUEIL</span>
+                      </Link>
+                    )
+                  }
                   
                   if (link.subLinks) {
                     return (
@@ -192,29 +219,45 @@ export function Navbar() {
                         onMouseEnter={() => handleMouseEnter(link.label)}
                         onMouseLeave={handleMouseLeave}
                       >
-                        <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-bold text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 transition-colors cursor-pointer group">
+                        <div className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-bold transition-all cursor-pointer group ${
+                          isActive 
+                            ? 'text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/20' 
+                            : 'text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-white/5'
+                        }`}>
                           <Link href={link.href} className="hover:underline">
                             {link.label}
                           </Link>
-                          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                            isOpenDropdown ? 'rotate-180 text-amber-500' : ''
+                          <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                            isOpenDropdown ? 'rotate-180 text-amber-500' : 'text-slate-400'
                           }`} />
                         </div>
                         
-                        {/* Streamlined Soft Dropdown Card */}
-                        <div className={`absolute top-full left-0 mt-1 w-[380px] rounded-2xl border border-slate-200 dark:border-white/10 bg-white/95 dark:bg-slate-900/95 p-3 shadow-2xl backdrop-blur-2xl transition-all duration-200 z-50 ${
+                        {/* Streamlined Dropdown Card */}
+                        <div className={`absolute top-full left-0 mt-1 w-[390px] rounded-2xl border border-slate-200 dark:border-white/10 bg-white/95 dark:bg-slate-900/95 p-3 shadow-2xl backdrop-blur-2xl transition-all duration-200 z-50 ${
                           isOpenDropdown 
                             ? 'opacity-100 translate-y-0 pointer-events-auto scale-100' 
                             : 'opacity-0 translate-y-1 pointer-events-none scale-95'
                         }`}>
+                          <div className="px-3 py-1.5 border-b border-slate-100 dark:border-white/5 mb-1.5 flex items-center justify-between">
+                            <span className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-widest">
+                              Espace {link.label}
+                            </span>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase">GALF CI</span>
+                          </div>
+
                           <div className="space-y-1">
                             {link.subLinks.map(sub => {
                               const IconComp = sub.icon
+                              const isSubActive = pathname === sub.href
                               return (
                                 <Link
                                   key={sub.href}
                                   href={sub.href}
-                                  className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-amber-500/10 dark:hover:bg-amber-400/10 transition-colors group/item"
+                                  className={`flex items-start gap-3 p-2.5 rounded-xl transition-all group/item ${
+                                    isSubActive 
+                                      ? 'bg-amber-500/15 text-amber-600 dark:bg-amber-400/15 dark:text-amber-400 font-bold' 
+                                      : 'hover:bg-amber-500/10 dark:hover:bg-amber-400/10'
+                                  }`}
                                 >
                                   <div className="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-600 dark:bg-amber-400/20 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-amber-500 group-hover/item:text-slate-950 transition-colors">
                                     <IconComp className="w-4 h-4" />
@@ -239,7 +282,11 @@ export function Navbar() {
                     <Link 
                       key={link.href} 
                       href={link.href} 
-                      className="px-3 py-2 text-xs xl:text-sm font-bold text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 transition-colors"
+                      className={`px-3 py-2 rounded-xl text-xs xl:text-sm font-bold transition-all ${
+                        isActive 
+                          ? 'text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/20' 
+                          : 'text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-white/5'
+                      }`}
                     >
                       {link.label}
                     </Link>
@@ -333,17 +380,39 @@ export function Navbar() {
         {/* Drawer Links */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
           {links.map((link) => {
+            const isActive = link.isHome ? pathname === '/' : (pathname.startsWith(link.href) && link.href !== '/')
+
+            if (link.isHome) {
+              return (
+                <Link 
+                  key={link.href} 
+                  href="/" 
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-2.5 px-4 py-3 rounded-xl font-black text-xs uppercase tracking-wider mb-3 transition-all ${
+                    isActive 
+                      ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 shadow-md' 
+                      : 'bg-amber-500/10 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400 border border-amber-500/25'
+                  }`}
+                >
+                  <Home className="w-4 h-4" />
+                  <span>ACCUEIL</span>
+                </Link>
+              )
+            }
+
             if (link.subLinks) {
               const isSectionOpen = openMobileSection === link.label
               return (
                 <div key={link.href} className="border-b border-zinc-100 dark:border-white/5 pb-2">
                   <button
                     onClick={() => toggleMobileSection(link.label)}
-                    className="w-full flex items-center justify-between text-left py-2.5 font-bold text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none"
+                    className={`w-full flex items-center justify-between text-left py-2.5 font-bold text-xs focus:outline-none transition-colors ${
+                      isActive ? 'text-amber-600 dark:text-amber-400' : 'text-zinc-800 dark:text-zinc-200'
+                    }`}
                   >
                     <span>{link.label}</span>
-                    <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
-                      isSectionOpen ? 'rotate-180 text-amber-500' : ''
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                      isSectionOpen ? 'rotate-180 text-amber-500' : 'text-zinc-400'
                     }`} />
                   </button>
                   
@@ -353,12 +422,17 @@ export function Navbar() {
                     <div className="flex flex-col gap-1.5 pl-3 border-l-2 border-amber-500/30">
                       {link.subLinks.map(sub => {
                         const SubIcon = sub.icon
+                        const isSubActive = pathname === sub.href
                         return (
                           <Link 
                             key={sub.href} 
                             href={sub.href} 
                             onClick={() => setIsOpen(false)}
-                            className="flex items-center gap-2.5 py-1.5 text-xs font-semibold text-zinc-600 hover:text-amber-600 dark:text-zinc-300 dark:hover:text-amber-400 transition-colors"
+                            className={`flex items-center gap-2.5 py-2 px-2.5 rounded-lg text-xs font-semibold transition-colors ${
+                              isSubActive 
+                                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold' 
+                                : 'text-zinc-600 hover:text-amber-600 dark:text-zinc-300 dark:hover:text-amber-400'
+                            }`}
                           >
                             <SubIcon className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                             <span>{sub.label}</span>
@@ -375,7 +449,9 @@ export function Navbar() {
                 key={link.href} 
                 href={link.href} 
                 onClick={() => setIsOpen(false)}
-                className="block text-xs font-bold text-zinc-800 dark:text-white hover:text-amber-500 transition-colors border-b border-zinc-100 dark:border-white/5 py-3"
+                className={`block text-xs font-bold transition-colors border-b border-zinc-100 dark:border-white/5 py-3 ${
+                  isActive ? 'text-amber-600 dark:text-amber-400 font-black' : 'text-zinc-800 dark:text-white hover:text-amber-500'
+                }`}
               >
                 {link.label}
               </Link>
