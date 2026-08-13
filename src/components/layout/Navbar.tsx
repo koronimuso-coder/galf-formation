@@ -171,8 +171,8 @@ export function Navbar() {
           <nav 
             className={`w-full transition-all duration-300 ${
               scrolled
-                ? 'max-w-7xl rounded-2xl bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-xl shadow-slate-950/5 dark:shadow-slate-950/40'
-                : 'bg-white/90 dark:bg-slate-950/85 backdrop-blur-md border-b border-slate-200 dark:border-white/10'
+                ? 'max-w-7xl rounded-2xl bg-white/98 dark:bg-slate-950/95 backdrop-blur-2xl border border-slate-200/90 dark:border-white/10 shadow-2xl shadow-slate-950/10 dark:shadow-slate-950/50'
+                : 'bg-white/98 dark:bg-slate-950/95 backdrop-blur-2xl border-b border-slate-200/90 dark:border-white/10 shadow-sm'
             }`}
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">

@@ -306,7 +306,7 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
     <section 
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative h-[50vh] md:h-[60vh] min-h-[400px] md:min-h-[520px] flex items-center overflow-hidden bg-slate-950"
+      className="relative min-h-[480px] md:min-h-[600px] flex items-center overflow-hidden bg-slate-950 pb-16"
     >
       {/* ── Background Image — Clean & Bright ── */}
       <div className="absolute inset-0 z-0">
@@ -320,15 +320,15 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
         />
         
         {/* Soft, natural gradient overlay to guarantee text legibility without darkening */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/50 to-slate-950/20 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-slate-950/20 z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/30 z-10" />
       </div>
 
-      <div className="container-galf relative z-20 w-full flex flex-col lg:flex-row lg:items-center justify-between gap-8 pt-16">
+      <div className="container-galf relative z-20 w-full flex flex-col lg:flex-row lg:items-center justify-between gap-8 pt-28 sm:pt-32 lg:pt-36">
         <div className={centered ? 'max-w-3xl mx-auto text-center flex flex-col items-center' : 'max-w-4xl'}>
           <FadeIn>
             {/* Clean main text container */}
-            <div className="relative p-6 md:p-10 rounded-3xl backdrop-blur-md bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 shadow-xl overflow-hidden group">
+            <div className="relative p-6 md:p-10 rounded-3xl backdrop-blur-md bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden group">
               {badge && (
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-xl text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-5 bg-amber-500/10 border border-amber-500/25 text-amber-600 dark:text-amber-400">
                   <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />

@@ -327,7 +327,7 @@ export default function Home() {
         </div>
 
         {/* Content overlay */}
-        <div className="container-galf relative z-50 pt-24 pb-20">
+        <div className="container-galf relative z-50 pt-36 sm:pt-40 pb-24">
           <div className="max-w-4xl">
             <FadeIn delay={0.6}>
               <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase mb-8 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-orange-500/15 border border-amber-500/35 text-amber-400 backdrop-blur-md shadow-inner shadow-amber-500/5">
@@ -338,7 +338,7 @@ export default function Home() {
 
             <TextReveal 
               text="DOMINEZ LA PUISSANCE DES GÉANTS DE FER" 
-              className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.9] mb-8 stitch-gradient-text text-glow-yellow" 
+              className="text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter leading-[0.9] mb-8 stitch-gradient-text" 
               delay={0.8}
             />
 

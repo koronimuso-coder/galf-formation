@@ -33,14 +33,13 @@ export function FadeIn({ children, delay = 0, direction = 'up', className = '', 
       {
         opacity: 1, x: 0, y: 0,
         duration, delay, ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 95%", toggleActions: "play none none reverse" }
+        scrollTrigger: { trigger: el, start: "top 95%", once: true }
       }
     )
 
     return () => { anim.kill() }
   }, [direction, delay, duration, distance])
 
-  // Initial styling ensures they become visible even if JS fails or is delayed. We let GSAP override opacity inline
   return <div ref={ref} className={`${className} transform-gpu`} style={style}>{children}</div>
 }
 
@@ -71,6 +70,7 @@ export function AnimatedCounter({ target, suffix = '', prefix = '' }: { target: 
     const trigger = ScrollTrigger.create({
       trigger: el,
       start: "top 85%",
+      once: true,
       onEnter: () => {
         setHasAnimated(true)
         const obj = { val: 0 }
@@ -139,9 +139,9 @@ export function Parallax({ children, speed = 0.2, className = '' }: { children: 
   return <div ref={ref} className={className}>{children}</div>
 }
 
-/* ── Text reveal animation ── */
+/* ── Text reveal animation — One-shot, Never Invisible ── */
 export function TextReveal({ text, className = '', delay = 0 }: { text: string; className?: string; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
     const el = ref.current
@@ -149,20 +149,20 @@ export function TextReveal({ text, className = '', delay = 0 }: { text: string; 
 
     const words = el.querySelectorAll('.word')
     gsap.fromTo(words,
-      { opacity: 0, y: 40, rotationX: -40 },
+      { opacity: 0, y: 25 },
       {
-        opacity: 1, y: 0, rotationX: 0,
-        stagger: 0.05, duration: 0.8, delay, ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" }
+        opacity: 1, y: 0,
+        stagger: 0.04, duration: 0.7, delay, ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 95%", once: true }
       }
     )
   }, [text, delay])
 
   return (
-    <div ref={ref} className={className} style={{ perspective: '600px' }}>
+    <h1 ref={ref} className={className}>
       {text.split(' ').map((word, i) => (
         <span key={i} className="word inline-block mr-[0.3em]">{word}</span>
       ))}
-    </div>
+    </h1>
   )
 }
