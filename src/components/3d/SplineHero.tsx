@@ -165,7 +165,10 @@ export function SplineHero() {
         </div>
       )}
 
-      {/* ── No overlays so background image is fully visible ── */}
+      {/* ── Cinematic Contrast Overlays ── */}
+      <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/95 via-zinc-950/80 to-zinc-950/40 z-[1]" />
+      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/40 z-[1]" />
     </div>
   )
 }
+

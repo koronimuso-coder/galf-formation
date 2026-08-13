@@ -10,42 +10,42 @@
 @layer base {
   /* ── LIGHT MODE (default) ── */
   :root {
-    --background: 0 0% 99%;
-    --foreground: 220 15% 15%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
+    --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
+    --popover-foreground: 222.2 84% 4.9%;
     --primary: 43 100% 50%;
     --primary-foreground: 220 15% 8%;
-    --secondary: 220 10% 95%;
-    --secondary-foreground: 220 15% 15%;
-    --muted: 220 10% 96%;
-    --muted-foreground: 220 10% 45%;
-    --accent: 220 10% 93%;
-    --accent-foreground: 220 15% 15%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 10% 90%;
-    --input: 220 10% 90%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 43 100% 50%;
     --radius: 0.5rem;
 
     /* GALF custom tokens — LIGHT */
-    --galf-bg: #FAFAF9;
-    --galf-bg-alt: #F2F1EF;
+    --galf-bg: #FFFFFF;
+    --galf-bg-alt: #F8FAFC;
     --galf-surface: #FFFFFF;
-    --galf-surface-alt: #F7F6F4;
-    --galf-text: #111111;
-    --galf-text-secondary: #555555;
-    --galf-text-muted: #888888;
-    --galf-border: #E0E0DE;
-    --galf-border-hover: #CCCCCA;
+    --galf-surface-alt: #F1F5F9;
+    --galf-text: #0F172A;
+    --galf-text-secondary: #334155;
+    --galf-text-muted: #64748B;
+    --galf-border: #E2E8F0;
+    --galf-border-hover: #CBD5E1;
     --galf-yellow: #FFB000;
     --galf-yellow-glow: rgba(255, 176, 0, 0.12);
-    --galf-hero-overlay: rgba(250,250,249,0.85);
-    --galf-hero-overlay-grad: linear-gradient(to right, rgba(250,250,249,0.95) 35%, rgba(250,250,249,0.3));
-    --navbar-capsule-bg: rgba(255, 255, 255, 0.8);
+    --galf-hero-overlay: rgba(255,255,255,0.92);
+    --galf-hero-overlay-grad: linear-gradient(to right, rgba(255,255,255,0.98) 35%, rgba(255,255,255,0.6));
+    --navbar-capsule-bg: rgba(255, 255, 255, 0.92);
   }
 
   /* ── DARK MODE ── */
@@ -74,11 +74,11 @@
     --galf-bg-alt: #161618;
     --galf-surface: #1A1A1D;
     --galf-surface-alt: #1E1E21;
-    --galf-text: #F5F5F5;
-    --galf-text-secondary: #A0A0A8;
-    --galf-text-muted: #6B6B73;
+    --galf-text: #F8FAFC;
+    --galf-text-secondary: #94A3B8;
+    --galf-text-muted: #64748B;
     --galf-border: rgba(255, 255, 255, 0.08);
-    --galf-border-hover: rgba(255, 255, 255, 0.15);
+    --galf-border-hover: rgba(255, 255, 255, 0.18);
     --galf-yellow: #FFB000;
     --galf-yellow-glow: rgba(255, 176, 0, 0.08);
     --galf-hero-overlay: rgba(14,14,16,0.85);
@@ -339,6 +339,11 @@ html { scroll-behavior: smooth; }
 
 /* ── Hero Title — Industrial Steel/Gold Gradient ── */
 .hero-title-industrial {
+  color: #0F172A;
+  text-shadow: none;
+  filter: none;
+}
+.dark .hero-title-industrial {
   color: #FFFFFF;
   text-shadow: 0 0 40px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.8);
   filter: drop-shadow(0 0 30px rgba(255, 176, 0, 0.6));
@@ -352,6 +357,9 @@ html { scroll-behavior: smooth; }
 
 /* ── Hero Subtitle ── */
 .hero-subtitle-industrial {
+  color: #475569;
+}
+.dark .hero-subtitle-industrial {
   color: rgba(245, 245, 245, 0.7);
 }
 
@@ -374,15 +382,25 @@ html { scroll-behavior: smooth; }
 
 /* ── Hero CTA Secondary — Industrial Glass ── */
 .hero-cta-secondary {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: #0F172A;
   backdrop-filter: blur(16px);
 }
 .hero-cta-secondary:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(255, 176, 0, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+.dark .hero-cta-secondary {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+.dark .hero-cta-secondary:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 176, 0, 0.4);
-  transform: translateY(-3px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
@@ -506,414 +524,71 @@ main {
 }
 
 /* ═══════════════════════════════════════════════════════
-   LIGHT MODE GLOBAL OVERRIDES — Complete Coverage
-   
-   Strategy: Target all hardcoded dark-only Tailwind classes
-   inside page containers to ensure readability in light mode.
-   
-   In DARK mode  → these rules do nothing (native classes win)
-   In LIGHT mode → these rules override to ensure readability
+   DUAL-THEME ADAPTIVE STYLES
+   Ensures seamless theme switching between Light & Dark modes
    ═══════════════════════════════════════════════════════ */
 
-/* ─────────────────────────────────────────────────────
-   1. TEXT COLORS — all white/opacity variants
-   ───────────────────────────────────────────────────── */
-
-/* Full white → primary text */
-:root:not(.dark) .glass-card .text-white,
-:root:not(.dark) .glass-card p.text-white,
-:root:not(.dark) .glass-card h1.text-white,
-:root:not(.dark) .glass-card h2.text-white,
-:root:not(.dark) .glass-card h3.text-white,
-:root:not(.dark) .glass-card h4.text-white,
-:root:not(.dark) .glass-card span.text-white,
-:root:not(.dark) .glass-card div.text-white,
-:root:not(.dark) .glass-card label.text-white {
-  color: var(--galf-text) !important;
+/* ── Light Mode Token Refinements ── */
+:root {
+  --galf-bg: #FFFFFF;
+  --galf-bg-alt: #F8FAFC;
+  --galf-surface: #FFFFFF;
+  --galf-surface-alt: #F1F5F9;
+  --galf-text: #0F172A;
+  --galf-text-secondary: #334155;
+  --galf-text-muted: #64748B;
+  --galf-border: #E2E8F0;
+  --galf-border-hover: #CBD5E1;
 }
 
-/* 80-90% opacity → primary text */
-:root:not(.dark) .glass-card [class*="text-white\/9"],
-:root:not(.dark) .glass-card [class*="text-white\/8"] {
-  color: var(--galf-text) !important;
+/* ── Dark Mode Token Refinements ── */
+.dark {
+  --galf-bg: #0E0E10;
+  --galf-bg-alt: #161618;
+  --galf-surface: #1A1A1D;
+  --galf-surface-alt: #222226;
+  --galf-text: #F8FAFC;
+  --galf-text-secondary: #94A3B8;
+  --galf-text-muted: #64748B;
+  --galf-border: rgba(255, 255, 255, 0.08);
+  --galf-border-hover: rgba(255, 255, 255, 0.18);
 }
 
-/* 60-70% opacity → secondary text */
-:root:not(.dark) .glass-card [class*="text-white\/7"],
-:root:not(.dark) .glass-card [class*="text-white\/6"] {
-  color: var(--galf-text-secondary) !important;
+/* ── Glass Card Dual Theme ── */
+.glass-card {
+  background: var(--galf-surface);
+  border: 1px solid var(--galf-border);
+  color: var(--galf-text);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+.dark .glass-card {
+  background: rgba(26, 26, 29, 0.85);
+  backdrop-filter: blur(16px);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* 40-50% opacity → muted text */
-:root:not(.dark) .glass-card [class*="text-white\/5"],
-:root:not(.dark) .glass-card [class*="text-white\/4"] {
-  color: var(--galf-text-muted) !important;
+/* ── Adaptive Panels & Inputs ── */
+.panel-bg {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.dark .panel-bg {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* 10-30% opacity → very muted / decorative */
-:root:not(.dark) .glass-card [class*="text-white\/3"],
-:root:not(.dark) .glass-card [class*="text-white\/2"],
-:root:not(.dark) .glass-card [class*="text-white\/1"] {
-  color: var(--galf-text-muted) !important;
-  opacity: 0.7;
+.input-adaptive {
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #0F172A;
+}
+.dark .input-adaptive {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #F8FAFC;
 }
 
-/* Also target outside glass-card (sections, panels) */
-:root:not(.dark) section:not([style*="#0e0e10"]):not([style*="#0E0E10"]) [class*="text-white\/"] {
-  color: var(--galf-text-secondary) !important;
-}
-
-/* Restore white text and opacity inside intentionally dark containers (like simulator) in light mode */
-:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/"],
-:root:not(.dark) .bg-galf-carbon [class*="text-white\/"],
-:root:not(.dark) [class*="bg-galf-carbon"] .text-white,
-:root:not(.dark) .bg-galf-carbon .text-white,
-:root:not(.dark) [class*="bg-galf-carbon"] h3.text-white,
-:root:not(.dark) .bg-galf-carbon h3.text-white,
-:root:not(.dark) [class*="bg-galf-carbon"] span.text-white,
-:root:not(.dark) .bg-galf-carbon span.text-white {
-  color: #ffffff !important;
-}
-:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/4"],
-:root:not(.dark) .bg-galf-carbon [class*="text-white\/4"] {
-  color: rgba(255, 255, 255, 0.4) !important;
-}
-:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/5"],
-:root:not(.dark) .bg-galf-carbon [class*="text-white\/5"] {
-  color: rgba(255, 255, 255, 0.5) !important;
-}
-:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/6"],
-:root:not(.dark) .bg-galf-carbon [class*="text-white\/6"] {
-  color: rgba(255, 255, 255, 0.6) !important;
-}
-:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/7"],
-:root:not(.dark) .bg-galf-carbon [class*="text-white\/7"] {
-  color: rgba(255, 255, 255, 0.7) !important;
-}
-:root:not(.dark) [class*="bg-galf-carbon"] [class*="text-white\/8"],
-:root:not(.dark) .bg-galf-carbon [class*="text-white\/8"] {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-
-/* ─────────────────────────────────────────────────────
-   2. BACKGROUND COLORS — dark transparent overlays
-   ───────────────────────────────────────────────────── */
-
-/* Inside glass-card: dark bg → subtle light bg */
-:root:not(.dark) .glass-card [class*="bg-black\/4"],
-:root:not(.dark) .glass-card [class*="bg-black\/3"] {
-  background: rgba(0, 0, 0, 0.04) !important;
-}
-:root:not(.dark) .glass-card [class*="bg-black\/2"] {
-  background: rgba(0, 0, 0, 0.03) !important;
-}
-
-/* Specifically bg-black/20, 30, 40, 50, 60 */
-:root:not(.dark) .glass-card .bg-black\/20 { background: rgba(0, 0, 0, 0.04) !important; }
-:root:not(.dark) .glass-card .bg-black\/30 { background: rgba(0, 0, 0, 0.04) !important; }
-:root:not(.dark) .glass-card .bg-black\/40 { background: rgba(0, 0, 0, 0.05) !important; }
-:root:not(.dark) .glass-card .bg-black\/50 { background: rgba(0, 0, 0, 0.06) !important; }
-:root:not(.dark) .glass-card .bg-black\/60 { background: rgba(0, 0, 0, 0.06) !important; }
-
-/* White/5 → light bg */
-:root:not(.dark) .glass-card [class*="bg-white\/5"] { background: rgba(0, 0, 0, 0.04) !important; }
-:root:not(.dark) .glass-card [class*="bg-white\/1"] { background: rgba(0, 0, 0, 0.03) !important; }
-
-/* Outside glass-card sections */
-:root:not(.dark) .bg-black\/5  { background: rgba(0, 0, 0, 0.04) !important; }
-:root:not(.dark) .bg-black\/10 { background: rgba(0, 0, 0, 0.06) !important; }
-:root:not(.dark) .bg-black\/20 { background: rgba(0, 0, 0, 0.05) !important; }
-:root:not(.dark) .bg-black\/30 { background: rgba(0, 0, 0, 0.04) !important; }
-:root:not(.dark) .bg-black\/40 { background: rgba(0, 0, 0, 0.06) !important; }
-
-/* Slate backgrounds in light mode */
-:root:not(.dark) .bg-slate-800 { background: rgba(0, 0, 0, 0.04) !important; }
-:root:not(.dark) .bg-slate-900 { background: rgba(0, 0, 0, 0.06) !important; }
-:root:not(.dark) .bg-slate-950 { background: rgba(0, 0, 0, 0.08) !important; }
-:root:not(.dark) .bg-slate-950\/90 { background: rgba(0, 0, 0, 0.08) !important; }
-
-/* Range slider track in light mode */
-:root:not(.dark) input[type="range"].bg-white\/10 { background: rgba(0, 0, 0, 0.10) !important; }
-
-/* Very low opacity white text → muted text in light mode */
-:root:not(.dark) .text-white\/40 { color: var(--galf-text-muted) !important; }
-:root:not(.dark) .text-white\/30 { color: var(--galf-text-muted) !important; opacity: 0.7; }
-
-/* Hover state overrides for light mode */
-:root:not(.dark) .hover\:bg-white\/5:hover { background: rgba(0, 0, 0, 0.05) !important; }
-:root:not(.dark) .hover\:bg-white\/10:hover { background: rgba(0, 0, 0, 0.07) !important; }
-:root:not(.dark) .hover\:bg-black\/10:hover { background: rgba(0, 0, 0, 0.07) !important; }
-:root:not(.dark) .hover\:bg-black\/40:hover { background: rgba(0, 0, 0, 0.08) !important; }
-:root:not(.dark) .hover\:border-white\/20:hover { border-color: rgba(0, 0, 0, 0.15) !important; }
-:root:not(.dark) .hover\:border-white\/25:hover { border-color: rgba(0, 0, 0, 0.18) !important; }
-
-/* ─────────────────────────────────────────────────────
-   3. BORDERS — white/X → dark/X
-   ───────────────────────────────────────────────────── */
-
-:root:not(.dark) .glass-card [class*="border-white\/5"]  { border-color: rgba(0, 0, 0, 0.08) !important; }
-:root:not(.dark) .glass-card [class*="border-white\/1"]  { border-color: rgba(0, 0, 0, 0.07) !important; }
-:root:not(.dark) .glass-card .border-white\/10           { border-color: rgba(0, 0, 0, 0.10) !important; }
-:root:not(.dark) .glass-card .border-white\/20           { border-color: rgba(0, 0, 0, 0.12) !important; }
-
-/* General border-white outside cards */
-:root:not(.dark) [class*="border-white\/5"]  { border-color: rgba(0, 0, 0, 0.08) !important; }
-:root:not(.dark) [class*="border-white\/10"] { border-color: rgba(0, 0, 0, 0.10) !important; }
-
-/* ─────────────────────────────────────────────────────
-   4. FORM ELEMENTS — inputs, selects, textareas
-   ───────────────────────────────────────────────────── */
-
-:root:not(.dark) input[class*="bg-black"],
-:root:not(.dark) textarea[class*="bg-black"],
-:root:not(.dark) select[class*="bg-black"] {
-  background: var(--galf-input-bg) !important;
-  border-color: var(--galf-input-border) !important;
-  color: var(--galf-text) !important;
-}
-
-:root:not(.dark) input[class*="text-white"],
-:root:not(.dark) textarea[class*="text-white"],
-:root:not(.dark) select[class*="text-white"] {
-  color: var(--galf-text) !important;
-}
-
-:root:not(.dark) input::placeholder,
-:root:not(.dark) textarea::placeholder {
-  color: var(--galf-text-muted) !important;
-  opacity: 1;
-}
-
-/* colorScheme fix for selects */
-:root:not(.dark) select {
-  color-scheme: light;
-}
-
-/* ─────────────────────────────────────────────────────
-   5. BUTTONS — dark styled buttons in panels
-   ───────────────────────────────────────────────────── */
-
-:root:not(.dark) .glass-card button[class*="bg-black"],
-:root:not(.dark) .glass-card button[class*="bg-white\/5"],
-:root:not(.dark) .glass-card button[class*="border-white\/5"] {
-  background: var(--galf-panel-inner) !important;
-  border-color: var(--galf-panel-border) !important;
-  color: var(--galf-text) !important;
-}
-
-/* Hover states */
-:root:not(.dark) .glass-card button[class*="hover:bg-white\/5"]:hover,
-:root:not(.dark) .glass-card button[class*="hover:bg-white\/10"]:hover {
-  background: rgba(0, 0, 0, 0.07) !important;
-}
-
-/* Choice/quiz buttons outside glass-card */
-:root:not(.dark) button[class*="bg-black\/30"][class*="border-white"] {
-  background: var(--galf-panel-inner) !important;
-  border-color: var(--galf-panel-border) !important;
-  color: var(--galf-text) !important;
-}
-
-/* Dark nav/UI buttons */
-:root:not(.dark) button[class*="bg-black\/5"] { background: rgba(0,0,0,0.05) !important; }
-:root:not(.dark) button[class*="bg-white\/5"] { background: rgba(0,0,0,0.04) !important; }
-
-/* ─────────────────────────────────────────────────────
-   6. SVG — text and path on dark-only SVG contexts
-   ───────────────────────────────────────────────────── */
-
-/* SVG map text labels in light mode → dark text */
-:root:not(.dark) .svg-map-bg text,
-:root:not(.dark) svg.svg-map text[fill="white"] {
-  fill: #1A1A1D !important;
-}
-
-/* ─────────────────────────────────────────────────────
-   7. DARK DIVIDERS / PANELS outside glass-card
-   ───────────────────────────────────────────────────── */
-
-:root:not(.dark) [class*="border-white\/5"]:not([class*="galf-yellow"]):not(input):not(textarea):not(select) {
-  border-color: var(--galf-border) !important;
-}
-
-/* ─────────────────────────────────────────────────────
-   8. RANGE SLIDERS — track color
-   ───────────────────────────────────────────────────── */
-
-:root:not(.dark) input[type="range"][class*="bg-white\/10"] {
-  background: var(--galf-border) !important;
-}
-
-/* ─────────────────────────────────────────────────────
-   9. CHAT / TIMELINE / LOG BUBBLES
-   ───────────────────────────────────────────────────── */
-
-:root:not(.dark) [class*="rounded"][class*="bg-black\/4"] {
-  background: rgba(0,0,0,0.04) !important;
-  color: var(--galf-text) !important;
-}
-
-/* ─────────────────────────────────────────────────────
-   10. DARK SECTIONS with inline style overrides
-       (Sections that set dark bg inline)
-   ───────────────────────────────────────────────────── */
-
-/* Don't override the cinematic hero (dark by design) */
-section[style*="#0e0e10"],
-section[style*="#0E0E10"],
-section[style*="0e0e10"],
-.hero-title-industrial,
-.hero-subtitle-industrial,
-.hero-cta-secondary {
-  /* These are intentionally dark - do not override */
-  color: inherit;
-}
-
-/* ═══════════════════════════════════════════════════════
-   RESPONSIVE MOBILE OPTIMIZATIONS (Consolidated below)
-   ═══════════════════════════════════════════════════════ */
-
-/* ── Section padding: reduce on mobile ── */
-.section-padding {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-@media (min-width: 768px) {
-  .section-padding {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-@media (min-width: 1024px) {
-  .section-padding {
-    padding-top: 8rem;
-    padding-bottom: 8rem;
-  }
-}
-
-
-/* ── Typography scale on mobile ── */
-@media (max-width: 767px) {
-  h2[class*="text-6xl"] { font-size: 2.5rem !important; }
-  h2[class*="text-5xl"] { font-size: 2.25rem !important; }
-  h1[class*="text-8xl"] { font-size: 3rem !important; }
-  h1[class*="text-7xl"] { font-size: 2.75rem !important; }
-  
-  /* PageHeader title on mobile */
-  .page-header-title { 
-    font-size: 2.5rem !important;
-    line-height: 1 !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════
-   EXTENDED LIGHT MODE OVERRIDES — Full Coverage Pass
-   ═══════════════════════════════════════════════════════ */
-
-/* ── Opacity-based text in light mode ── */
-:root:not(.dark) .opacity-80 {
-  opacity: 1;
-  color: var(--galf-text-secondary);
-}
-
-/* ── text-slate-* colors for light mode ── */
-:root:not(.dark) .text-slate-900 { color: #111111 !important; }
-:root:not(.dark) .text-slate-950 { color: #111111 !important; }
-
-/* ── SVG map text fills — light mode ── */
-:root:not(.dark) svg text[fill="white"],
-:root:not(.dark) svg text[fill="#ffffff"],
-:root:not(.dark) svg text[fill="#FFFFFF"] {
-  fill: #333333 !important;
-}
-
-/* ── SVG map stroke — light mode ── */
-:root:not(.dark) svg path[stroke="rgba(255,255,255,0.1)"] {
-  stroke: rgba(0, 0, 0, 0.15) !important;
-}
-
-/* ── Dark-themed CTA sections (bg-galf-carbon / bg-[#0e0e10]) — KEEP DARK by design ── */
-.bg-galf-carbon,
-[style*="background"][style*="#0e0e10"],
-[style*="background"][style*="#0E0E10"] {
-  /* These sections are intentionally dark in both themes — no override needed */
-}
-
-/* Fix: text-white INSIDE intentionally dark sections stays white in light mode */
-:root:not(.dark) .bg-galf-carbon .text-white,
-:root:not(.dark) .bg-galf-carbon h2.text-white,
-:root:not(.dark) .bg-galf-carbon h3.text-white,
-:root:not(.dark) .bg-galf-carbon p.text-white {
-  color: #ffffff !important;
-}
-
-/* Fix: glass-card and borders inside dark CTA sections */
-:root:not(.dark) .bg-galf-carbon .glass-card {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
-}
-
-/* ── Braking bar adaptive (contact page) ── */
-:root:not(.dark) .bg-black\/40 {
-  background: rgba(0, 0, 0, 0.06) !important;
-}
-:root:not(.dark) .text-slate-950 {
-  color: #111111 !important;
-}
-
-/* ── Tech typing bubble (contact page) ── */
-:root:not(.dark) .bg-white\/5 {
-  background: rgba(0, 0, 0, 0.04) !important;
-}
-
-/* ── Remaining text-white overrides outside intentionally-dark sections ── */
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white {
-  color: var(--galf-text) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/90 {
-  color: var(--galf-text) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/80 {
-  color: var(--galf-text) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/70 {
-  color: var(--galf-text-secondary) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/60 {
-  color: var(--galf-text-secondary) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]):not([style*="#0E0E10"]) .text-white\/50 {
-  color: var(--galf-text-muted) !important;
-}
-
-/* ── border-white overrides outside dark sections ── */
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .border-white\/5 {
-  border-color: rgba(0, 0, 0, 0.08) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .border-white\/10 {
-  border-color: rgba(0, 0, 0, 0.10) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .border-white\/20 {
-  border-color: rgba(0, 0, 0, 0.12) !important;
-}
-
-/* ── bg-white/X overrides for light mode (outside dark sections) ── */
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .bg-white\/5 {
-  background: rgba(0, 0, 0, 0.04) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .bg-white\/10 {
-  background: rgba(0, 0, 0, 0.06) !important;
-}
-:root:not(.dark) section:not(.bg-galf-carbon):not([style*="#0e0e10"]) .bg-white\/20 {
-  background: rgba(0, 0, 0, 0.08) !important;
-}
-
-/* ── bg-black/X overrides for light mode ── */
-:root:not(.dark) .bg-black\/60 {
-  background: rgba(0, 0, 0, 0.08) !important;
-}
 
 /* ═══════════════════════════════════════════════════════
    ENHANCED RESPONSIVE — MOBILE + TABLET OPTIMIZATION
@@ -1256,11 +931,11 @@ img, iframe, video, svg {
   margin-top: 1rem !important;
   max-width: 80rem !important;
   border-radius: 9999px !important;
-  border: 1px solid rgba(255, 176, 0, 0.25) !important;
-  background: var(--navbar-capsule-bg, rgba(14, 14, 16, 0.8)) !important;
+  border: 1px solid var(--galf-border) !important;
+  background: var(--navbar-capsule-bg) !important;
   backdrop-filter: blur(25px) !important;
   box-shadow: 
-    0 10px 40px -10px rgba(0, 0, 0, 0.5),
+    0 10px 40px -10px rgba(0, 0, 0, 0.1),
     0 0 20px rgba(255, 176, 0, 0.08) !important;
   transform: translateY(0);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -1268,11 +943,18 @@ img, iframe, video, svg {
 
 .text-metallic-yellow,
 .text-metallic-yellow .word {
-  background: linear-gradient(135deg, #FFF 30%, #FFB000 70%, #CC8800 100%) !important;
+  background: linear-gradient(135deg, #0F172A 30%, #D97706 70%, #B45309 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
   display: inline-block;
+}
+.dark .text-metallic-yellow,
+.dark .text-metallic-yellow .word {
+  background: linear-gradient(135deg, #FFF 30%, #FFB000 70%, #CC8800 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 /* 📐 Technical Blueprint overlay for headers */
@@ -1286,12 +968,19 @@ img, iframe, video, svg {
 /* 🖥️ HUD Industrial Monitor */
 .hud-monitor-card {
   font-family: monospace;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 176, 0, 0.3);
+  color: #0F172A;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(12px);
+}
+.dark .hud-monitor-card {
   background: rgba(8, 8, 10, 0.85);
   border: 1px solid rgba(255, 176, 0, 0.15);
+  color: #FFFFFF;
   box-shadow: 
     inset 0 0 15px rgba(255, 176, 0, 0.05),
     0 4px 24px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(12px);
 }
 
 /* Moving glow animation */
@@ -1327,17 +1016,29 @@ img, iframe, video, svg {
 
 /* 🛡️ Toguna Glass & Cyber-Industrial Card */
 .stitch-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #0F172A;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dark .stitch-card {
   background: rgba(14, 14, 16, 0.75);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #F8FAFC;
   box-shadow: 
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .stitch-card:hover {
   border-color: rgba(255, 176, 0, 0.4);
+  box-shadow: 
+    0 0 25px rgba(255, 176, 0, 0.12),
+    0 15px 40px rgba(0, 0, 0, 0.1);
+}
+.dark .stitch-card:hover {
   box-shadow: 
     0 0 25px rgba(255, 176, 0, 0.12),
     0 15px 40px rgba(0, 0, 0, 0.6);
@@ -1458,11 +1159,18 @@ img, iframe, video, svg {
 
 .stitch-gradient-text,
 .stitch-gradient-text .word {
-  background: linear-gradient(135deg, #ffffff 10%, var(--neon-teal) 60%, var(--neon-gold) 100%) !important;
+  background: linear-gradient(135deg, #0F172A 10%, #D97706 60%, #B45309 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
   display: inline-block;
+}
+.dark .stitch-gradient-text,
+.dark .stitch-gradient-text .word {
+  background: linear-gradient(135deg, #ffffff 10%, var(--neon-teal) 60%, var(--neon-gold) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 

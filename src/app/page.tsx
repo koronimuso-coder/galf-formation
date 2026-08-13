@@ -581,15 +581,15 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════
           BTP 3D IMMERSIVE SHOWROOM
          ═══════════════════════════════════════════════ */}
-      <section className="py-24 relative overflow-hidden bg-black/60" style={{ borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
+      <section className="py-24 relative overflow-hidden bg-slate-100/70 dark:bg-black/60" style={{ borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
         <div className="container-galf relative z-10">
           <FadeIn>
             <div className="text-center mb-16">
               <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Expérience Virtuelle</span>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-white">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-slate-900 dark:text-white">
                 Showroom <span className="text-galf-yellow">3D Interactif</span>
               </h2>
-              <p className="text-lg max-w-2xl mx-auto text-white/60">
+              <p className="text-lg max-w-2xl mx-auto text-slate-600 dark:text-white/60">
                 Prenez le contrôle de nos machines de chantier directement depuis votre navigateur. Testez la physique de levage, le scanner laser et le bras hydraulique.
               </p>
             </div>
@@ -605,65 +605,102 @@ export default function Home() {
       <section className="py-32 relative overflow-hidden" style={{ background: 'var(--galf-bg-alt)' }}>
         <div className="container-galf relative z-10">
           <FadeIn>
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
               <div>
-                <div className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4">Catalogue</div>
+                <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-3 block">Formations CACES &amp; Certifiantes</span>
                 <h2 className="text-4xl md:text-6xl font-black tracking-tighter" style={{ color: 'var(--galf-text)' }}>
-                  Nos formations <span className="text-galf-yellow">phares</span>
+                  Spécialités les plus <span className="text-galf-yellow">demandées</span>
                 </h2>
               </div>
-              <Link href="/formations" className="mt-6 md:mt-0 text-sm font-bold text-galf-yellow hover:underline flex items-center gap-2 uppercase tracking-widest">
-                Voir les 19 formations <ArrowRight className="w-4 h-4" />
+              <Link href="/formations" className="inline-flex items-center gap-2 text-sm font-bold text-galf-yellow hover:gap-3 transition-all">
+                Voir les {GALF_FORMATIONS.length} formations <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
           </FadeIn>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featured.map((f, i) => (
-              <FadeIn key={f.id} delay={0.1 * i}>
-                <Link href={`/formations/${f.slug}`} className="group block h-full">
-                  <div className="glass-card rounded-xl overflow-hidden h-full hover:border-galf-yellow/30 hover:shadow-xl hover:-translate-y-1 flex flex-col">
-                    <div className="h-52 relative overflow-hidden shrink-0">
-                      <Image 
-                        src={getFormationImage(f.slug)} 
-                        alt={f.name} 
-                        fill 
-                        className="object-cover group-hover:scale-110 transition-transform duration-700" 
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                      {f.pricePromo && <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-xs font-black uppercase rounded-md animate-pulse">Promo</div>}
-                      <div className="absolute bottom-4 left-4">
-                        <span className="bg-galf-yellow text-galf-carbon text-[10px] font-black px-3 py-1 uppercase tracking-wider rounded-md">{f.category}</span>
+            {featured.map((f, i) => {
+              const displayImage = getFormationImage(f.slug)
+              return (
+                <FadeIn key={f.slug} delay={0.08 * i}>
+                  <div className="glass-card rounded-[2rem] overflow-hidden flex flex-col justify-between h-full hover:-translate-y-2 transition-all duration-500 group border border-galf-border">
+                    <div>
+                      {/* Image header */}
+                      <div className="relative h-60 w-full overflow-hidden bg-zinc-900">
+                        <Image 
+                          src={displayImage} 
+                          alt={f.name} 
+                          fill 
+                          className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100" 
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        
+                        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                          <span className="px-3 py-1 rounded-full bg-galf-yellow/20 backdrop-blur-md border border-galf-yellow/30 text-[10px] font-black uppercase text-galf-yellow tracking-wider">
+                            {f.category}
+                          </span>
+                        </div>
+
+                        {f.pricePromo && (
+                          <span className="absolute top-4 right-4 px-3 py-1 rounded-full bg-red-500 text-white text-[10px] font-black uppercase tracking-wider shadow-lg">
+                            PROMO -{Math.round(((f.price - f.pricePromo) / f.price) * 100)}%
+                          </span>
+                        )}
+
+                        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs font-medium">
+                          <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-galf-yellow" /> {f.duration}</span>
+                          <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-galf-yellow" /> {f.city}</span>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-6 md:p-8 space-y-4">
+                        <h3 className="text-xl font-black tracking-tight leading-tight group-hover:text-galf-yellow transition-colors" style={{ color: 'var(--galf-text)' }}>
+                          {f.name}
+                        </h3>
+                        <p className="text-xs leading-relaxed line-clamp-2" style={{ color: 'var(--galf-text-secondary)' }}>
+                          {f.shortDesc}
+                        </p>
+
+                        <div className="space-y-2 pt-2 border-t border-galf-border">
+                          {f.prerequisites.slice(0, 2).map((p, idx) => (
+                            <div key={idx} className="flex items-center gap-2 text-[11px]" style={{ color: 'var(--galf-text-muted)' }}>
+                              <CheckCircle2 className="w-3.5 h-3.5 text-galf-yellow shrink-0" />
+                              <span className="truncate">{p}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div className="p-6 flex-1 flex flex-col">
-                      <h3 className="text-lg font-black mb-2 group-hover:text-galf-yellow transition-colors" style={{ color: 'var(--galf-text)' }}>{f.name}</h3>
-                      <p className="text-sm mb-4 flex-1 line-clamp-2" style={{ color: 'var(--galf-text-secondary)' }}>{f.shortDesc}</p>
-                      <div className="flex items-center gap-4 text-xs mb-4" style={{ color: 'var(--galf-text-muted)' }}>
-                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {f.duration}</span>
-                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {f.city}</span>
+
+                    {/* Price & CTA */}
+                    <div className="p-6 md:p-8 pt-0 flex items-center justify-between gap-4">
+                      <div>
+                        {f.pricePromo ? (
+                          <div>
+                            <span className="text-xs line-through block" style={{ color: 'var(--galf-text-muted)' }}>{f.price.toLocaleString('fr-FR')} F</span>
+                            <span className="text-lg font-black text-galf-yellow">{f.pricePromo.toLocaleString('fr-FR')} F</span>
+                          </div>
+                        ) : (
+                          <span className="text-lg font-black text-galf-yellow">{f.price.toLocaleString('fr-FR')} F</span>
+                        )}
                       </div>
-                      <div className="flex items-center justify-between pt-4" style={{ borderTop: '1px solid var(--galf-border)' }}>
-                        <div>
-                          {f.pricePromo ? (
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-xl font-black text-galf-yellow">{f.pricePromo.toLocaleString('fr-FR')} F</span>
-                              <span className="text-sm line-through" style={{ color: 'var(--galf-text-muted)' }}>{f.price.toLocaleString('fr-FR')}</span>
-                            </div>
-                          ) : (
-                            <span className="text-xl font-black text-galf-yellow">{f.price.toLocaleString('fr-FR')} F</span>
-                          )}
-                        </div>
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-galf-yellow group-hover:border-galf-yellow transition-colors" style={{ border: '1px solid var(--galf-border)' }}>
-                          <ArrowRight className="w-4 h-4 group-hover:text-galf-carbon transition-colors" style={{ color: 'var(--galf-text-muted)' }} />
-                        </div>
-                      </div>
+
+                      <Link href={`/formations/${f.slug}`} className="bg-galf-yellow hover:bg-[#ffc033] text-galf-carbon px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-md shadow-galf-yellow/10">
+                        S'inscrire <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
                     </div>
                   </div>
-                </Link>
-              </FadeIn>
-            ))}
+                </FadeIn>
+              )
+            })}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link href="/formations" className="inline-flex items-center gap-3 bg-galf-surface border border-galf-border hover:border-galf-yellow text-galf-text px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg">
+              Découvrir toutes nos formations <ArrowRight className="w-4 h-4 text-galf-yellow" />
+            </Link>
           </div>
         </div>
       </section>
@@ -671,58 +708,61 @@ export default function Home() {
       <ComparateurFormations />
 
       {/* ═══════════════════════════════════════════════
-          2. CAREER TIMELINE EXPLORER (NEW FEATURE 18)
+          SECTION EXPÉRIENCE & TIMELINE DE CARRIÈRE
          ═══════════════════════════════════════════════ */}
       <section className="py-32 relative overflow-hidden" style={{ background: 'var(--galf-bg)' }}>
         <div className="container-galf relative z-10">
           <FadeIn>
-            <div className="text-center mb-16">
-              <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Parcours d'apprentissage</span>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-[var(--galf-text)]">
-                De l'inscription <span className="text-galf-yellow">à l'emploi</span>
+            <div className="text-center mb-20">
+              <span className="text-xs text-galf-yellow font-bold uppercase tracking-[0.3em] mb-4 block">Processus d'accompagnement</span>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6" style={{ color: 'var(--galf-text)' }}>
+                Votre parcours de la <span className="text-galf-yellow">candidature à l'emploi</span>
               </h2>
-              <p className="text-lg max-w-2xl mx-auto text-[var(--galf-text-secondary)]">
-                Découvrez les étapes clés de votre formation et les compétences certifiées à chaque jalon de votre carrière.
+              <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--galf-text-secondary)' }}>
+                Un itinéraire pédagogique structuré en 6 étapes pour vous garantir la maîtrise totale de votre engin et une insertion rapide.
               </p>
             </div>
           </FadeIn>
 
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
-            {/* Steps Navigator */}
+          <div className="grid lg:grid-cols-12 gap-8 items-stretch">
+            {/* Timeline Steps Selector */}
             <div className="lg:col-span-5 space-y-3">
-              {careerSteps.map((step, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveTimelineStep(idx)}
-                  className={`w-full text-left p-5 rounded-2xl border transition-all flex items-center justify-between gap-4 ${
-                    activeTimelineStep === idx 
-                      ? 'bg-galf-yellow/10 border-galf-yellow/40 shadow-lg shadow-galf-yellow/5'
-                      : 'bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 hover:border-galf-yellow/20'
+              {careerSteps.map((step, index) => (
+                <div
+                  key={index}
+                  onClick={() => setActiveTimelineStep(index)}
+                  className={`p-5 rounded-2xl cursor-pointer transition-all duration-300 border flex items-center justify-between gap-4 ${
+                    activeTimelineStep === index
+                      ? 'bg-galf-yellow/10 border-galf-yellow text-[var(--galf-text)] shadow-lg shadow-galf-yellow/5 translate-x-2'
+                      : 'glass-card border-galf-border hover:border-galf-border-hover text-[var(--galf-text-secondary)]'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-mono font-black text-sm transition-colors ${
-                      activeTimelineStep === idx ? 'bg-galf-yellow text-galf-carbon' : 'bg-black/10 dark:bg-white/10 text-[var(--galf-text-secondary)]'
+                  <div className="flex items-center gap-4">
+                    <span className={`w-8 h-8 rounded-xl font-black text-xs flex items-center justify-center font-mono ${
+                      activeTimelineStep === index ? 'bg-galf-yellow text-galf-carbon' : 'bg-black/5 dark:bg-white/5 text-[var(--galf-text-muted)]'
                     }`}>
-                      {idx + 1}
+                      0{index + 1}
                     </span>
                     <div>
-                      <h4 className="text-sm font-black text-[var(--galf-text)]">{step.title}</h4>
-                      <span className="text-[10px] text-[var(--galf-text-muted)] font-bold uppercase tracking-wider">{step.duration}</span>
+                      <h4 className="font-bold text-sm leading-tight text-[var(--galf-text)]">{step.title}</h4>
+                      <span className="text-[10px] text-[var(--galf-text-muted)] font-mono">{step.duration}</span>
                     </div>
                   </div>
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border ${
-                    activeTimelineStep === idx ? 'bg-galf-yellow/20 text-galf-yellow border-galf-yellow/30' : 'bg-black/5 dark:bg-white/5 text-[var(--galf-text-muted)] border-black/5 dark:border-white/5'
+
+                  <span className={`px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-wider font-mono ${
+                    activeTimelineStep === index
+                      ? 'bg-galf-yellow/20 text-galf-yellow border border-galf-yellow/30'
+                      : 'bg-black/5 dark:bg-white/5 text-[var(--galf-text-muted)]'
                   }`}>
                     {step.badge}
                   </span>
-                </button>
+                </div>
               ))}
             </div>
 
             {/* Step Detail Display Panel */}
             <div className="lg:col-span-7">
-              <div className="stitch-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between bg-zinc-950/80 border border-galf-yellow/20 stitch-hud-corner shadow-2xl bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,176,0,0.05),transparent)]">
+              <div className="stitch-card p-8 md:p-12 rounded-[2.5rem] relative overflow-hidden h-full min-h-[380px] flex flex-col justify-between stitch-hud-corner shadow-2xl">
                 <div className="absolute inset-0 stitch-blueprint-grid opacity-15 rounded-[2.5rem] pointer-events-none" />
                 <div className="absolute top-0 right-0 w-32 h-32 bg-galf-yellow/5 rounded-bl-[8rem]" />
                 
@@ -732,7 +772,7 @@ export default function Home() {
                     <span>Focus Étape {activeTimelineStep + 1} / {careerSteps.length}</span>
                   </div>
 
-                  <h3 className="text-3xl font-black mb-6 uppercase tracking-tight text-white">
+                  <h3 className="text-3xl font-black mb-6 uppercase tracking-tight text-slate-900 dark:text-white">
                     {careerSteps[activeTimelineStep].title}
                   </h3>
 
@@ -876,11 +916,11 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════
           AMBASSADOR PROGRAM CTA (NEW FEATURE)
          ═══════════════════════════════════════════════ */}
-      <section className="py-24 relative overflow-hidden" style={{ background: '#09090b', borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
+      <section className="py-24 relative overflow-hidden" style={{ background: 'var(--galf-bg)', borderTop: '1px solid var(--galf-border)', borderBottom: '1px solid var(--galf-border)' }}>
         <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--galf-yellow) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
         
         <div className="container-galf relative z-10">
-          <div className="stitch-card p-8 md:p-16 rounded-[3rem] border border-galf-yellow/20 bg-zinc-950/40 hover:border-galf-yellow/40 relative overflow-hidden flex flex-col lg:flex-row items-center gap-12 text-left stitch-hud-corner shadow-2xl">
+          <div className="stitch-card p-8 md:p-16 rounded-[3rem] border border-galf-yellow/20 relative overflow-hidden flex flex-col lg:flex-row items-center gap-12 text-left stitch-hud-corner shadow-2xl">
             <div className="absolute inset-0 stitch-blueprint-grid opacity-[0.05] pointer-events-none" />
             <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-galf-yellow/5 rounded-full blur-3xl pointer-events-none" />
             
@@ -890,12 +930,12 @@ export default function Home() {
                 <Sparkles className="w-3.5 h-3.5 animate-pulse text-galf-yellow" /> Croissance &amp; Parrainage
               </span>
               
-              <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tight leading-tight">
                 Ne gardez pas <br className="hidden md:inline" />
                 l&apos;information pour <span className="text-galf-yellow text-glow-yellow">vous</span> !
               </h2>
               
-              <p className="text-sm md:text-base text-white/70 leading-relaxed font-medium max-w-xl">
+              <p className="text-sm md:text-base text-slate-600 dark:text-white/70 leading-relaxed font-medium max-w-xl">
                 Rejoignez le programme **GALF Ambassadeur**. Recommandez nos formations d&apos;excellence à votre entourage, aidez vos proches à se qualifier pour les métiers des mines, du BTP et du HSE, et **gagnez votre formation 100% offerte** !
               </p>
 
@@ -903,22 +943,22 @@ export default function Home() {
                 <div className="flex items-start gap-3">
                   <span className="text-galf-yellow text-lg font-black">✓</span>
                   <div>
-                    <h4 className="text-xs font-black text-white uppercase">Inscription 100% Gratuite</h4>
-                    <p className="text-[10px] text-white/50">Générez votre code personnel en 1 minute.</p>
+                    <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase">Inscription 100% Gratuite</h4>
+                    <p className="text-[10px] text-slate-500 dark:text-white/50">Générez votre code personnel en 1 minute.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="text-galf-yellow text-lg font-black">✓</span>
                   <div>
-                    <h4 className="text-xs font-black text-white uppercase">Seuil Récompense (5 Filleuls)</h4>
-                    <p className="text-[10px] text-white/50">Inscriptions confirmées = formation offerte.</p>
+                    <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase">Seuil Récompense (5 Filleuls)</h4>
+                    <p className="text-[10px] text-slate-500 dark:text-white/50">Inscriptions confirmées = formation offerte.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Col: CTA Action Box */}
-            <div className="w-full lg:w-96 bg-zinc-950/60 border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col justify-between items-center text-center relative overflow-hidden stitch-hud-corner">
+            <div className="w-full lg:w-96 bg-slate-100/90 dark:bg-zinc-950/60 border border-slate-200 dark:border-white/5 rounded-3xl p-6 md:p-8 flex flex-col justify-between items-center text-center relative overflow-hidden stitch-hud-corner">
               <div className="absolute inset-0 w-full h-[1px] bg-gradient-to-r from-transparent via-galf-yellow/30 to-transparent" />
               <div className="w-12 h-12 rounded-2xl bg-galf-yellow/10 border border-galf-yellow/20 flex items-center justify-center mb-6 stitch-icon-glow">
                 <Gift className="w-6 h-6 text-galf-yellow" />

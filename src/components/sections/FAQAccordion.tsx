@@ -34,16 +34,16 @@ export function FAQAccordion() {
   }
 
   return (
-    <section className="py-24 border-t border-white/5 relative overflow-hidden bg-zinc-950/20">
+    <section className="py-24 border-t border-slate-200 dark:border-white/5 relative overflow-hidden bg-slate-50/50 dark:bg-zinc-950/20">
       <div className="absolute inset-0 stitch-blueprint-grid opacity-[0.02] pointer-events-none" />
       <div className="container-galf max-w-4xl relative z-10">
         <FadeIn>
           <div className="text-center mb-16">
             <span className="text-[10px] text-galf-yellow font-bold uppercase tracking-[0.3em] mb-3 block">FAQ Générale</span>
-            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-white">
+            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
               Des réponses à vos <span className="text-galf-yellow">questions</span>
             </h2>
-            <p className="text-xs text-zinc-400 max-w-xl mx-auto mt-3 font-sans">
+            <p className="text-xs text-slate-600 dark:text-zinc-400 max-w-xl mx-auto mt-3 font-sans">
               Retrouvez toutes les informations indispensables pour bien préparer votre dossier d'inscription et comprendre le déroulement de votre formation.
             </p>
           </div>
@@ -53,26 +53,26 @@ export function FAQAccordion() {
           {faqs.map((faq, idx) => {
             const isOpen = activeIndex === idx
             return (
-              <FadeIn key={idx} delay={idx * 0.05} className="stitch-card rounded-2xl border border-white/5 overflow-hidden transition-all duration-300">
+              <FadeIn key={idx} delay={idx * 0.05} className="stitch-card rounded-2xl overflow-hidden transition-all duration-300">
                 <button
                   onClick={() => toggleFAQ(idx)}
-                  className="w-full p-6 text-left flex items-center justify-between gap-4 font-black uppercase text-xs tracking-wider text-white hover:text-galf-yellow transition-colors font-mono"
+                  className="w-full p-6 text-left flex items-center justify-between gap-4 font-black uppercase text-xs tracking-wider text-slate-900 dark:text-white hover:text-galf-yellow transition-colors font-mono"
                 >
                   <span className="flex items-center gap-3">
-                    <HelpCircle className={`w-4 h-4 shrink-0 transition-colors ${isOpen ? 'text-galf-yellow' : 'text-zinc-500'}`} />
+                    <HelpCircle className={`w-4 h-4 shrink-0 transition-colors ${isOpen ? 'text-galf-yellow' : 'text-slate-400 dark:text-zinc-500'}`} />
                     {faq.q}
                   </span>
-                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-galf-yellow' : 'text-zinc-500'}`} />
+                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-galf-yellow' : 'text-slate-400 dark:text-zinc-500'}`} />
                 </button>
                 
                 {/* Collapsible Answer */}
                 <div 
                   className={`grid transition-all duration-300 ease-in-out ${
-                    isOpen ? 'grid-rows-[1fr] opacity-100 border-t border-white/5' : 'grid-rows-[0fr] opacity-0'
+                    isOpen ? 'grid-rows-[1fr] opacity-100 border-t border-slate-200 dark:border-white/5' : 'grid-rows-[0fr] opacity-0'
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="p-6 text-xs leading-relaxed text-zinc-400 font-sans bg-black/25">
+                    <p className="p-6 text-xs leading-relaxed text-slate-700 dark:text-zinc-400 font-sans bg-slate-50 dark:bg-black/25">
                       {faq.a}
                     </p>
                   </div>

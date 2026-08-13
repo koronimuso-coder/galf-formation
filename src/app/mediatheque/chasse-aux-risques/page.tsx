@@ -228,7 +228,7 @@ export default function ChasseAuxRisquesPage() {
   const fieldStyle = { background: 'var(--galf-bg)', border: '1px solid var(--galf-border)', color: 'var(--galf-text)' }
 
   return (
-    <div className="min-h-screen pb-24 relative overflow-hidden text-left" style={{ background: '#0a0a0c' }}>
+    <div className="min-h-screen pb-24 relative overflow-hidden text-left" style={{ background: 'var(--galf-bg)' }}>
       {/* Background patterns */}
       <div className="absolute inset-0 bg-diagonal opacity-5" />
       <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-galf-yellow/5 rounded-full blur-[160px] pointer-events-none" />

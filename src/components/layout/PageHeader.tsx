@@ -331,7 +331,7 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
         <div className={centered ? 'max-w-3xl mx-auto text-center flex flex-col items-center' : 'max-w-4xl'}>
           <FadeIn>
             {/* Glassmorphic main text container with CAD crosshair brackets */}
-            <div className="relative p-6 md:p-10 rounded-3xl backdrop-blur-md bg-black/45 border border-white/10 shadow-2xl overflow-hidden group hover:border-galf-yellow/20 transition-all duration-300 stitch-hud-corner">
+            <div className="relative p-6 md:p-10 rounded-3xl backdrop-blur-md bg-white/85 dark:bg-black/45 border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden group hover:border-galf-yellow/30 transition-all duration-300 stitch-hud-corner">
               {/* CAD styling crosshairs */}
               <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-galf-yellow/80 rounded-tl-lg" />
               <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-galf-yellow/80 rounded-tr-lg" />
@@ -339,7 +339,7 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
               <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-galf-yellow/80 rounded-br-lg" />
               
               {/* Faint crosshair center lines on background */}
-              <div className="absolute top-2 right-6 text-[8px] font-mono text-white/10 uppercase tracking-widest pointer-events-none select-none">
+              <div className="absolute top-2 right-6 text-[8px] font-mono text-slate-400 dark:text-white/10 uppercase tracking-widest pointer-events-none select-none">
                 GRID SCAN // REF-04
               </div>
 
@@ -355,7 +355,7 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
                 className={`page-header-title text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tighter mb-4 md:mb-5 leading-[0.95] text-metallic-yellow text-glow-yellow ${centered ? 'mx-auto' : ''}`} 
               />
               
-              <p className={`text-sm md:text-base text-white/80 font-medium leading-relaxed max-w-2xl ${centered ? 'mx-auto' : ''}`}>
+              <p className={`text-sm md:text-base text-slate-700 dark:text-white/80 font-medium leading-relaxed max-w-2xl ${centered ? 'mx-auto' : ''}`}>
                 {subtitle}
               </p>
             </div>
@@ -367,45 +367,45 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
         {/* HUD TELEMETRY INFO PANEL (Cyber-Industrial screen) */}
         {!centered && (
           <FadeIn delay={0.2} className="shrink-0 w-full lg:w-80">
-            <div className="hud-monitor-card p-6 rounded-2xl border border-galf-yellow/20 text-white font-mono text-[10px] space-y-4 animate-glow-border transform lg:translate-y-[-10px] bg-black/65 backdrop-blur-md relative overflow-hidden stitch-hud-corner">
-              <div className="flex justify-between items-center border-b border-galf-yellow/10 pb-2.5 text-galf-yellow font-black uppercase tracking-wider">
+            <div className="hud-monitor-card p-6 rounded-2xl border border-galf-yellow/30 dark:border-galf-yellow/20 font-mono text-[10px] space-y-4 animate-glow-border transform lg:translate-y-[-10px] backdrop-blur-md relative overflow-hidden stitch-hud-corner">
+              <div className="flex justify-between items-center border-b border-galf-yellow/20 dark:border-galf-yellow/10 pb-2.5 text-galf-yellow font-black uppercase tracking-wider">
                 <span className="flex items-center gap-1.5"><Compass className="w-3.5 h-3.5 animate-spin-slow text-galf-yellow" /> HUD Telemetry</span>
                 <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" /> ONLINE</span>
               </div>
               
               {/* Ticking oscilloscope waves */}
-              <div className="bg-zinc-950/80 border border-white/5 rounded-lg p-2.5 flex items-center justify-between">
+              <div className="bg-slate-100 dark:bg-zinc-950/80 border border-slate-200 dark:border-white/5 rounded-lg p-2.5 flex items-center justify-between">
                 <div>
-                  <span className="text-[7px] text-galf-yellow/50 uppercase tracking-widest block">TELEMETRY SIGNAL</span>
-                  <span className="text-white/60 text-[8px] flex items-center gap-1"><Activity className="w-2.5 h-2.5 text-galf-yellow" /> LIDAR OSC: {activeScanIndex}Hz</span>
+                  <span className="text-[7px] text-galf-yellow/80 dark:text-galf-yellow/50 uppercase tracking-widest block font-bold">TELEMETRY SIGNAL</span>
+                  <span className="text-slate-700 dark:text-white/60 text-[8px] flex items-center gap-1"><Activity className="w-2.5 h-2.5 text-galf-yellow" /> LIDAR OSC: {activeScanIndex}Hz</span>
                 </div>
                 <canvas ref={hudCanvasRef} className="w-32 h-9 opacity-80" />
               </div>
 
-              <div className="space-y-2 border-t border-white/5 pt-2">
+              <div className="space-y-2 border-t border-slate-200 dark:border-white/5 pt-2">
                 <div className="flex justify-between">
-                  <span className="opacity-45">COORDS:</span>
-                  <span className="font-bold text-white/95">{gpsCoords}</span>
+                  <span className="opacity-60 dark:opacity-45">COORDS:</span>
+                  <span className="font-bold text-slate-900 dark:text-white/95">{gpsCoords}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="opacity-45">ELEVATION:</span>
-                  <span className="font-bold text-white/95">{elevation} m</span>
+                  <span className="opacity-60 dark:opacity-45">ELEVATION:</span>
+                  <span className="font-bold text-slate-900 dark:text-white/95">{elevation} m</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="opacity-45">GRID SCAN:</span>
-                  <span className="font-bold text-emerald-400 flex items-center gap-1">
-                    <Target className="w-3 h-3 text-emerald-400 animate-pulse" /> ACTIVE
+                  <span className="opacity-60 dark:opacity-45">GRID SCAN:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <Target className="w-3 h-3 text-emerald-600 dark:text-emerald-400 animate-pulse" /> ACTIVE
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="opacity-45">SECURE:</span>
-                  <span className="font-bold text-emerald-400 flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3 text-emerald-400" /> HSE APPROVED
+                  <span className="opacity-60 dark:opacity-45">SECURE:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> HSE APPROVED
                   </span>
                 </div>
               </div>
               
-              <div className="pt-2 border-t border-white/10 text-white/30 text-[8px] uppercase tracking-widest text-center">
+              <div className="pt-2 border-t border-slate-200 dark:border-white/10 text-slate-400 dark:text-white/30 text-[8px] uppercase tracking-widest text-center font-bold">
                 GALF CONNECT PORTAL CI
               </div>
             </div>
