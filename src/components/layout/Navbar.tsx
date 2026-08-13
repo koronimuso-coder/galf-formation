@@ -188,21 +188,21 @@ export function Navbar() {
               </Link>
 
               {/* Desktop Nav Links */}
-              <div className="hidden lg:flex items-center gap-1.5 xl:gap-2">
+              <div className="hidden lg:flex items-center gap-2 xl:gap-2.5">
                 {links.map(link => {
                   const isOpenDropdown = activeDropdown === link.label
                   const isActive = link.isHome ? pathname === '/' : (pathname.startsWith(link.href) && link.href !== '/')
 
-                  // Dedicated "Accueil" Button
+                  // Dedicated "Accueil" Button — High Impact Gold Capsule
                   if (link.isHome) {
                     return (
                       <Link
                         key={link.href}
                         href="/"
-                        className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs xl:text-sm font-black transition-all ${
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs xl:text-sm font-black transition-all ${
                           isActive 
-                            ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 shadow-md shadow-amber-500/20 scale-[1.02]' 
-                            : 'bg-amber-500/10 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400 hover:bg-amber-500 hover:text-slate-950 border border-amber-500/25'
+                            ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/30 scale-[1.03] border border-amber-300' 
+                            : 'bg-amber-500/15 text-amber-600 dark:bg-amber-400/15 dark:text-amber-400 hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-slate-950 border border-amber-500/30 shadow-sm'
                         }`}
                       >
                         <Home className="w-4 h-4" />
@@ -219,10 +219,10 @@ export function Navbar() {
                         onMouseEnter={() => handleMouseEnter(link.label)}
                         onMouseLeave={handleMouseLeave}
                       >
-                        <div className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-bold transition-all cursor-pointer group ${
+                        <div className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs xl:text-sm font-extrabold transition-all cursor-pointer group ${
                           isActive 
-                            ? 'text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/20' 
-                            : 'text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-white/5'
+                            ? 'text-amber-600 dark:text-amber-400 bg-amber-500/15 dark:bg-amber-400/15 border border-amber-500/30 shadow-sm' 
+                            : 'text-slate-800 hover:text-amber-600 dark:text-slate-100 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-900'
                         }`}>
                           <Link href={link.href} className="hover:underline">
                             {link.label}
@@ -233,16 +233,16 @@ export function Navbar() {
                         </div>
                         
                         {/* Streamlined Dropdown Card */}
-                        <div className={`absolute top-full left-0 mt-1 w-[390px] rounded-2xl border border-slate-200 dark:border-white/10 bg-white/95 dark:bg-slate-900/95 p-3 shadow-2xl backdrop-blur-2xl transition-all duration-200 z-50 ${
+                        <div className={`absolute top-full left-0 mt-1 w-[400px] rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 p-3.5 shadow-2xl backdrop-blur-2xl transition-all duration-200 z-50 ${
                           isOpenDropdown 
                             ? 'opacity-100 translate-y-0 pointer-events-auto scale-100' 
                             : 'opacity-0 translate-y-1 pointer-events-none scale-95'
                         }`}>
-                          <div className="px-3 py-1.5 border-b border-slate-100 dark:border-white/5 mb-1.5 flex items-center justify-between">
+                          <div className="px-3 py-1.5 border-b border-slate-100 dark:border-white/5 mb-2 flex items-center justify-between">
                             <span className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-widest">
                               Espace {link.label}
                             </span>
-                            <span className="text-[9px] font-bold text-slate-400 uppercase">GALF CI</span>
+                            <span className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">GALF CI</span>
                           </div>
 
                           <div className="space-y-1">
@@ -282,10 +282,10 @@ export function Navbar() {
                     <Link 
                       key={link.href} 
                       href={link.href} 
-                      className={`px-3 py-2 rounded-xl text-xs xl:text-sm font-bold transition-all ${
+                      className={`px-3.5 py-2 rounded-xl text-xs xl:text-sm font-extrabold transition-all ${
                         isActive 
-                          ? 'text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/20' 
-                          : 'text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-white/5'
+                          ? 'text-amber-600 dark:text-amber-400 bg-amber-500/15 dark:bg-amber-400/15 border border-amber-500/30 shadow-sm' 
+                          : 'text-slate-800 hover:text-amber-600 dark:text-slate-100 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-900'
                       }`}
                     >
                       {link.label}
