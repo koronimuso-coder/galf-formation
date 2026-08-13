@@ -344,8 +344,8 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
               </div>
 
               {badge && (
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-xl text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-5 bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow shadow-inner">
-                  <span className="w-2 h-2 rounded-full bg-galf-yellow animate-pulse" />
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-xl text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-5 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-orange-500/15 border border-amber-500/35 text-amber-600 dark:text-amber-400 shadow-inner">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                   {badge}
                 </div>
               )}

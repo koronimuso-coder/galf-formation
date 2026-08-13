@@ -348,8 +348,8 @@ export default function Home() {
         <div className="container-galf relative z-50 pt-24 pb-20">
           <div className="max-w-4xl">
             <FadeIn delay={0.6}>
-              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase mb-8 bg-galf-yellow/10 border border-galf-yellow/30 text-galf-yellow backdrop-blur-md shadow-inner shadow-galf-yellow/5">
-                <Factory className="w-4 h-4 animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold tracking-[0.2em] uppercase mb-8 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-orange-500/15 border border-amber-500/35 text-amber-400 backdrop-blur-md shadow-inner shadow-amber-500/5">
+                <Factory className="w-4 h-4 animate-pulse text-amber-400" />
                 L&apos;Élite de la Formation BTP &amp; Mines — Afrique de l&apos;Ouest
               </div>
             </FadeIn>
@@ -368,12 +368,12 @@ export default function Home() {
 
             <FadeIn delay={1.3} className="flex flex-col sm:flex-row gap-6">
               <MagneticHover>
-                <Link href="/inscription" className="hero-cta-primary bg-gradient-to-r from-galf-yellow to-orange-500 text-galf-carbon px-12 py-5 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-lg shadow-galf-yellow/10 hover:shadow-galf-yellow/20">
+                <Link href="/inscription" className="btn-galf-gold px-12 py-5 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-500/25 hover:shadow-amber-500/40">
                   Propulsez votre carrière <ArrowRight className="w-5 h-5" />
                 </Link>
               </MagneticHover>
               <Link href="/formations" className="hero-cta-secondary px-12 py-5 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2">
-                <Settings className="w-5 h-5 text-galf-yellow" />
+                <Settings className="w-5 h-5 text-amber-400" />
                 Nos parcours certifiants
               </Link>
             </FadeIn>

@@ -129,28 +129,28 @@ export function Navbar() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 flex flex-col w-full transition-all duration-300">
         
-        {/* Streamlined Announcement Marquee Bar */}
+        {/* Marquee Banner */}
         {showMarquee && (
-          <div className="bg-amber-400 dark:bg-amber-500 text-zinc-950 text-[11px] font-bold h-9 flex items-center relative overflow-hidden select-none z-50 border-b border-amber-500/30">
-            <div className="flex-1 overflow-hidden relative h-full flex items-center pr-10">
-              <div className="animate-marquee whitespace-nowrap flex gap-12 absolute pl-4 tracking-wide">
+          <div className="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 text-slate-950 text-[11px] font-black py-1.5 px-4 relative z-50 flex items-center justify-between border-b border-amber-600/20 shadow-md">
+            <div className="overflow-hidden whitespace-nowrap flex-1 mr-8">
+              <div className="inline-flex gap-8 animate-marquee font-sans tracking-wide">
                 <span className="flex items-center gap-2">🎁 <strong>Nouveau :</strong> Gagnez votre formation 100% offerte en parrainant vos proches !</span>
-                <span className="flex items-center gap-2">⚡ <strong>Offre Spéciale :</strong> -15% sur toutes les sessions Grue & Pelle ce mois-ci !</span>
-                <span className="flex items-center gap-2">🏗️ <strong>Centre San Pedro :</strong> Plateau technique de 5 hectares ouvert !</span>
+                <span className="flex items-center gap-2">⚡ <strong>Offre Spéciale :</strong> -15% sur toutes les sessions Grue &amp; Pelle ce mois-ci !</span>
+                <span className="flex items-center gap-2">🏆 <strong>Certification :</strong> Diplômes officiels agréés METFIP &amp; normes CACES !</span>
                 
                 {/* Duplicated for smooth loop */}
                 <span className="flex items-center gap-2">🎁 <strong>Nouveau :</strong> Gagnez votre formation 100% offerte en parrainant vos proches !</span>
-                <span className="flex items-center gap-2">⚡ <strong>Offre Spéciale :</strong> -15% sur toutes les sessions Grue & Pelle ce mois-ci !</span>
+                <span className="flex items-center gap-2">⚡ <strong>Offre Spéciale :</strong> -15% sur toutes les sessions Grue &amp; Pelle ce mois-ci !</span>
               </div>
             </div>
             
-            <div className="absolute right-0 top-0 bottom-0 flex items-center px-3 bg-gradient-to-l from-amber-400 via-amber-400 dark:from-amber-500 dark:via-amber-500 to-transparent z-20">
+            <div className="absolute right-0 top-0 bottom-0 flex items-center px-3 bg-gradient-to-l from-orange-500 via-amber-400 to-transparent z-20">
               <button 
                 onClick={handleCloseMarquee} 
-                className="hover:bg-black/10 rounded-full p-1 transition-colors cursor-pointer"
+                className="hover:bg-slate-950/15 rounded-full p-1 transition-colors cursor-pointer"
                 aria-label="Fermer la barre d'information"
               >
-                <X className="w-3.5 h-3.5 text-zinc-950" />
+                <X className="w-3.5 h-3.5 text-slate-950" />
               </button>
             </div>
           </div>
@@ -163,18 +163,18 @@ export function Navbar() {
           <nav 
             className={`w-full transition-all duration-300 ${
               scrolled
-                ? 'max-w-7xl rounded-2xl bg-white/90 dark:bg-zinc-950/90 backdrop-blur-xl border border-zinc-200/90 dark:border-white/10 shadow-xl shadow-black/5 dark:shadow-black/40'
-                : 'bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-white/10'
+                ? 'max-w-7xl rounded-2xl bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-xl shadow-slate-950/5 dark:shadow-slate-950/40'
+                : 'bg-white/85 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-white/10'
             }`}
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
               
               {/* Brand Logo */}
               <Link href="/" className="flex items-center gap-3 group shrink-0">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
-                  <HardHat className="text-zinc-950 w-5 h-5 fill-current" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500 via-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25 group-hover:scale-105 transition-transform">
+                  <HardHat className="text-slate-950 w-5 h-5 fill-current" />
                 </div>
-                <div className="font-extrabold text-lg sm:text-xl tracking-tight text-zinc-900 dark:text-white flex items-center">
+                <div className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white flex items-center">
                   GALF<span className="text-amber-500 font-black ml-0.5">FORMATION</span>
                 </div>
               </Link>
@@ -192,17 +192,17 @@ export function Navbar() {
                         onMouseEnter={() => handleMouseEnter(link.label)}
                         onMouseLeave={handleMouseLeave}
                       >
-                        <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-bold text-zinc-700 hover:text-amber-600 dark:text-zinc-200 dark:hover:text-amber-400 transition-colors cursor-pointer group">
+                        <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-bold text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 transition-colors cursor-pointer group">
                           <Link href={link.href} className="hover:underline">
                             {link.label}
                           </Link>
-                          <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
+                          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
                             isOpenDropdown ? 'rotate-180 text-amber-500' : ''
                           }`} />
                         </div>
                         
                         {/* Streamlined Soft Dropdown Card */}
-                        <div className={`absolute top-full left-0 mt-1 w-[380px] rounded-2xl border border-zinc-200/90 dark:border-white/10 bg-white/95 dark:bg-zinc-900/95 p-3 shadow-2xl backdrop-blur-2xl transition-all duration-200 z-50 ${
+                        <div className={`absolute top-full left-0 mt-1 w-[380px] rounded-2xl border border-slate-200 dark:border-white/10 bg-white/95 dark:bg-slate-900/95 p-3 shadow-2xl backdrop-blur-2xl transition-all duration-200 z-50 ${
                           isOpenDropdown 
                             ? 'opacity-100 translate-y-0 pointer-events-auto scale-100' 
                             : 'opacity-0 translate-y-1 pointer-events-none scale-95'
@@ -216,14 +216,14 @@ export function Navbar() {
                                   href={sub.href}
                                   className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-amber-500/10 dark:hover:bg-amber-400/10 transition-colors group/item"
                                 >
-                                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:bg-amber-400/20 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-amber-500 group-hover/item:text-zinc-950 transition-colors">
+                                  <div className="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-600 dark:bg-amber-400/20 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-amber-500 group-hover/item:text-slate-950 transition-colors">
                                     <IconComp className="w-4 h-4" />
                                   </div>
                                   <div>
-                                    <div className="text-xs font-bold text-zinc-800 dark:text-zinc-100 group-hover/item:text-amber-600 dark:group-hover/item:text-amber-400 transition-colors">
+                                    <div className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover/item:text-amber-600 dark:group-hover/item:text-amber-400 transition-colors">
                                       {sub.label}
                                     </div>
-                                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium line-clamp-1">
+                                    <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
                                       {sub.desc}
                                     </div>
                                   </div>
@@ -239,7 +239,7 @@ export function Navbar() {
                     <Link 
                       key={link.href} 
                       href={link.href} 
-                      className="px-3 py-2 text-xs xl:text-sm font-bold text-zinc-700 hover:text-amber-600 dark:text-zinc-200 dark:hover:text-amber-400 transition-colors"
+                      className="px-3 py-2 text-xs xl:text-sm font-bold text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -252,23 +252,23 @@ export function Navbar() {
                 {/* Theme toggle */}
                 <button
                   onClick={toggleTheme}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-zinc-200 dark:border-white/10 hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-200 transition-colors cursor-pointer"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
                   aria-label="Changer de thème"
                   title={theme === 'dark' ? "Passer en mode clair" : "Passer en mode sombre"}
                 >
-                  {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-600" />}
+                  {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
                 </button>
 
                 <Link 
                   href="/connexion" 
-                  className="text-xs font-bold text-zinc-700 hover:text-amber-600 dark:text-zinc-200 dark:hover:text-amber-400 px-2 py-2 transition-colors"
+                  className="text-xs font-bold text-slate-700 hover:text-amber-600 dark:text-slate-200 dark:hover:text-amber-400 px-2 py-2 transition-colors"
                 >
                   Connexion
                 </Link>
 
                 <Link 
                   href="/inscription" 
-                  className="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-zinc-950 px-4 py-2 sm:py-2.5 rounded-xl font-extrabold text-xs tracking-wide shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  className="bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all"
                 >
                   S&apos;inscrire
                 </Link>

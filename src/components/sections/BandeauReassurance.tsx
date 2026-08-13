@@ -27,19 +27,19 @@ export function BandeauReassurance() {
   ]
 
   return (
-    <section className="py-12 border-y border-zinc-200 dark:border-white/10 relative overflow-hidden bg-zinc-50 dark:bg-zinc-950/50">
+    <section className="py-12 border-y border-slate-200 dark:border-white/10 relative overflow-hidden bg-slate-50 dark:bg-slate-950/50">
       <div className="container-galf">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((item, idx) => (
-            <FadeIn key={idx} delay={idx * 0.1} className="glass-card p-6 rounded-2xl relative overflow-hidden flex gap-4 items-start group">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <item.icon className="w-5 h-5 text-amber-500" />
+            <FadeIn key={idx} delay={idx * 0.1} className="glass-card p-6 rounded-2xl relative overflow-hidden flex gap-4 items-start group border border-slate-200 dark:border-white/10 hover:border-amber-500/40 transition-all shadow-sm">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/15 via-amber-400/10 to-orange-500/15 border border-amber-500/30 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:shadow-md group-hover:shadow-amber-500/20 transition-all">
+                <item.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-extrabold text-xs uppercase tracking-wider text-zinc-900 dark:text-white">
+                <h4 className="font-extrabold text-xs uppercase tracking-wider text-slate-900 dark:text-white">
                   {item.title}
                 </h4>
-                <p className="text-[11px] leading-relaxed text-zinc-600 dark:text-zinc-400 font-medium">
+                <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-400 font-medium">
                   {item.desc}
                 </p>
               </div>
