@@ -457,14 +457,6 @@ html { scroll-behavior: smooth; }
   );
 }
 
-/* ── Spline iframe watermark hide ── */
-section .spline-watermark,
-iframe + .spline-watermark {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
 /* ── Marquee Announcement Bar Animation ── */
 @keyframes marquee {
   0% {

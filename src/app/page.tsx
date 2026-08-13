@@ -7,7 +7,6 @@ import {
   TrendingUp, CheckCircle2, Calendar, Zap, Gift
 } from 'lucide-react'
 import { FadeIn, MagneticHover, TextReveal, AnimatedCounter } from '@/components/animations/FadeIn'
-import { SplineHero } from '@/components/3d/SplineHero'
 import { GALF_FORMATIONS } from '@/lib/data'
 import { MachineSpecsModal } from '@/components/3d/MachineSpecsModal'
 import Btp3dShowroom from '@/components/3d/Btp3dShowroom'
@@ -311,11 +310,21 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* ═══════════════════════════════════════════════
-          HERO — Industrial Spline 3D Cinematic
+          HERO — Industrial Cinematic
          ═══════════════════════════════════════════════ */}
       <section className="relative min-h-[110vh] flex items-center overflow-hidden" style={{ background: '#0e0e10' }}>
-        {/* Spline 3D Industrial Scene */}
-        <SplineHero />
+        {/* Hero Background Image */}
+        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
+          <Image
+            src="/images/headers/accueil.png"
+            alt="GALF Formation - Accueil"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/95 via-zinc-950/80 to-zinc-950/40 z-[1]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/40 z-[1]" />
+        </div>
 
         {/* Dynamic Background Constellation */}
         <div className="absolute inset-0 opacity-[0.06] pointer-events-none z-15">
