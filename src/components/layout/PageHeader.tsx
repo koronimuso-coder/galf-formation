@@ -306,25 +306,22 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
     <section 
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative h-[55vh] md:h-[65vh] min-h-[420px] md:min-h-[560px] flex items-center overflow-hidden bg-zinc-950"
+      className="relative h-[50vh] md:h-[60vh] min-h-[400px] md:min-h-[520px] flex items-center overflow-hidden bg-slate-950"
     >
-      {/* ── Background Image & Cinematic Overlays ── */}
+      {/* ── Background Image — Clean & Bright ── */}
       <div className="absolute inset-0 z-0">
         <Image 
           src={headerBg} 
           alt={title} 
           fill 
-          className="object-cover opacity-50 filter brightness-[0.6] transition-transform duration-700 ease-out" 
+          className="object-cover opacity-90 dark:opacity-75 transition-transform duration-700 ease-out" 
           priority
           unoptimized={headerBg.endsWith('.webp')}
         />
         
-        {/* Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e10] via-black/55 to-transparent z-10" />
-        <div className="absolute inset-0 blueprint-header-overlay opacity-25 z-10" />
-        
-        {/* Dynamic Canvas Triangulation Grid */}
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-70" />
+        {/* Soft, natural gradient overlay to guarantee text legibility without darkening */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/50 to-slate-950/20 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/30 z-10" />
       </div>
 
       <div className="container-galf relative z-20 w-full flex flex-col lg:flex-row lg:items-center justify-between gap-8 pt-16">

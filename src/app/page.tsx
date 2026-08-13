@@ -322,26 +322,8 @@ export default function Home() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/95 via-zinc-950/80 to-zinc-950/40 z-[1]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/40 z-[1]" />
-        </div>
-
-        {/* Dynamic Background Constellation */}
-        <div className="absolute inset-0 opacity-[0.06] pointer-events-none z-15">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="heroLaser" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="var(--primary)" />
-                <stop offset="100%" stopColor="#ffd700" />
-              </linearGradient>
-            </defs>
-            <g className="stitch-orbit" style={{ transformOrigin: '50% 50%' }}>
-              <circle cx="50%" cy="50%" r="280" fill="none" stroke="url(#heroLaser)" strokeWidth="1.5" strokeDasharray="6 20" />
-              <circle cx="50%" cy="50%" r="420" fill="none" stroke="url(#heroLaser)" strokeWidth="1" strokeDasharray="3 15" />
-              <line x1="20%" y1="10%" x2="80%" y2="90%" stroke="url(#heroLaser)" strokeWidth="0.5" strokeDasharray="5 15" />
-              <line x1="80%" y1="10%" x2="20%" y2="90%" stroke="url(#heroLaser)" strokeWidth="0.5" strokeDasharray="5 15" />
-            </g>
-          </svg>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-transparent z-[1]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/20 z-[1]" />
         </div>
 
         {/* Content overlay */}
