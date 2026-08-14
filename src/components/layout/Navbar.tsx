@@ -6,9 +6,10 @@ import { usePathname } from 'next/navigation'
 import { 
   Home, HardHat, Menu, X, ChevronDown, Sun, Moon,
   GraduationCap, Wrench, Flame, Calculator, ShieldAlert, Users, Newspaper,
-  Award, FileText, CheckCircle2, BookOpen, FileCheck, Play, Info, PhoneCall, Sparkles
+  Award, FileText, CheckCircle2, BookOpen, FileCheck, Play, Info, PhoneCall, Sparkles, Smartphone
 } from 'lucide-react'
 import { useTheme } from '@/components/ThemeProvider'
+import { openPWAModal } from '@/components/layout/PWAInstallPrompt'
 
 interface SubLink {
   href: string
@@ -296,7 +297,7 @@ export function Navbar() {
               </div>
 
               {/* Desktop Actions */}
-              <div className="hidden lg:flex items-center gap-3 shrink-0">
+              <div className="hidden lg:flex items-center gap-2.5 shrink-0">
                 {/* Theme toggle */}
                 <button
                   onClick={toggleTheme}
@@ -305,6 +306,16 @@ export function Navbar() {
                   title={theme === 'dark' ? "Passer en mode clair" : "Passer en mode sombre"}
                 >
                   {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+                </button>
+
+                {/* PWA Download Button */}
+                <button
+                  onClick={openPWAModal}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black bg-amber-500/15 text-amber-600 dark:bg-amber-400/15 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-slate-950 transition-all cursor-pointer shadow-xs"
+                  title="Télécharger l'Application PWA"
+                >
+                  <Smartphone className="w-4 h-4 text-amber-500" />
+                  <span>APP PWA</span>
                 </button>
 
                 <Link 
@@ -462,6 +473,14 @@ export function Navbar() {
 
         {/* Drawer Actions */}
         <div className="p-4 border-t border-slate-200 dark:border-white/10 space-y-2 bg-slate-50 dark:bg-slate-900/50">
+          <button
+            onClick={() => { setIsOpen(false); openPWAModal(); }}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 border border-amber-300"
+          >
+            <Smartphone className="w-4 h-4 fill-current" />
+            <span>📲 Télécharger l&apos;App Mobile (PWA)</span>
+          </button>
+
           <Link 
             href="/connexion" 
             onClick={() => setIsOpen(false)} 
@@ -472,7 +491,7 @@ export function Navbar() {
           <Link 
             href="/inscription" 
             onClick={() => setIsOpen(false)} 
-            className="block w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-center font-extrabold text-xs shadow-md"
+            className="block w-full py-2.5 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-center font-extrabold text-xs"
           >
             S&apos;inscrire maintenant
           </Link>
