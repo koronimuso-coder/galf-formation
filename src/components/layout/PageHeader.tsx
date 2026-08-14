@@ -4,7 +4,7 @@ import { FadeIn } from '@/components/animations/FadeIn'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { getPageHeaderImage } from '@/lib/images'
-import { ShieldCheck, Award, MapPin, CheckCircle2 } from 'lucide-react'
+import { Award, CheckCircle2, MapPin } from 'lucide-react'
 
 interface PageHeaderProps {
   title: string
@@ -20,76 +20,72 @@ export function PageHeader({ title, subtitle, badge, bgImage, centered = false, 
   const headerBg = bgImage || getPageHeaderImage(pathname)
 
   return (
-    <section className="relative min-h-[380px] md:min-h-[460px] flex items-center overflow-hidden bg-slate-950 pt-28 pb-14 border-b border-amber-500/20">
-      {/* ── Bright HD Background Image & Elegant Scrim ── */}
-      <div className="absolute inset-0 z-0">
+    <div className="w-full flex flex-col pt-16 sm:pt-20">
+      {/* ── 1. Pure, Clean HD Header Image (Zero Text Overlay, 100% Bright) ── */}
+      <div className="relative w-full h-[220px] sm:h-[300px] md:h-[380px] overflow-hidden bg-slate-950">
         <Image 
           src={headerBg} 
           alt={title} 
           fill 
-          className="object-cover object-center opacity-85 transition-transform duration-700 ease-out hover:scale-105" 
+          className="object-cover object-center opacity-100 transition-transform duration-700 ease-out hover:scale-105" 
           priority
           unoptimized={headerBg.endsWith('.webp')}
         />
-        
-        {/* Balanced Scrim: Ensures text legibility while keeping background image bright & clear */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-slate-950/20 z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-10" />
+        {/* Subtle accent border line at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 z-10" />
       </div>
 
-      <div className="container-galf relative z-20 w-full flex flex-col lg:flex-row lg:items-center justify-between gap-8 pt-6 sm:pt-10">
-        {/* Left Column: Title & Subtitle */}
-        <div className={centered ? 'max-w-3xl mx-auto text-center flex flex-col items-center' : 'max-w-3xl'}>
-          <FadeIn>
-            {badge && (
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-5 bg-amber-500/20 border border-amber-400/40 text-amber-400 backdrop-blur-md shadow-md">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                {badge}
-              </div>
-            )}
-            
-            <h1 className={`text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-4 leading-[1.1] drop-shadow-lg ${centered ? 'mx-auto' : ''}`}>
-              {title}
-            </h1>
-            
-            <p className={`text-sm sm:text-base md:text-lg text-slate-200 font-medium leading-relaxed max-w-2xl drop-shadow ${centered ? 'mx-auto' : ''}`}>
-              {subtitle}
-            </p>
-            
-            {children && <div className="mt-6">{children}</div>}
-          </FadeIn>
-        </div>
-
-        {/* Right Column: Clean & Professional Information Card */}
-        {!centered && (
-          <FadeIn delay={0.2} className="shrink-0 w-full lg:w-80">
-            <div className="p-5 rounded-2xl border border-white/20 bg-slate-900/80 backdrop-blur-xl shadow-2xl space-y-3.5">
-              <div className="flex justify-between items-center border-b border-white/10 pb-2.5 text-amber-400 font-black uppercase text-xs tracking-wider">
-                <span className="flex items-center gap-1.5"><Award className="w-4 h-4 text-amber-400" /> GALF CI</span>
-                <span className="flex items-center gap-1 text-emerald-400 text-[11px] font-bold"><span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Agréé État</span>
-              </div>
+      {/* ── 2. Clean Title & Subtitle Section (Positioned Below Header Image) ── */}
+      <section className="w-full bg-slate-900 dark:bg-slate-950 border-b border-slate-200 dark:border-white/10 py-8 md:py-10">
+        <div className="container-galf flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          
+          {/* Main Title & Description */}
+          <div className={centered ? 'max-w-3xl mx-auto text-center flex flex-col items-center' : 'max-w-3xl'}>
+            <FadeIn>
+              {badge && (
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black tracking-wider uppercase mb-3.5 bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  {badge}
+                </div>
+              )}
               
-              <div className="space-y-2 text-xs text-slate-200">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>Diplômes &amp; Certifications Métier</span>
+              <h1 className={`text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-3 leading-tight ${centered ? 'mx-auto' : ''}`}>
+                {title}
+              </h1>
+              
+              <p className={`text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-2xl ${centered ? 'mx-auto' : ''}`}>
+                {subtitle}
+              </p>
+              
+              {children && <div className="mt-5">{children}</div>}
+            </FadeIn>
+          </div>
+
+          {/* Quick Info Badge (Right Side) */}
+          {!centered && (
+            <FadeIn delay={0.2} className="shrink-0 w-full lg:w-80">
+              <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 shadow-lg space-y-2.5">
+                <div className="flex justify-between items-center border-b border-slate-100 dark:border-white/10 pb-2 text-amber-600 dark:text-amber-400 font-black uppercase text-xs tracking-wider">
+                  <span className="flex items-center gap-1.5"><Award className="w-4 h-4" /> GALF CI</span>
+                  <span className="text-emerald-500 text-[11px] font-bold">Agréé METFIP</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>Plateaux Techniques Abidjan &amp; San Pedro</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>80% Pratique terrain sur machines réelles</span>
+                
+                <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
+                    <span>80% Pratique sur engins réels</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-amber-500 shrink-0" />
+                    <span>Centres d&apos;Abidjan &amp; San Pedro</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </FadeIn>
-        )}
-      </div>
+            </FadeIn>
+          )}
 
-      {/* Decorative Bottom Bar */}
-      <div className="absolute right-0 bottom-0 w-1/3 h-1 bg-gradient-to-r from-transparent via-amber-500 to-orange-500 z-20" />
-    </section>
+        </div>
+      </section>
+    </div>
   )
 }
