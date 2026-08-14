@@ -1035,6 +1035,29 @@ img, iframe, video, svg {
   background-clip: text !important;
 }
 
+/* 📱 Mobile & Web Responsive Protection */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
 
-
-
+.container-galf {
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .container-galf {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .container-galf {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
