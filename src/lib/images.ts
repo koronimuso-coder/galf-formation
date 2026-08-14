@@ -25,17 +25,19 @@ export function getFormationImage(slug: string): string {
   return map[slug] || '/images/formations/pelle-hydraulique.png?v=3'
 }
 
-/** Maps page paths to their corresponding cinematic header animations */
+/** Maps page paths to their corresponding header images */
 export function getPageHeaderImage(path: string): string {
   const map: Record<string, string> = {
-    '/apprenant': '/images/headers/apprenant.webp',
-    '/entreprise': '/images/headers/entreprise.webp',
+    '/apprenant': '/images/headers/formations.png',
+    '/entreprise': '/images/headers/formations.png',
     '/contact': '/images/headers/contact.png',
     '/a-propos': '/images/headers/a-propos.png',
-    '/faq': '/images/headers/faq.webp',
+    '/faq': '/images/headers/formations.png',
     '/mediatheque': '/images/headers/mediatheque.png',
     '/formations': '/images/headers/formations.png',
     '/blog': '/images/headers/actualites.png',
+    '/recrutement': '/images/headers/formations.png',
+    '/accreditations': '/images/headers/a-propos.png',
   }
   
   // Find matching path or return default
